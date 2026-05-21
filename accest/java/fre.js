@@ -291,7 +291,7 @@ updateTimer();
 show(‘s-discuss’);
 if (G.timerInterval) clearInterval(G.timerInterval);
 G.timerInterval = setInterval(() => {
-G.timerSec–;
+G.timerSec--;
 updateTimer();
 
 ```
@@ -382,7 +382,7 @@ const counts = {};
 G.players.forEach(p => counts[p] = 0);
 Object.values(G.votes).forEach(v => counts[v] = (counts[v]||0) + 1);
 
-const max = Math.max(…Object.values(counts));
+const max = Math.max(...Object.values(counts));
 const winners = Object.keys(counts).filter(p => counts[p] === max);
 
 const rows = document.getElementById(‘tally-rows’);
@@ -413,7 +413,7 @@ sndBtn();
 const counts = {};
 G.players.forEach(p => counts[p] = 0);
 Object.values(G.votes).forEach(v => counts[v] = (counts[v]||0) + 1);
-const max = Math.max(…Object.values(counts));
+const max = Math.max(...Object.values(counts));
 const accused = Object.keys(counts).filter(p => counts[p] === max);
 const spyName = G.players[G.spyIdx];
 const caught = accused.length === 1 && accused[0] === spyName;
