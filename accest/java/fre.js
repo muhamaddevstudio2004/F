@@ -169,9 +169,15 @@ const grid = document.getElementById(‘cats-grid’);
 grid.innerHTML = ‘’;
 CATEGORIES.forEach(cat => {
 const btn = document.createElement(‘div’);
-btn.className = ‘cat-btn’ + (G.catId === cat.id ? ’ selected’ : ‘’);
+btn.className = 'cat-btn' + (G.catIds.includes(cat.id) ? ' selected' : '');
 btn.innerHTML = `<div class="cat-check"> <svg width="10" height="10" viewBox="0 0 10 10" fill="none"> <path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> </div> <div class="cat-icon">${cat.icon}</div> <div class="cat-name">${cat.name}</div>`;
-btn.onclick = () => { sndClick(); G.catId = cat.id; renderCats(); };
+btn.onclick = () => {
+  sndClick();
+  const i = G.catIds.indexOf(cat.id);
+  if (i === -1) G.catIds.push(cat.id);
+  else G.catIds.splice(i, 1);
+  renderCats();
+};
 grid.appendChild(btn);
 });
 }
@@ -183,11 +189,11 @@ const inputs = document.querySelectorAll(’#player-list input’);
 inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
 const valid = G.players.filter(p => p.length > 0);
 if (valid.length < 2) { alert(‘لانیکەم ٢ یاریزان پێویستە!’); return; }
-if (!G.catId) { alert(‘جۆری وشە هەڵبژێرە!’); return; }
-
-G.players = valid;
-const cat = CATEGORIES.find(c => c.id === G.catId);
-G.word = cat.words[Math.floor(Math.random() * cat.words.length)];
+if (G.catIds.length === 0) { alert('لانیکەم یەک جۆر هەڵبژێرە!'); return; }
+const allWords = CATEGORIES
+  .filter(c => G.catIds.includes(c.id))
+  .flatMap(c => c.words);
+G.word = allWords[Math.floor(Math.random() * allWords.length)];
 G.spyIdx = Math.floor(Math.random() * G.players.length);
 G.roles = G.players.map((_, i) => i === G.spyIdx ? ‘spy’ : ‘normal’);
 G.curPlayer = 0;
@@ -463,7 +469,10 @@ setTimeout(() => { wrap.innerHTML = ‘’; }, 4000);
 
 function restartSame() {
 sndBtn();
-G.word = CATEGORIES.find(c => c.id === G.catId).words[Math.floor(Math.random() * 20)];
+const allWords = CATEGORIES
+  .filter(c => G.catIds.includes(c.id))
+  .flatMap(c => c.words);
+G.word = allWords[Math.floor(Math.random() * allWords.length)];
 G.spyIdx = Math.floor(Math.random() * G.players.length);
 G.roles = G.players.map((_, i) => i === G.spyIdx ? ‘spy’ : ‘normal’);
 G.curPlayer = 0; G.votes = {}; G.curVoter = 0;
