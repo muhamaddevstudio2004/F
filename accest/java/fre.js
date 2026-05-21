@@ -23,34 +23,54 @@ osc.stop(AC.currentTime + delay + duration + 0.05);
 } catch(e) {}
 }
 
-function sndClick() { playTone(600, ‘sine’, 0.06, 0.12); }
+// click / tap
+function sndClick() {
+playTone(600, ‘sine’, 0.06, 0.12);
+}
+// card flip reveal
 function sndFlip() {
 playTone(300, ‘sine’, 0.08, 0.08);
 playTone(500, ‘sine’, 0.12, 0.12, 0.06);
 playTone(700, ‘sine’, 0.1, 0.1, 0.12);
 }
+// spy reveal
 function sndSpy() {
 playTone(200, ‘sawtooth’, 0.15, 0.1);
 playTone(180, ‘sawtooth’, 0.2, 0.12, 0.1);
 playTone(150, ‘sawtooth’, 0.25, 0.1, 0.22);
 }
-function sndTick() { playTone(880, ‘square’, 0.04, 0.06); }
+// timer tick
+function sndTick() {
+playTone(880, ‘square’, 0.04, 0.06);
+}
+// urgent tick (last 10s)
 function sndUrgentTick() {
 playTone(1100, ‘square’, 0.05, 0.09);
 playTone(1300, ‘square’, 0.04, 0.07, 0.05);
 }
+// timer end
 function sndTimerEnd() {
 playTone(440, ‘sawtooth’, 0.1, 0.12);
 playTone(330, ‘sawtooth’, 0.15, 0.12, 0.12);
 playTone(220, ‘sawtooth’, 0.2, 0.1, 0.26);
 }
+// vote confirm
 function sndVote() {
 playTone(500, ‘sine’, 0.08, 0.12);
 playTone(650, ‘sine’, 0.08, 0.1, 0.07);
 }
-function sndWin() { [523,659,784,1047].forEach((f,i) => playTone(f,‘sine’,0.2,0.13,i*0.1)); }
-function sndLose() { [400,350,280,200].forEach((f,i) => playTone(f,‘sawtooth’,0.2,0.1,i*0.1)); }
-function sndBtn() { playTone(440, ‘sine’, 0.06, 0.1); }
+// win
+function sndWin() {
+[523,659,784,1047].forEach((f,i) => playTone(f,‘sine’,0.2,0.13,i*0.1));
+}
+// lose
+function sndLose() {
+[400,350,280,200].forEach((f,i) => playTone(f,‘sawtooth’,0.2,0.1,i*0.1));
+}
+// button press
+function sndBtn() {
+playTone(440, ‘sine’, 0.06, 0.1);
+}
 
 // ══════════ DATA ══════════
 const CATEGORIES = [
@@ -149,15 +169,9 @@ const grid = document.getElementById(‘cats-grid’);
 grid.innerHTML = ‘’;
 CATEGORIES.forEach(cat => {
 const btn = document.createElement(‘div’);
-btn.className = ‘cat-btn’ + (G.catIds.includes(cat.id) ? ’ selected’ : ‘’);
+btn.className = ‘cat-btn’ + (G.catId === cat.id ? ’ selected’ : ‘’);
 btn.innerHTML = `<div class="cat-check"> <svg width="10" height="10" viewBox="0 0 10 10" fill="none"> <path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> </div> <div class="cat-icon">${cat.icon}</div> <div class="cat-name">${cat.name}</div>`;
-btn.onclick = () => {
-sndClick();
-const i = G.catIds.indexOf(cat.id);
-if (i === -1) G.catIds.push(cat.id);
-else G.catIds.splice(i, 1);
-renderCats();
-};
+btn.onclick = () => { sndClick(); G.catId = cat.id; renderCats(); };
 grid.appendChild(btn);
 });
 }
@@ -169,13 +183,11 @@ const inputs = document.querySelectorAll(’#player-list input’);
 inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
 const valid = G.players.filter(p => p.length > 0);
 if (valid.length < 2) { alert(‘لانیکەم ٢ یاریزان پێویستە!’); return; }
-if (G.catIds.length === 0) { alert(‘لانیکەم یەک جۆر هەڵبژێرە!’); return; }
+if (!G.catId) { alert(‘جۆری وشە هەڵبژێرە!’); return; }
 
 G.players = valid;
-const allWords = CATEGORIES
-.filter(c => G.catIds.includes(c.id))
-.flatMap(c => c.words);
-G.word = allWords[Math.floor(Math.random() * allWords.length)];
+const cat = CATEGORIES.find(c => c.id === G.catId);
+G.word = cat.words[Math.floor(Math.random() * cat.words.length)];
 G.spyIdx = Math.floor(Math.random() * G.players.length);
 G.roles = G.players.map((_, i) => i === G.spyIdx ? ‘spy’ : ‘normal’);
 G.curPlayer = 0;
@@ -197,6 +209,7 @@ sndClick();
 const idx = G.curPlayer;
 const isSpy = G.roles[idx] === ‘spy’;
 
+// progress dots
 const prog = document.getElementById(‘prog-dots’);
 prog.innerHTML = ‘’;
 G.players.forEach((_, i) => {
@@ -205,6 +218,7 @@ s.className = ‘prog-seg’ + (i < idx ? ’ done’ : i === idx ? ’ active�
 prog.appendChild(s);
 });
 
+// reset flip
 const flipCard = document.getElementById(‘flip-card’);
 flipCard.classList.remove(‘flipped’);
 
@@ -243,11 +257,13 @@ if (flipCard.classList.contains(‘flipped’)) return;
 sndFlip();
 flipCard.classList.add(‘flipped’);
 
+// play spy sound after flip
 const isSpy = G.roles[G.curPlayer] === ‘spy’;
 setTimeout(() => {
 if (isSpy) sndSpy();
 }, 350);
 
+// show next button after flip completes
 setTimeout(() => {
 document.getElementById(‘card-next-btn’).classList.add(‘visible’);
 }, 700);
@@ -273,6 +289,7 @@ G.timerSec–;
 updateTimer();
 
 ```
+// tick sounds
 if (G.timerSec <= 10 && G.timerSec > 0) {
   sndUrgentTick();
 } else if (G.timerSec > 10) {
@@ -294,8 +311,9 @@ const CIRCUMFERENCE = 2 * Math.PI * 54;
 function updateTimer() {
 const numEl = document.getElementById(‘timer-num’);
 numEl.textContent = G.timerSec;
+// tick animation
 numEl.classList.remove(‘tick’);
-void numEl.offsetWidth;
+void numEl.offsetWidth; // reflow
 numEl.classList.add(‘tick’);
 
 const offset = CIRCUMFERENCE * (1 - G.timerSec / 60);
@@ -422,6 +440,7 @@ list.appendChild(row);
 
 show(‘s-result’);
 
+// sounds + confetti
 setTimeout(() => {
 if (caught) { sndWin(); spawnConfetti(); }
 else sndLose();
@@ -444,10 +463,7 @@ setTimeout(() => { wrap.innerHTML = ‘’; }, 4000);
 
 function restartSame() {
 sndBtn();
-const allWords = CATEGORIES
-.filter(c => G.catIds.includes(c.id))
-.flatMap(c => c.words);
-G.word = allWords[Math.floor(Math.random() * allWords.length)];
+G.word = CATEGORIES.find(c => c.id === G.catId).words[Math.floor(Math.random() * 20)];
 G.spyIdx = Math.floor(Math.random() * G.players.length);
 G.roles = G.players.map((_, i) => i === G.spyIdx ? ‘spy’ : ‘normal’);
 G.curPlayer = 0; G.votes = {}; G.curVoter = 0;
