@@ -130,6 +130,25 @@ const CATEGORIES = [
       <path d="M20 23h8M20 27h6" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round"/>
     </svg>`,
     words:['کەرەستە','چادر','سەندوق','قوفل','کتێب','خازنە','سووچ','دووری','نووسەر','سیفر','خەڵک','ساتک','میز','کەرسی','پەنجەرە','شووشە','فریج','لەوا']
+  },
+  {
+    id:'place', name:'شوێن', color:'#f472b6',
+    icon:`<svg viewBox="0 0 40 40" fill="none">
+      <rect x="8" y="12" width="24" height="18" rx="2" stroke="#f472b6" stroke-width="2"/>
+      <path d="M8 18h24" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="14" cy="25" r="2" stroke="#f472b6" stroke-width="1.5"/>
+      <path d="M20 23h8M20 27h6" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+    words:['کەرەستە','چادر','سەندوق','قوفل','کتێب','خازنە','سووچ','دووری','نووسەر','سیفر','خەڵک','ساتک','میز','کەرسی','پەنجەرە','شووشە','فریج','لەوا']
+  },
+  {
+    id:'character', name:'کەسایەتی', color:'#fbbf24',
+    icon:`<svg viewBox="0 0 40 40" fill="none">
+      <rect x="10" y="16" width="20" height="16" rx="2" stroke="#fbbf24" stroke-width="2"/>
+      <path d="M15 16v-4a5 5 0 0110 0v4" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+      <path d="M10 23h20" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+    words:['دکتۆر','مامۆستا','میمار','ئەندازیار','پرستار','پەرستار','ئاکتەر','خوێندکار','کڕیار','سەرکردە','بەڕێوەبەر','دادگا','پۆلیس','ئاگرکوژەر','چوونەژوورەوە','مووسیقار','وتنەوانی','نووسەر']
   }
 ];
 
