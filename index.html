@@ -100,6 +100,11 @@ html, body {
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
+  animation: fadeSlideIn .25s ease both;
+}
+@keyframes fadeSlideIn {
+  from { opacity:0; transform:translateX(12px); }
+  to   { opacity:1; transform:translateX(0); }
 }
 .player-num {
   width: 28px; height: 28px;
@@ -134,9 +139,10 @@ input::placeholder { color: var(--muted); }
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  transition: background .2s;
+  transition: background .2s, transform .15s;
 }
-.del-btn:hover { background: rgba(255,77,109,.25); }
+.del-btn:active { transform: scale(.88); background: rgba(255,77,109,.3); }
+
 .add-row-btn {
   width: 100%;
   padding: 10px;
@@ -178,16 +184,10 @@ input::placeholder { color: var(--muted); }
   transition: opacity .2s;
   border-radius: 12px;
 }
-.cat-btn.selected { border-color: var(--accent); }
+.cat-btn.selected { border-color: var(--accent); transform: scale(1.03); }
 .cat-btn.selected::before { opacity: 1; background: rgba(255,77,109,.1); }
-.cat-icon {
-  width: 40px; height: 40px;
-}
-.cat-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-}
+.cat-icon { width: 40px; height: 40px; }
+.cat-name { font-size: 13px; font-weight: 700; color: var(--text); }
 .cat-btn.selected .cat-name { color: var(--accent); }
 .cat-check {
   position: absolute;
@@ -197,6 +197,7 @@ input::placeholder { color: var(--muted); }
   border-radius: 50%;
   display: none;
   align-items: center; justify-content: center;
+  animation: popIn .3s cubic-bezier(.3,1.4,.5,1);
 }
 .cat-btn.selected .cat-check { display: flex; }
 
@@ -210,7 +211,7 @@ input::placeholder { color: var(--muted); }
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all .2s;
+  transition: all .15s;
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .btn + .btn { margin-top: 10px; }
@@ -219,12 +220,13 @@ input::placeholder { color: var(--muted); }
   color: #fff;
   box-shadow: 0 8px 20px rgba(255,77,109,.3);
 }
-.btn-primary:active { transform: scale(.98); }
+.btn-primary:active { transform: scale(.97); box-shadow: 0 4px 10px rgba(255,77,109,.2); }
 .btn-secondary {
   background: var(--surface);
   color: var(--muted);
   border: 1px solid var(--border);
 }
+.btn-secondary:active { transform: scale(.97); }
 .btn-teal {
   background: rgba(56,217,180,.12);
   color: var(--teal);
@@ -257,6 +259,7 @@ input::placeholder { color: var(--muted); }
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 16px;
+  animation: popIn .4s cubic-bezier(.3,1.4,.5,1);
 }
 .pass-name { font-size: 26px; font-weight: 900; margin-bottom: 4px; }
 .pass-sub  { font-size: 13px; color: var(--muted); }
@@ -270,45 +273,90 @@ input::placeholder { color: var(--muted); }
   text-align: center;
   cursor: pointer;
   margin-bottom: 14px;
-  transition: border-color .2s, background .2s;
+  transition: border-color .2s, background .2s, transform .15s;
   user-select: none;
 }
-.tap-card:active { background: rgba(56,217,180,.06); border-color: var(--teal); }
+.tap-card:active { background: rgba(56,217,180,.06); border-color: var(--teal); transform: scale(.99); }
 .tap-icon-wrap {
   width: 60px; height: 60px;
   border-radius: 50%;
   background: rgba(56,217,180,.1);
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 14px;
+  transition: transform .3s;
 }
+.tap-card:active .tap-icon-wrap { transform: scale(1.1); }
 .tap-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
 
-/* ── CARD REVEAL ── */
-.reveal-card {
+/* ── CARD FLIP ANIMATION ── */
+.flip-scene {
   width: 100%;
+  perspective: 900px;
+  margin-bottom: 14px;
+}
+.flip-card {
+  width: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .65s cubic-bezier(.4,0,.2,1);
+}
+.flip-card.flipped { transform: rotateY(180deg); }
+
+.flip-front, .flip-back {
+  width: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   border-radius: var(--r2);
   padding: 48px 24px 40px;
   text-align: center;
-  margin-bottom: 14px;
   position: relative;
   overflow: hidden;
 }
-.reveal-card.normal {
+.flip-back {
+  position: absolute;
+  top: 0; left: 0;
+  transform: rotateY(180deg);
+}
+
+/* front side (hidden/locked) */
+.flip-front {
+  background: linear-gradient(160deg, #151928, #1a2035);
+  border: 1.5px solid rgba(255,255,255,.08);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 220px;
+  cursor: pointer;
+}
+.flip-front-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.05);
+  border: 1.5px solid rgba(255,255,255,.1);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.flip-front-label {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* back side normal/spy */
+.flip-back.normal {
   background: linear-gradient(160deg, #0d1f18, #112b1e);
   border: 1.5px solid rgba(56,217,180,.25);
   box-shadow: 0 0 40px rgba(56,217,180,.08);
 }
-.reveal-card.spy {
+.flip-back.spy {
   background: linear-gradient(160deg, #1f0d12, #2b1115);
   border: 1.5px solid rgba(255,77,109,.3);
   box-shadow: 0 0 40px rgba(255,77,109,.1);
 }
+
 .reveal-badge {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 6px 14px;
   border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 11px; font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 20px;
@@ -316,15 +364,27 @@ input::placeholder { color: var(--muted); }
 .normal .reveal-badge { background: rgba(56,217,180,.15); color: var(--teal); }
 .spy    .reveal-badge { background: rgba(255,77,109,.15); color: var(--accent); }
 .reveal-word {
-  font-size: 36px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  line-height: 1.2;
+  font-size: 36px; font-weight: 900;
+  letter-spacing: -1px; line-height: 1.2;
   margin-bottom: 10px;
 }
 .normal .reveal-word { color: var(--teal); }
 .spy    .reveal-word { color: var(--accent); }
 .reveal-hint { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* glow pulse on flip-back */
+.flip-back::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--r2);
+  opacity: 0;
+  transition: opacity .4s ease .5s;
+  pointer-events: none;
+}
+.flip-back.normal::before { box-shadow: inset 0 0 30px rgba(56,217,180,.15); }
+.flip-back.spy::before    { box-shadow: inset 0 0 30px rgba(255,77,109,.15); }
+.flip-card.flipped .flip-back::before { opacity: 1; }
 
 /* ── PROGRESS ── */
 .progress-wrap {
@@ -362,6 +422,7 @@ input::placeholder { color: var(--muted); }
 .timer-ring-wrap {
   display: flex; align-items: center; justify-content: center;
   margin: 8px 0 28px;
+  position: relative; width: 140px; height: 140px;
 }
 .timer-svg { transform: rotate(-90deg); }
 .timer-track { fill: none; stroke: var(--surface2); stroke-width: 6; }
@@ -374,16 +435,21 @@ input::placeholder { color: var(--muted); }
 .timer-num-big { font-size: 36px; font-weight: 900; color: var(--text); line-height: 1; }
 .timer-label-sm { font-size: 10px; color: var(--muted); letter-spacing: 1px; }
 
+/* tick animation */
+@keyframes tickPulse {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.timer-num-big.tick { animation: tickPulse .18s ease; }
+
 /* ── VOTE LIST ── */
 .voter-tag {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--accent);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; color: var(--accent);
   text-transform: uppercase;
   margin-bottom: 16px;
-  width: 100%;
-  text-align: center;
+  width: 100%; text-align: center;
 }
 .vote-list { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
 .vote-item {
@@ -410,7 +476,7 @@ input::placeholder { color: var(--muted); }
 
 /* ── TALLY ── */
 .tally-rows { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-.tally-row  { display: flex; align-items: center; gap: 10px; }
+.tally-row  { display: flex; align-items: center; gap: 10px; animation: fadeSlideIn .3s ease both; }
 .tally-name { width: 74px; text-align: right; font-size: 13px; color: var(--muted); flex-shrink: 0; }
 .tally-track { flex: 1; height: 32px; background: var(--surface2); border-radius: 8px; overflow: hidden; }
 .tally-fill {
@@ -443,7 +509,9 @@ input::placeholder { color: var(--muted); }
 }
 .win  .result-icon-wrap { background: rgba(56,217,180,.15); }
 .lose .result-icon-wrap { background: rgba(255,77,109,.15); }
+
 @keyframes popIn { from{transform:scale(.4);opacity:0} to{transform:scale(1);opacity:1} }
+
 .result-title-big { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
 .win  .result-title-big { color: var(--teal); }
 .lose .result-title-big { color: var(--accent); }
@@ -455,6 +523,7 @@ input::placeholder { color: var(--muted); }
   padding: 11px 14px;
   border-radius: 10px;
   font-size: 14px;
+  animation: fadeSlideIn .3s ease both;
 }
 .reveal-row-item:nth-child(odd) { background: var(--surface2); }
 .rr-name  { font-weight: 700; flex: 1; }
@@ -463,14 +532,31 @@ input::placeholder { color: var(--muted); }
 .role-spy    { color: var(--accent); }
 .role-normal { color: var(--teal); }
 
+/* confetti */
+.confetti-wrap {
+  position: fixed; inset: 0; pointer-events: none; z-index: 999;
+  overflow: hidden;
+}
+.confetti-piece {
+  position: absolute;
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── MISC ── */
 .section-gap { height: 20px; flex-shrink: 0; }
 .flex1 { flex: 1; }
-.screen-title {
-  font-size: 22px; font-weight: 900; margin-bottom: 4px; text-align: center;
-}
-.screen-sub {
-  font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 24px; line-height: 1.6;
-}
+.screen-title { font-size: 22px; font-weight: 900; margin-bottom: 4px; text-align: center; }
+.screen-sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 24px; line-height: 1.6; }
+
+/* hidden next button (shown after flip) */
+#card-next-btn { display: none; }
+#card-next-btn.visible { display: flex; animation: slideUp .3s ease; }
 </style>
 </head>
 <body>
@@ -545,10 +631,30 @@ input::placeholder { color: var(--muted); }
   <div class="topbar" style="padding-top:44px; padding-bottom:16px;"></div>
   <div class="progress-wrap" id="prog-dots"></div>
 
-  <div class="reveal-card" id="reveal-card">
-    <div class="reveal-badge" id="reveal-badge">--- ---</div>
-    <div class="reveal-word" id="reveal-word">---</div>
-    <div class="reveal-hint" id="reveal-hint"></div>
+  <!-- flip scene -->
+  <div class="flip-scene">
+    <div class="flip-card" id="flip-card">
+
+      <!-- front (locked) -->
+      <div class="flip-front" onclick="flipCard()">
+        <div class="flip-front-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect x="6" y="12" width="16" height="12" rx="3" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
+            <path d="M10 12V9a4 4 0 018 0v3" stroke="rgba(255,255,255,.3)" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="14" cy="18" r="2" fill="rgba(255,255,255,.3)"/>
+          </svg>
+        </div>
+        <div class="flip-front-label">کلیک بکە ببینە</div>
+      </div>
+
+      <!-- back (card content) -->
+      <div class="flip-back" id="flip-back">
+        <div class="reveal-badge" id="reveal-badge">---</div>
+        <div class="reveal-word" id="reveal-word">---</div>
+        <div class="reveal-hint" id="reveal-hint"></div>
+      </div>
+
+    </div>
   </div>
 
   <div class="warn-box" id="card-warn">
@@ -570,7 +676,7 @@ input::placeholder { color: var(--muted); }
     هەریەک لەبارەی وشەی خۆی قسە بکات<br>بەبێ ئاشکراکردن
   </div>
 
-  <div class="timer-ring-wrap" style="position:relative; width:140px; height:140px;">
+  <div class="timer-ring-wrap">
     <svg class="timer-svg" width="140" height="140" viewBox="0 0 140 140">
       <circle class="timer-track" cx="70" cy="70" r="54"/>
       <circle class="timer-prog" id="timer-prog" cx="70" cy="70" r="54"
@@ -595,13 +701,9 @@ input::placeholder { color: var(--muted); }
 <!-- ══════════ VOTE ══════════ -->
 <div id="s-vote" class="screen">
   <div class="topbar"><div class="brand" style="font-size:22px">دەنگدان</div></div>
-
   <div class="voter-tag" id="voter-tag">--- دەنگ دەدات</div>
   <div class="vote-list" id="vote-list"></div>
-
-  <button class="btn btn-primary" id="vote-btn" onclick="confirmVote()" disabled>
-    دڵنیاکردنەوەی دەنگ
-  </button>
+  <button class="btn btn-primary" id="vote-btn" onclick="confirmVote()" disabled>دڵنیاکردنەوەی دەنگ</button>
 </div>
 
 <!-- ══════════ TALLY ══════════ -->
@@ -620,6 +722,7 @@ input::placeholder { color: var(--muted); }
 <!-- ══════════ RESULT ══════════ -->
 <div id="s-result" class="screen">
   <div class="topbar"></div>
+  <div id="confetti-wrap" class="confetti-wrap"></div>
 
   <div class="result-hero" id="result-hero">
     <div class="result-icon-wrap" id="result-icon-wrap">
@@ -641,7 +744,81 @@ input::placeholder { color: var(--muted); }
 </div>
 
 <script>
-// ── DATA ──
+// ══════════ AUDIO ENGINE ══════════
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+
+function resumeAC() {
+  if (AC.state === 'suspended') AC.resume();
+}
+document.addEventListener('touchstart', resumeAC, { once: true });
+document.addEventListener('click', resumeAC, { once: true });
+
+function playTone(freq, type, duration, vol = 0.15, delay = 0) {
+  try {
+    const osc = AC.createOscillator();
+    const gain = AC.createGain();
+    osc.connect(gain);
+    gain.connect(AC.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, AC.currentTime + delay);
+    gain.gain.setValueAtTime(0, AC.currentTime + delay);
+    gain.gain.linearRampToValueAtTime(vol, AC.currentTime + delay + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime + delay + duration);
+    osc.start(AC.currentTime + delay);
+    osc.stop(AC.currentTime + delay + duration + 0.05);
+  } catch(e) {}
+}
+
+// click / tap
+function sndClick() {
+  playTone(600, 'sine', 0.06, 0.12);
+}
+// card flip reveal
+function sndFlip() {
+  playTone(300, 'sine', 0.08, 0.08);
+  playTone(500, 'sine', 0.12, 0.12, 0.06);
+  playTone(700, 'sine', 0.1, 0.1, 0.12);
+}
+// spy reveal
+function sndSpy() {
+  playTone(200, 'sawtooth', 0.15, 0.1);
+  playTone(180, 'sawtooth', 0.2, 0.12, 0.1);
+  playTone(150, 'sawtooth', 0.25, 0.1, 0.22);
+}
+// timer tick
+function sndTick() {
+  playTone(880, 'square', 0.04, 0.06);
+}
+// urgent tick (last 10s)
+function sndUrgentTick() {
+  playTone(1100, 'square', 0.05, 0.09);
+  playTone(1300, 'square', 0.04, 0.07, 0.05);
+}
+// timer end
+function sndTimerEnd() {
+  playTone(440, 'sawtooth', 0.1, 0.12);
+  playTone(330, 'sawtooth', 0.15, 0.12, 0.12);
+  playTone(220, 'sawtooth', 0.2, 0.1, 0.26);
+}
+// vote confirm
+function sndVote() {
+  playTone(500, 'sine', 0.08, 0.12);
+  playTone(650, 'sine', 0.08, 0.1, 0.07);
+}
+// win
+function sndWin() {
+  [523,659,784,1047].forEach((f,i) => playTone(f,'sine',0.2,0.13,i*0.1));
+}
+// lose
+function sndLose() {
+  [400,350,280,200].forEach((f,i) => playTone(f,'sawtooth',0.2,0.1,i*0.1));
+}
+// button press
+function sndBtn() {
+  playTone(440, 'sine', 0.06, 0.1);
+}
+
+// ══════════ DATA ══════════
 const CATEGORIES = [
   {
     id:'food', name:'خواردن', color:'#ff8c42',
@@ -704,16 +881,10 @@ const CATEGORIES = [
 
 // ── STATE ──
 let G = {
-  players: [],
-  catId: null,
-  word: '',
-  spyIdx: -1,
-  roles: [],
-  curPlayer: 0,
-  votes: {},
-  curVoter: 0,
-  timerInterval: null,
-  timerSec: 60,
+  players: [], catId: null, word: '',
+  spyIdx: -1, roles: [], curPlayer: 0,
+  votes: {}, curVoter: 0,
+  timerInterval: null, timerSec: 60,
 };
 let selectedVote = null;
 
@@ -730,11 +901,12 @@ function renderPlayers() {
   G.players.forEach((name, i) => {
     const row = document.createElement('div');
     row.className = 'player-row';
+    row.style.animationDelay = (i * 0.05) + 's';
     row.innerHTML = `
       <div class="player-num">${i+1}</div>
       <input type="text" placeholder="ناوی یاریزانی ${i+1}" value="${name}"
         oninput="G.players[${i}]=this.value" />
-      ${G.players.length > 2 ? `<button class="del-btn" onclick="removePlayer(${i})">
+      ${G.players.length > 2 ? `<button class="del-btn" onclick="removePlayer(${i}); sndClick();">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
           <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
@@ -746,6 +918,7 @@ function renderPlayers() {
 
 function addPlayer() {
   if (G.players.length >= 10) return;
+  sndClick();
   G.players.push('');
   renderPlayers();
   setTimeout(() => {
@@ -774,13 +947,14 @@ function renderCats() {
       <div class="cat-icon">${cat.icon}</div>
       <div class="cat-name">${cat.name}</div>
     `;
-    btn.onclick = () => { G.catId = cat.id; renderCats(); };
+    btn.onclick = () => { sndClick(); G.catId = cat.id; renderCats(); };
     grid.appendChild(btn);
   });
 }
 
 // ── START ──
 function startGame() {
+  sndBtn();
   const inputs = document.querySelectorAll('#player-list input');
   inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
   const valid = G.players.filter(p => p.length > 0);
@@ -795,7 +969,6 @@ function startGame() {
   G.curPlayer = 0;
   G.votes = {};
   G.curVoter = 0;
-
   showPass(0);
 }
 
@@ -806,11 +979,13 @@ function showPass(idx) {
   show('s-pass');
 }
 
+// ── CARD FLIP ──
 function showCard() {
+  sndClick();
   const idx = G.curPlayer;
   const isSpy = G.roles[idx] === 'spy';
 
-  // progress
+  // progress dots
   const prog = document.getElementById('prog-dots');
   prog.innerHTML = '';
   G.players.forEach((_, i) => {
@@ -819,8 +994,12 @@ function showCard() {
     prog.appendChild(s);
   });
 
-  const card = document.getElementById('reveal-card');
-  card.className = 'reveal-card ' + (isSpy ? 'spy' : 'normal');
+  // reset flip
+  const flipCard = document.getElementById('flip-card');
+  flipCard.classList.remove('flipped');
+
+  const back = document.getElementById('flip-back');
+  back.className = 'flip-back ' + (isSpy ? 'spy' : 'normal');
 
   const badge = document.getElementById('reveal-badge');
   const word  = document.getElementById('reveal-word');
@@ -851,11 +1030,32 @@ function showCard() {
 
   const isLast = idx === G.players.length - 1;
   btn.textContent = isLast ? 'دەستبکە بە گفتوگۆ' : `دەیدەینە دەستی ${G.players[idx+1]}`;
+  btn.classList.remove('visible');
 
   show('s-card');
 }
 
+function flipCard() {
+  const flipCard = document.getElementById('flip-card');
+  if (flipCard.classList.contains('flipped')) return;
+
+  sndFlip();
+  flipCard.classList.add('flipped');
+
+  // play spy sound after flip
+  const isSpy = G.roles[G.curPlayer] === 'spy';
+  setTimeout(() => {
+    if (isSpy) sndSpy();
+  }, 350);
+
+  // show next button after flip completes
+  setTimeout(() => {
+    document.getElementById('card-next-btn').classList.add('visible');
+  }, 700);
+}
+
 function nextPlayer() {
+  sndBtn();
   if (G.curPlayer < G.players.length - 1) {
     showPass(G.curPlayer + 1);
   } else {
@@ -872,22 +1072,41 @@ function startDiscuss() {
   G.timerInterval = setInterval(() => {
     G.timerSec--;
     updateTimer();
-    if (G.timerSec <= 0) { clearInterval(G.timerInterval); goToVote(); }
+
+    // tick sounds
+    if (G.timerSec <= 10 && G.timerSec > 0) {
+      sndUrgentTick();
+    } else if (G.timerSec > 10) {
+      if (G.timerSec % 5 === 0) sndTick();
+    }
+
+    if (G.timerSec <= 0) {
+      clearInterval(G.timerInterval);
+      sndTimerEnd();
+      setTimeout(() => goToVote(), 600);
+    }
   }, 1000);
 }
 
-const CIRCUMFERENCE = 2 * Math.PI * 54; // 339.3
+const CIRCUMFERENCE = 2 * Math.PI * 54;
 
 function updateTimer() {
-  document.getElementById('timer-num').textContent = G.timerSec;
+  const numEl = document.getElementById('timer-num');
+  numEl.textContent = G.timerSec;
+  // tick animation
+  numEl.classList.remove('tick');
+  void numEl.offsetWidth; // reflow
+  numEl.classList.add('tick');
+
   const offset = CIRCUMFERENCE * (1 - G.timerSec / 60);
   document.getElementById('timer-prog').style.strokeDashoffset = offset;
   const clr = G.timerSec > 20 ? '#ff4d6d' : '#ff8c42';
   document.getElementById('timer-prog').style.stroke = clr;
-  document.getElementById('timer-num').style.color = clr;
+  numEl.style.color = clr;
 }
 
 function skipTimer() {
+  sndBtn();
   if (G.timerInterval) clearInterval(G.timerInterval);
   goToVote();
 }
@@ -914,6 +1133,7 @@ function showVote(voterIdx) {
       <div class="vote-radio"></div>
     `;
     item.onclick = () => {
+      sndClick();
       list.querySelectorAll('.vote-item').forEach(el => el.classList.remove('selected'));
       item.classList.add('selected');
       selectedVote = name;
@@ -928,6 +1148,7 @@ function showVote(voterIdx) {
 
 function confirmVote() {
   if (!selectedVote) return;
+  sndVote();
   G.votes[G.players[G.curVoter]] = selectedVote;
   const next = G.curVoter + 1;
   if (next < G.players.length) showVote(next);
@@ -945,10 +1166,11 @@ function showTally() {
 
   const rows = document.getElementById('tally-rows');
   rows.innerHTML = '';
-  G.players.forEach(p => {
+  G.players.forEach((p, idx) => {
     const pct = Math.round(counts[p] / G.players.length * 100);
     const row = document.createElement('div');
     row.className = 'tally-row';
+    row.style.animationDelay = (idx * 0.08) + 's';
     row.innerHTML = `
       <div class="tally-name">${p}</div>
       <div class="tally-track">
@@ -973,6 +1195,7 @@ function showTally() {
 
 // ── RESULT ──
 function showResult() {
+  sndBtn();
   const counts = {};
   G.players.forEach(p => counts[p] = 0);
   Object.values(G.votes).forEach(v => counts[v] = (counts[v]||0) + 1);
@@ -1005,6 +1228,7 @@ function showResult() {
     const isSpy = G.roles[i] === 'spy';
     const row = document.createElement('div');
     row.className = 'reveal-row-item';
+    row.style.animationDelay = (i * 0.07) + 's';
     row.innerHTML = `
       <span class="rr-name">${p}</span>
       <span class="rr-word">${isSpy ? '—' : G.word}</span>
@@ -1014,18 +1238,46 @@ function showResult() {
   });
 
   show('s-result');
+
+  // sounds + confetti
+  setTimeout(() => {
+    if (caught) { sndWin(); spawnConfetti(); }
+    else sndLose();
+  }, 300);
+}
+
+// ── CONFETTI ──
+function spawnConfetti() {
+  const wrap = document.getElementById('confetti-wrap');
+  wrap.innerHTML = '';
+  const colors = ['#ff4d6d','#ff8c42','#38d9b4','#4d8cff','#fbbf24','#f472b6'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left: ${Math.random()*100}%;
+      top: -10px;
+      background: ${colors[Math.floor(Math.random()*colors.length)]};
+      width: ${6 + Math.random()*6}px;
+      height: ${6 + Math.random()*6}px;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+      animation-duration: ${1.5 + Math.random()*2}s;
+      animation-delay: ${Math.random()*0.8}s;
+    `;
+    wrap.appendChild(piece);
+  }
+  setTimeout(() => { wrap.innerHTML = ''; }, 4000);
 }
 
 function restartSame() {
+  sndBtn();
   G.word = CATEGORIES.find(c => c.id === G.catId).words[Math.floor(Math.random() * 20)];
   G.spyIdx = Math.floor(Math.random() * G.players.length);
   G.roles = G.players.map((_, i) => i === G.spyIdx ? 'spy' : 'normal');
-  G.curPlayer = 0;
-  G.votes = {};
-  G.curVoter = 0;
+  G.curPlayer = 0; G.votes = {}; G.curVoter = 0;
   showPass(0);
 }
-function goSetup() { show('s-setup'); }
+function goSetup() { sndBtn(); show('s-setup'); }
 
 // ── UTILS ──
 function show(id) {
