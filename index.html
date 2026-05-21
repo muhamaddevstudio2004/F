@@ -1,1 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>فریودەر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0f1117;
+  --surface:  #181c27;
+  --surface2: #1f2535;
+  --border:   rgba(255,255,255,0.07);
+  --accent:   #ff4d6d;
+  --accent2:  #ff8c42;
+  --teal:     #38d9b4;
+  --blue:     #4d8cff;
+  --text:     #f0f2f8;
+  --muted:    #6b7494;
+  --r:        16px;
+  --r2:       24px;
+}
 
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html, body {
+  height: 100%;
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* ── SCREENS ── */
+.screen {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px 32px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.screen.active { display: flex; animation: slideUp .35s cubic-bezier(.4,0,.2,1); }
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(22px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 52px 0 28px;
+  flex-shrink: 0;
+}
+.brand {
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.brand-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  margin-right: 4px;
+  vertical-align: middle;
+  margin-top: -6px;
+}
+
+/* ── CARD ── */
+.card {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* ── PLAYER INPUTS ── */
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.player-num {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+input[type=text] {
+  flex: 1;
+  background: var(--surface2);
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+}
+input:focus { border-color: var(--accent); }
+input::placeholder { color: var(--muted); }
+.del-btn {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  border: none;
+  background: rgba(255,77,109,.12);
+  color: var(--accent);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+.del-btn:hover { background: rgba(255,77,109,.25); }
+.add-row-btn {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1.5px dashed rgba(255,255,255,.12);
+  border-radius: 12px;
+  color: var(--muted);
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin-top: 4px;
+  transition: all .2s;
+}
+.add-row-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── CATEGORIES ── */
+.cats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.cat-btn {
+  background: var(--surface2);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 14px 12px;
+  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.cat-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .2s;
+  border-radius: 12px;
+}
+.cat-btn.selected { border-color: var(--accent); }
+.cat-btn.selected::before { opacity: 1; background: rgba(255,77,109,.1); }
+.cat-icon {
+  width: 40px; height: 40px;
+}
+.cat-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.cat-btn.selected .cat-name { color: var(--accent); }
+.cat-check {
+  position: absolute;
+  top: 8px; left: 8px;
+  width: 18px; height: 18px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: none;
+  align-items: center; justify-content: center;
+}
+.cat-btn.selected .cat-check { display: flex; }
+
+/* ── BUTTONS ── */
+.btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--r);
+  border: none;
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn + .btn { margin-top: 10px; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(255,77,109,.3);
+}
+.btn-primary:active { transform: scale(.98); }
+.btn-secondary {
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-teal {
+  background: rgba(56,217,180,.12);
+  color: var(--teal);
+  border: 1px solid rgba(56,217,180,.2);
+}
+.btn-teal:active { transform: scale(.98); }
+
+/* ── PASS SCREEN ── */
+.pass-hero {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 40px 24px 32px;
+  text-align: center;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.pass-hero::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+.pass-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.pass-name { font-size: 26px; font-weight: 900; margin-bottom: 4px; }
+.pass-sub  { font-size: 13px; color: var(--muted); }
+
+.tap-card {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r2);
+  padding: 44px 24px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 14px;
+  transition: border-color .2s, background .2s;
+  user-select: none;
+}
+.tap-card:active { background: rgba(56,217,180,.06); border-color: var(--teal); }
+.tap-icon-wrap {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: rgba(56,217,180,.1);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+}
+.tap-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+/* ── CARD REVEAL ── */
+.reveal-card {
+  width: 100%;
+  border-radius: var(--r2);
+  padding: 48px 24px 40px;
+  text-align: center;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.reveal-card.normal {
+  background: linear-gradient(160deg, #0d1f18, #112b1e);
+  border: 1.5px solid rgba(56,217,180,.25);
+  box-shadow: 0 0 40px rgba(56,217,180,.08);
+}
+.reveal-card.spy {
+  background: linear-gradient(160deg, #1f0d12, #2b1115);
+  border: 1.5px solid rgba(255,77,109,.3);
+  box-shadow: 0 0 40px rgba(255,77,109,.1);
+}
+.reveal-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.normal .reveal-badge { background: rgba(56,217,180,.15); color: var(--teal); }
+.spy    .reveal-badge { background: rgba(255,77,109,.15); color: var(--accent); }
+.reveal-word {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.normal .reveal-word { color: var(--teal); }
+.spy    .reveal-word { color: var(--accent); }
+.reveal-hint { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+.prog-seg {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--surface2);
+  transition: background .3s;
+}
+.prog-seg.done    { background: var(--teal); }
+.prog-seg.active  { background: var(--accent); }
+
+/* ── WARN BOX ── */
+.warn-box {
+  width: 100%;
+  background: rgba(255,140,66,.08);
+  border: 1px solid rgba(255,140,66,.2);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: rgba(255,200,120,.85);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+  line-height: 1.5;
+}
+
+/* ── TIMER ── */
+.timer-ring-wrap {
+  display: flex; align-items: center; justify-content: center;
+  margin: 8px 0 28px;
+}
+.timer-svg { transform: rotate(-90deg); }
+.timer-track { fill: none; stroke: var(--surface2); stroke-width: 6; }
+.timer-prog  { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round;
+               transition: stroke-dashoffset .9s linear; }
+.timer-overlay {
+  position: absolute;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.timer-num-big { font-size: 36px; font-weight: 900; color: var(--text); line-height: 1; }
+.timer-label-sm { font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+
+/* ── VOTE LIST ── */
+.voter-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  width: 100%;
+  text-align: center;
+}
+.vote-list { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.vote-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .2s;
+  font-size: 15px; font-weight: 600;
+}
+.vote-item:active { transform: scale(.99); }
+.vote-item.selected { border-color: var(--accent); background: rgba(255,77,109,.08); color: var(--accent); }
+.vote-radio {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.vote-item.selected .vote-radio { border-color: var(--accent); background: var(--accent); }
+
+/* ── TALLY ── */
+.tally-rows { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.tally-row  { display: flex; align-items: center; gap: 10px; }
+.tally-name { width: 74px; text-align: right; font-size: 13px; color: var(--muted); flex-shrink: 0; }
+.tally-track { flex: 1; height: 32px; background: var(--surface2); border-radius: 8px; overflow: hidden; }
+.tally-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 8px;
+  width: 0%;
+  transition: width .7s cubic-bezier(.4,0,.2,1);
+  display: flex; align-items: center; padding-right: 10px;
+  justify-content: flex-end;
+  font-size: 12px; font-weight: 700; color: #fff;
+}
+
+/* ── RESULT ── */
+.result-hero {
+  width: 100%;
+  border-radius: var(--r2);
+  padding: 48px 24px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.result-hero.win  { background: linear-gradient(160deg,#0d1f18,#112b1e); border: 1.5px solid rgba(56,217,180,.3); }
+.result-hero.lose { background: linear-gradient(160deg,#1f0d12,#2b1115); border: 1.5px solid rgba(255,77,109,.3); }
+.result-icon-wrap {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  animation: popIn .5s cubic-bezier(.3,1.4,.5,1);
+}
+.win  .result-icon-wrap { background: rgba(56,217,180,.15); }
+.lose .result-icon-wrap { background: rgba(255,77,109,.15); }
+@keyframes popIn { from{transform:scale(.4);opacity:0} to{transform:scale(1);opacity:1} }
+.result-title-big { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
+.win  .result-title-big { color: var(--teal); }
+.lose .result-title-big { color: var(--accent); }
+.result-sub { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+.reveal-list { width: 100%; display: flex; flex-direction: column; gap: 2px; }
+.reveal-row-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.reveal-row-item:nth-child(odd) { background: var(--surface2); }
+.rr-name  { font-weight: 700; flex: 1; }
+.rr-role  { font-size: 12px; font-weight: 700; }
+.rr-word  { font-size: 12px; color: var(--muted); margin-right: 8px; }
+.role-spy    { color: var(--accent); }
+.role-normal { color: var(--teal); }
+
+.section-gap { height: 20px; flex-shrink: 0; }
+.flex1 { flex: 1; }
+.screen-title {
+  font-size: 22px; font-weight: 900; margin-bottom: 4px; text-align: center;
+}
+.screen-sub {
+  font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 24px; line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ SETUP ══════════ -->
+<div id="s-setup" class="screen active">
+  <div class="topbar"><div class="brand"><span class="brand-dot"></span>فریودەر</div></div>
+
+  <div class="card">
+    <div class="card-title">یاریزانەکان</div>
+    <div id="player-list"></div>
+    <button class="add-row-btn" onclick="addPlayer()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      زیادکردنی یاریزان
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">جۆری وشە هەڵبژێرە</div>
+    <div class="cats-grid" id="cats-grid"></div>
+  </div>
+
+  <div class="section-gap"></div>
+  <button class="btn btn-primary" onclick="startGame()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M4 2l10 6-10 6V2z" fill="white"/>
+    </svg>
+    دەستپێکردنی یاری
+  </button>
+  <div style="height:8px"></div>
+</div>
+
+<!-- ══════════ PASS ══════════ -->
+<div id="s-pass" class="screen">
+  <div class="topbar" style="padding-top:44px; padding-bottom:20px;"></div>
+
+  <div class="pass-hero">
+    <div class="pass-avatar">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="12" r="6" fill="white" opacity=".9"/>
+        <path d="M4 28c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity=".9"/>
+      </svg>
+    </div>
+    <div class="pass-name" id="pass-name">---</div>
+    <div class="pass-sub">نۆبەتی تۆیە</div>
+  </div>
+
+  <div class="warn-box">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0">
+      <path d="M8 1L15 14H1L8 1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M8 6v4M8 11.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    مۆبایلەکە دواتر بدەرەوە — کەسی تر نەبینێت
+  </div>
+
+  <div class="tap-card" onclick="showCard()">
+    <div class="tap-icon-wrap">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="10" r="5" stroke="#38d9b4" stroke-width="2"/>
+        <path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#38d9b4" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 16l2 2 4-4" stroke="#38d9b4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="tap-text">تەنیا تۆ ببینە<br>بێ کەسی تر</div>
+  </div>
+</div>
+
+<!-- ══════════ CARD REVEAL ══════════ -->
+<div id="s-card" class="screen">
+  <div class="topbar" style="padding-top:44px; padding-bottom:16px;"></div>
+  <div class="progress-wrap" id="prog-dots"></div>
+
+  <div class="reveal-card" id="reveal-card">
+    <div class="reveal-badge" id="reveal-badge">--- ---</div>
+    <div class="reveal-word" id="reveal-word">---</div>
+    <div class="reveal-hint" id="reveal-hint"></div>
+  </div>
+
+  <div class="warn-box" id="card-warn">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0">
+      <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M8 5v4M8 10.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span id="card-warn-text"></span>
+  </div>
+
+  <button class="btn btn-primary" id="card-next-btn" onclick="nextPlayer()">داهاتوو</button>
+</div>
+
+<!-- ══════════ DISCUSS ══════════ -->
+<div id="s-discuss" class="screen">
+  <div class="topbar"><div class="brand" style="font-size:22px">گفتوگۆ</div></div>
+
+  <div class="screen-sub" style="margin-top:-10px">
+    هەریەک لەبارەی وشەی خۆی قسە بکات<br>بەبێ ئاشکراکردن
+  </div>
+
+  <div class="timer-ring-wrap" style="position:relative; width:140px; height:140px;">
+    <svg class="timer-svg" width="140" height="140" viewBox="0 0 140 140">
+      <circle class="timer-track" cx="70" cy="70" r="54"/>
+      <circle class="timer-prog" id="timer-prog" cx="70" cy="70" r="54"
+              stroke-dasharray="339.3" stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-overlay">
+      <div class="timer-num-big" id="timer-num">60</div>
+      <div class="timer-label-sm">چرکە</div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" onclick="goToVote()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect x="2" y="2" width="12" height="12" rx="3" stroke="white" stroke-width="1.5"/>
+      <path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    دەنگدان دەستپێ بکات
+  </button>
+  <button class="btn btn-secondary" style="margin-top:10px" onclick="skipTimer()">بێ کات بروو بۆ دەنگدان</button>
+</div>
+
+<!-- ══════════ VOTE ══════════ -->
+<div id="s-vote" class="screen">
+  <div class="topbar"><div class="brand" style="font-size:22px">دەنگدان</div></div>
+
+  <div class="voter-tag" id="voter-tag">--- دەنگ دەدات</div>
+  <div class="vote-list" id="vote-list"></div>
+
+  <button class="btn btn-primary" id="vote-btn" onclick="confirmVote()" disabled>
+    دڵنیاکردنەوەی دەنگ
+  </button>
+</div>
+
+<!-- ══════════ TALLY ══════════ -->
+<div id="s-tally" class="screen">
+  <div class="topbar"><div class="brand" style="font-size:22px">ئەنجامی دەنگ</div></div>
+  <div class="tally-rows" id="tally-rows"></div>
+  <div id="tally-winner" style="width:100%;text-align:center;font-size:15px;color:var(--accent);font-weight:700;margin-bottom:20px;"></div>
+  <button class="btn btn-primary" onclick="showResult()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M3 8l4 4 6-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    دەرئەنجامی کۆتایی
+  </button>
+</div>
+
+<!-- ══════════ RESULT ══════════ -->
+<div id="s-result" class="screen">
+  <div class="topbar"></div>
+
+  <div class="result-hero" id="result-hero">
+    <div class="result-icon-wrap" id="result-icon-wrap">
+      <svg id="result-icon-svg" width="40" height="40" viewBox="0 0 40 40" fill="none"></svg>
+    </div>
+    <div class="result-title-big" id="result-title">---</div>
+    <div class="result-sub" id="result-sub">---</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ئاشکراکردنی هەموو کارتەکان</div>
+    <div class="reveal-list" id="reveal-list"></div>
+  </div>
+
+  <div class="section-gap"></div>
+  <button class="btn btn-primary" onclick="restartSame()">یاری تازە — هەمان کەسان</button>
+  <button class="btn btn-secondary" style="margin-top:10px" onclick="goSetup()">گەڕانەوە بۆ دەستپێک</button>
+  <div style="height:8px"></div>
+</div>
+
+<script>
+// ── DATA ──
+const CATEGORIES = [
+  {
+    id:'food', name:'خواردن', color:'#ff8c42',
+    icon:`<svg viewBox="0 0 40 40" fill="none">
+      <path d="M10 8v10c0 4.418 4.477 8 10 8s10-3.582 10-8V8" stroke="#ff8c42" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 26v6M14 32h12" stroke="#ff8c42" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="20" cy="18" r="5" stroke="#ff8c42" stroke-width="1.5"/>
+    </svg>`,
+    words:['پیتزا','برگەر','مەستاوە','کباب','زیرەک','دۆلمە','سامبووسە','باقلاوە','رشتە','مانتو','پلەو','فەلافەل','لاواشە','سوشی','شاورمە','تاکو','کاری','پاستا','شیر','چای']
+  },
+  {
+    id:'animal', name:'گیانەوەر', color:'#38d9b4',
+    icon:`<svg viewBox="0 0 40 40" fill="none">
+      <ellipse cx="20" cy="22" rx="12" ry="9" stroke="#38d9b4" stroke-width="2"/>
+      <circle cx="20" cy="14" r="6" stroke="#38d9b4" stroke-width="2"/>
+      <path d="M14 8c-2-3-6-2-5 2M26 8c2-3 6-2 5 2" stroke="#38d9b4" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="17" cy="14" r="1.5" fill="#38d9b4"/>
+      <circle cx="23" cy="14" r="1.5" fill="#38d9b4"/>
+    </svg>`,
+    words:['مەیمون','ببر','فیل','زڕافە','دەلفین','هەژار','گورگ','ڕووبەه','پیلەکان','ئەسپ','مانگا','مشک','سەگ','پشیلە','شێر','پڵنگ','ئەژدەها','پاندا','کەنگەر','کۆتر']
+  },
+  {
+    id:'sport', name:'وەرزش', color:'#4d8cff',
+    icon:`<svg viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="12" stroke="#4d8cff" stroke-width="2"/>
+      <path d="M8.5 15h23M8.5 25h23" stroke="#4d8cff" stroke-width="1.5" stroke-linecap="round"/>
+      <ellipse cx="20" cy="20" rx="5" ry="12" stroke="#4d8cff" stroke-width="1.5"/>
+    </svg>`,
+    words:['تۆپی پێ','بەسکێتبۆڵ','تەنیس','بۆکس','مەلەکردن','دووچڕخێ','یاریگا','نابژیوان','رۆبێرتۆ کارلوس','مەسی','رۆنالدۆ','خۆ بژاردن','کارتی سووری','بزماری پێ','گۆڵ','قازانج','شامپیۆن','وەرگر']
+  },
+  {
+    id:'tech', name:'تەکنەلۆجی', color:'#a78bfa',
+    icon:`<svg viewBox="0 0 40 40" fill="none">
+      <rect x="6" y="10" width="28" height="18" rx="3" stroke="#a78bfa" stroke-width="2"/>
+      <path d="M14 32h12M20 28v4" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/>
+      <path d="M13 18h4M19 18h8" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+    words:['ئایفۆن','لاپتۆپ','تابلێت','دڕۆن','رۆبۆت','کامێرا','شاشە','کیبۆرد','ئینتەرنێت','وایفای','بلووتووس','چارجەر','باتری','پرینتەر','ئیئاربۆد','هاردسک','مایکرۆفۆن','سکانەر']
+  },
+  {
+    id:'job', name:'پیشە', color:'#fbbf24',
+    icon:`<svg viewBox="0 0 40 40" fill="none">
+      <rect x="10" y="16" width="20" height="16" rx="2" stroke="#fbbf24" stroke-width="2"/>
+      <path d="M15 16v-4a5 5 0 0110 0v4" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+      <path d="M10 23h20" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+    words:['دکتۆر','مامۆستا','میمار','ئەندازیار','پرستار','پەرستار','ئاکتەر','خوێندکار','کڕیار','سەرکردە','بەڕێوەبەر','دادگا','پۆلیس','ئاگرکوژەر','چوونەژوورەوە','مووسیقار','وتنەوانی','نووسەر']
+  },
+  {
+    id:'object', name:'کەلوپەل', color:'#f472b6',
+    icon:`<svg viewBox="0 0 40 40" fill="none">
+      <rect x="8" y="12" width="24" height="18" rx="2" stroke="#f472b6" stroke-width="2"/>
+      <path d="M8 18h24" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="14" cy="25" r="2" stroke="#f472b6" stroke-width="1.5"/>
+      <path d="M20 23h8M20 27h6" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+    words:['کەرەستە','چادر','سەندوق','قوفل','کتێب','خازنە','سووچ','دووری','نووسەر','سیفر','خەڵک','ساتک','میز','کەرسی','پەنجەرە','شووشە','فریج','لەوا']
+  }
+];
+
+// ── STATE ──
+let G = {
+  players: [],
+  catId: null,
+  word: '',
+  spyIdx: -1,
+  roles: [],
+  curPlayer: 0,
+  votes: {},
+  curVoter: 0,
+  timerInterval: null,
+  timerSec: 60,
+};
+let selectedVote = null;
+
+// ── INIT ──
+function init() {
+  G.players = ['','','',''];
+  renderPlayers();
+  renderCats();
+}
+
+function renderPlayers() {
+  const el = document.getElementById('player-list');
+  el.innerHTML = '';
+  G.players.forEach((name, i) => {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    row.innerHTML = `
+      <div class="player-num">${i+1}</div>
+      <input type="text" placeholder="ناوی یاریزانی ${i+1}" value="${name}"
+        oninput="G.players[${i}]=this.value" />
+      ${G.players.length > 2 ? `<button class="del-btn" onclick="removePlayer(${i})">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>` : ''}
+    `;
+    el.appendChild(row);
+  });
+}
+
+function addPlayer() {
+  if (G.players.length >= 10) return;
+  G.players.push('');
+  renderPlayers();
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('#player-list input');
+    inputs[inputs.length-1].focus();
+  }, 60);
+}
+function removePlayer(i) {
+  if (G.players.length <= 2) return;
+  G.players.splice(i, 1);
+  renderPlayers();
+}
+
+function renderCats() {
+  const grid = document.getElementById('cats-grid');
+  grid.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('div');
+    btn.className = 'cat-btn' + (G.catId === cat.id ? ' selected' : '');
+    btn.innerHTML = `
+      <div class="cat-check">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="cat-icon">${cat.icon}</div>
+      <div class="cat-name">${cat.name}</div>
+    `;
+    btn.onclick = () => { G.catId = cat.id; renderCats(); };
+    grid.appendChild(btn);
+  });
+}
+
+// ── START ──
+function startGame() {
+  const inputs = document.querySelectorAll('#player-list input');
+  inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
+  const valid = G.players.filter(p => p.length > 0);
+  if (valid.length < 2) { alert('لانیکەم ٢ یاریزان پێویستە!'); return; }
+  if (!G.catId) { alert('جۆری وشە هەڵبژێرە!'); return; }
+
+  G.players = valid;
+  const cat = CATEGORIES.find(c => c.id === G.catId);
+  G.word = cat.words[Math.floor(Math.random() * cat.words.length)];
+  G.spyIdx = Math.floor(Math.random() * G.players.length);
+  G.roles = G.players.map((_, i) => i === G.spyIdx ? 'spy' : 'normal');
+  G.curPlayer = 0;
+  G.votes = {};
+  G.curVoter = 0;
+
+  showPass(0);
+}
+
+// ── PASS ──
+function showPass(idx) {
+  G.curPlayer = idx;
+  document.getElementById('pass-name').textContent = G.players[idx];
+  show('s-pass');
+}
+
+function showCard() {
+  const idx = G.curPlayer;
+  const isSpy = G.roles[idx] === 'spy';
+
+  // progress
+  const prog = document.getElementById('prog-dots');
+  prog.innerHTML = '';
+  G.players.forEach((_, i) => {
+    const s = document.createElement('div');
+    s.className = 'prog-seg' + (i < idx ? ' done' : i === idx ? ' active' : '');
+    prog.appendChild(s);
+  });
+
+  const card = document.getElementById('reveal-card');
+  card.className = 'reveal-card ' + (isSpy ? 'spy' : 'normal');
+
+  const badge = document.getElementById('reveal-badge');
+  const word  = document.getElementById('reveal-word');
+  const hint  = document.getElementById('reveal-hint');
+  const warn  = document.getElementById('card-warn-text');
+  const btn   = document.getElementById('card-next-btn');
+
+  if (isSpy) {
+    badge.innerHTML = `
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M4 6c0-1.105.895-2 2-2s2 .895 2 2-.895 2-2 2-2-.895-2-2z" fill="currentColor"/>
+      </svg> فریودەر
+    `;
+    word.textContent = 'تۆ فریودەریت!';
+    hint.textContent = 'وشەکە نازانی — بفریوێنە';
+    warn.textContent = 'زیرەکانە قسە بکە — وانەیەک بدە';
+  } else {
+    badge.innerHTML = `
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg> وشەی نهێنی
+    `;
+    word.textContent = G.word;
+    hint.textContent = 'بیناسانەوە — فریودەرەکە بدزە';
+    warn.textContent = 'بیبینە و بیرت لێ بخەوە — کەسی تر نەبینێت';
+  }
+
+  const isLast = idx === G.players.length - 1;
+  btn.textContent = isLast ? 'دەستبکە بە گفتوگۆ' : `دەیدەینە دەستی ${G.players[idx+1]}`;
+
+  show('s-card');
+}
+
+function nextPlayer() {
+  if (G.curPlayer < G.players.length - 1) {
+    showPass(G.curPlayer + 1);
+  } else {
+    startDiscuss();
+  }
+}
+
+// ── DISCUSS ──
+function startDiscuss() {
+  G.timerSec = 60;
+  updateTimer();
+  show('s-discuss');
+  if (G.timerInterval) clearInterval(G.timerInterval);
+  G.timerInterval = setInterval(() => {
+    G.timerSec--;
+    updateTimer();
+    if (G.timerSec <= 0) { clearInterval(G.timerInterval); goToVote(); }
+  }, 1000);
+}
+
+const CIRCUMFERENCE = 2 * Math.PI * 54; // 339.3
+
+function updateTimer() {
+  document.getElementById('timer-num').textContent = G.timerSec;
+  const offset = CIRCUMFERENCE * (1 - G.timerSec / 60);
+  document.getElementById('timer-prog').style.strokeDashoffset = offset;
+  const clr = G.timerSec > 20 ? '#ff4d6d' : '#ff8c42';
+  document.getElementById('timer-prog').style.stroke = clr;
+  document.getElementById('timer-num').style.color = clr;
+}
+
+function skipTimer() {
+  if (G.timerInterval) clearInterval(G.timerInterval);
+  goToVote();
+}
+function goToVote() {
+  if (G.timerInterval) clearInterval(G.timerInterval);
+  showVote(0);
+}
+
+// ── VOTE ──
+function showVote(voterIdx) {
+  G.curVoter = voterIdx;
+  selectedVote = null;
+  const voter = G.players[voterIdx];
+  document.getElementById('voter-tag').textContent = `${voter} — دەنگ دەدات`;
+
+  const list = document.getElementById('vote-list');
+  list.innerHTML = '';
+  G.players.forEach(name => {
+    if (name === voter) return;
+    const item = document.createElement('div');
+    item.className = 'vote-item';
+    item.innerHTML = `
+      <span>${name}</span>
+      <div class="vote-radio"></div>
+    `;
+    item.onclick = () => {
+      list.querySelectorAll('.vote-item').forEach(el => el.classList.remove('selected'));
+      item.classList.add('selected');
+      selectedVote = name;
+      document.getElementById('vote-btn').disabled = false;
+    };
+    list.appendChild(item);
+  });
+
+  document.getElementById('vote-btn').disabled = true;
+  show('s-vote');
+}
+
+function confirmVote() {
+  if (!selectedVote) return;
+  G.votes[G.players[G.curVoter]] = selectedVote;
+  const next = G.curVoter + 1;
+  if (next < G.players.length) showVote(next);
+  else showTally();
+}
+
+// ── TALLY ──
+function showTally() {
+  const counts = {};
+  G.players.forEach(p => counts[p] = 0);
+  Object.values(G.votes).forEach(v => counts[v] = (counts[v]||0) + 1);
+
+  const max = Math.max(...Object.values(counts));
+  const winners = Object.keys(counts).filter(p => counts[p] === max);
+
+  const rows = document.getElementById('tally-rows');
+  rows.innerHTML = '';
+  G.players.forEach(p => {
+    const pct = Math.round(counts[p] / G.players.length * 100);
+    const row = document.createElement('div');
+    row.className = 'tally-row';
+    row.innerHTML = `
+      <div class="tally-name">${p}</div>
+      <div class="tally-track">
+        <div class="tally-fill" style="width:0%" data-pct="${pct}">
+          ${counts[p] > 0 ? counts[p] : ''}
+        </div>
+      </div>
+    `;
+    rows.appendChild(row);
+  });
+  setTimeout(() => {
+    rows.querySelectorAll('.tally-fill').forEach(b => b.style.width = b.dataset.pct + '%');
+  }, 80);
+
+  const win = document.getElementById('tally-winner');
+  win.textContent = winners.length === 1
+    ? `زیاترین دەنگ: ${winners[0]}`
+    : `یەکسانی دەنگ — دووبارە دەنگدان پێویستە`;
+
+  show('s-tally');
+}
+
+// ── RESULT ──
+function showResult() {
+  const counts = {};
+  G.players.forEach(p => counts[p] = 0);
+  Object.values(G.votes).forEach(v => counts[v] = (counts[v]||0) + 1);
+  const max = Math.max(...Object.values(counts));
+  const accused = Object.keys(counts).filter(p => counts[p] === max);
+  const spyName = G.players[G.spyIdx];
+  const caught = accused.length === 1 && accused[0] === spyName;
+
+  const hero = document.getElementById('result-hero');
+  hero.className = 'result-hero ' + (caught ? 'win' : 'lose');
+
+  const iconSvg = document.getElementById('result-icon-svg');
+  if (caught) {
+    iconSvg.innerHTML = `<path d="M8 20l8 8 16-16" stroke="#38d9b4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  } else {
+    iconSvg.innerHTML = `
+      <circle cx="20" cy="16" r="6" stroke="#ff4d6d" stroke-width="2.5"/>
+      <path d="M8 34c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#ff4d6d" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M28 10l4 4M32 10l-4 4" stroke="#ff4d6d" stroke-width="2" stroke-linecap="round"/>`;
+  }
+
+  document.getElementById('result-title').textContent = caught ? 'فریودەرەکە دەستگیر کرا!' : 'فریودەرەکە بردی!';
+  document.getElementById('result-sub').textContent = caught
+    ? `${spyName} فریودەر بوو — یاریزانە باشەکان بردن!\nوشەکە: « ${G.word} »`
+    : `${spyName} فریودەر بوو — هەموویانی فریو دا!\nوشەکە: « ${G.word} »`;
+
+  const list = document.getElementById('reveal-list');
+  list.innerHTML = '';
+  G.players.forEach((p, i) => {
+    const isSpy = G.roles[i] === 'spy';
+    const row = document.createElement('div');
+    row.className = 'reveal-row-item';
+    row.innerHTML = `
+      <span class="rr-name">${p}</span>
+      <span class="rr-word">${isSpy ? '—' : G.word}</span>
+      <span class="rr-role ${isSpy ? 'role-spy' : 'role-normal'}">${isSpy ? 'فریودەر' : 'باش'}</span>
+    `;
+    list.appendChild(row);
+  });
+
+  show('s-result');
+}
+
+function restartSame() {
+  G.word = CATEGORIES.find(c => c.id === G.catId).words[Math.floor(Math.random() * 20)];
+  G.spyIdx = Math.floor(Math.random() * G.players.length);
+  G.roles = G.players.map((_, i) => i === G.spyIdx ? 'spy' : 'normal');
+  G.curPlayer = 0;
+  G.votes = {};
+  G.curVoter = 0;
+  showPass(0);
+}
+function goSetup() { show('s-setup'); }
+
+// ── UTILS ──
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id).scrollTop = 0;
+}
+
+init();
+</script>
+</body>
+</html>
