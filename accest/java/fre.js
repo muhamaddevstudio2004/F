@@ -239,7 +239,9 @@ function startGame() {
     .filter(c => G.catIds.includes(c.id))
     .flatMap(c => c.words);
   G.word = allWords[Math.floor(Math.random() * allWords.length)];
-  G.spyIdx = Math.floor(Math.random() * G.players.length);
+// هەڵبژاردنی چەند فریودەر
+G.spyIdx = Math.floor(Math.random() * G.players.length);
+
   G.roles = G.players.map((_, i) => i === G.spyIdx ? 'spy' : 'normal');
   G.curPlayer = 0;
   G.votes = {};
@@ -334,7 +336,8 @@ function nextPlayer() {
 
 // ── DISCUSS ──
 function startDiscuss() {
-  G.timerSec = 60;
+G.timerSec = Settings.timerSec;
+
   updateTimer();
   show('s-discuss');
   if (G.timerInterval) clearInterval(G.timerInterval);
@@ -553,5 +556,88 @@ function show(id) {
   document.getElementById(id).classList.add('active');
   document.getElementById(id).scrollTop = 0;
 }
+
+// ── NAV ──
+function goToCatSelect() {
+  sndBtn();
+  const inputs = document.querySelectorAll('#player-list input');
+  inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
+  const valid = G.players.filter(p => p.length > 0);
+  if (valid.length < 2) { alert('لانیکەم ٢ یاریزان پێویستە!'); return; }
+  G.players = valid;
+  renderCats();
+  show('s-catselect');
+}
+
+function renderCats() {
+  const grid = document.getElementById('cats-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('div');
+    btn.className = 'cat-btn' + (G.catIds.includes(cat.id) ? ' selected' : '');
+    btn.innerHTML = `
+      <div class="cat-check">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="cat-icon">${cat.icon}</div>
+      <div class="cat-name">${cat.name}</div>
+    `;
+    btn.onclick = () => {
+      sndClick();
+      const i = G.catIds.indexOf(cat.id);
+      if (i === -1) G.catIds.push(cat.id);
+      else G.catIds.splice(i, 1);
+      renderCats();
+      updateCatBtn();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function updateCatBtn() {
+  const btn = document.getElementById('cat-next-btn');
+  const label = document.getElementById('cat-next-label');
+  if (!btn) return;
+  if (G.catIds.length === 0) {
+    btn.style.display = 'none';
+  } else {
+    btn.style.display = 'flex';
+    label.textContent = `بەردەوام بوون — ${G.catIds.length} هەڵبژێردراو`;
+  }
+}
+
+function goToSettings() {
+  sndBtn();
+  if (G.catIds.length === 0) { alert('لانیکەم یەک جۆر هەڵبژێرە!'); return; }
+  updateSettingsDisplay();
+  show('s-settings');
+}
+
+// ── SETTINGS ──
+let Settings = { spyCount: 1, timerSec: 60 };
+
+function updateSettingsDisplay() {
+  document.getElementById('spy-count-display').textContent = Settings.spyCount;
+  const m = Math.floor(Settings.timerSec / 60);
+  const s = Settings.timerSec % 60;
+  document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function changeSpyCount(delta) {
+  sndClick();
+  const max = Math.max(1, G.players.length - 1);
+  Settings.spyCount = Math.min(max, Math.max(1, Settings.spyCount + delta));
+  updateSettingsDisplay();
+}
+
+function changeTimer(delta) {
+  sndClick();
+  Settings.timerSec = Math.min(300, Math.max(30, Settings.timerSec + delta));
+  updateSettingsDisplay();
+}
+
 
 init();
