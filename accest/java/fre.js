@@ -1,7 +1,11 @@
-function startSplash() {
-  sndBtn();
-  show('s-setup');
-}
+
+  setTimeout(() => {
+    const s = document.getElementById('splash');
+    s.classList.add('hide');
+    setTimeout(() => s.remove(), 600);
+  }, 2500); // 2.5 چرکە
+
+
 
 
 // ══════════ AUDIO ENGINE ══════════
