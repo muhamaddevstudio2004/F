@@ -49,72 +49,68 @@
 </div>
 
 
-
-
-
 <!-- ══════════ SETUP ══════════ -->
 <div id="s-setup" class="screen">
 
-  <!-- hero بەش -->
+  <!-- HERO -->
   <div class="setup-hero">
-    <img src="accest/img/hero.png" class="hero-img" alt="">
-    <div class="hero-overlay">
-      <div class="brand-wrap">
-        <span class="brand-dot"></span>
-        <span class="brand">فریودەر</span>
+    <img src="accest/img/food.png" class="hero-char" alt="">
+    <div class="hero-text">
+      <div class="hero-logo">
+        <span class="hero-crown">👑</span>
+        <span class="hero-title">فریودەر</span>
       </div>
-      <div class="hero-sub">یاری یاریزانت بکە بۆ خەماتت یەدەستهێننە!</div>
+      <div class="hero-sub">یاری یاریزانت بکە بۆ <span class="hero-accent">خەماتت</span> یەدەستهێننە!</div>
     </div>
   </div>
 
-  <!-- stats بەش -->
+  <!-- STATS -->
   <div class="stats-row">
     <div class="stat-item">
       <span class="stat-icon">🧠</span>
-      <span class="stat-title">زۆرزانیت</span>
-      <span class="stat-sub">بیرۆزی بانگ</span>
+      <div class="stat-title">زۆرزانیت</div>
+      <div class="stat-sub">بیرۆزی بانگ</div>
     </div>
-    <div class="stat-item accent">
+    <div class="stat-item active">
       <span class="stat-icon">🎭</span>
-      <span class="stat-title">فێنکردن</span>
-      <span class="stat-sub">زقیبت بدۆزە</span>
+      <div class="stat-title" style="color:var(--accent)">فێنکردن</div>
+      <div class="stat-sub">زقیبت بدۆزە</div>
     </div>
     <div class="stat-item">
       <span class="stat-icon">🏆</span>
-      <span class="stat-title">بردن</span>
-      <span class="stat-sub">خەماتت بەدەست بێنە</span>
+      <div class="stat-title">بردن</div>
+      <div class="stat-sub">خەماتت بەدەست بێنە</div>
     </div>
   </div>
 
-  <!-- players کارت -->
-  <div class="card">
-    <div class="card-header-row">
-      <div class="card-title">یاریزانەکان</div>
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <circle cx="7" cy="7" r="3" stroke="var(--muted)" stroke-width="1.5"/>
-        <circle cx="13" cy="7" r="3" stroke="var(--muted)" stroke-width="1.5"/>
-        <path d="M1 17c0-3.314 2.686-6 6-6M13 11c3.314 0 6 2.686 6 6" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
+  <!-- PLAYERS CARD -->
+  <div class="setup-card">
+    <div class="setup-card-header">
+      <div class="setup-card-title">یاریزانەکان</div>
+      <div class="setup-add-btn" onclick="addPlayer(); sndClick();">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        زیادکردنی یاریزان
+      </div>
     </div>
     <div id="player-list"></div>
-    <button class="add-row-btn" onclick="addPlayer()">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </div>
+
+  <!-- CONTINUE BTN -->
+  <div class="setup-bottom">
+    <button class="btn-gold" onclick="goToCatSelect(); sndBtn();">
+      <span class="btn-gold-icon">⚡</span>
+      <div class="btn-gold-text">
+        <span class="btn-gold-main">بەردەوام یوون</span>
+        <span class="btn-gold-sub">ئامادەیە بۆ یاری!</span>
+      </div>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M8 4l-6 6 6 6M14 4l-6 6 6 6" stroke="rgba(0,0,0,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      زیادکردنی یاریزان
     </button>
   </div>
 
-  <!-- continue button -->
-  <button class="btn btn-continue" onclick="goToCatSelect(); sndBtn();">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M3 8h10M8 3l5 5-5 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    بەردەوام بوون
-    <span class="btn-sub">ئامادەیە بۆ یاری!</span>
-  </button>
-
-  <div style="height:24px"></div>
 </div>
 
 
