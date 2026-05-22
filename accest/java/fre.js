@@ -5,15 +5,22 @@ setTimeout(() => {
     setTimeout(() => {
         s.style.display = 'none';
         s.style.pointerEvents = 'none';
+        // ── splash2 نیشان بدە ──
+        const s2 = document.getElementById('splash2');
+        s2.style.display = 'block';
+        s2.style.opacity = '0';
+        s2.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => s2.style.opacity = '1', 50);
     }, 600);
 }, 2500);
 
 function closeSplash2() {
-  const s2 = document.getElementById('splash2');
-  s2.style.opacity = '0';
-  s2.style.transition = 'opacity 0.5s ease';
-  setTimeout(() => s2.style.display = 'none', 500);
+    const s2 = document.getElementById('splash2');
+    s2.style.opacity = '0';
+    s2.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => s2.style.display = 'none', 500);
 }
+
 
 
 
