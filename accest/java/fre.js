@@ -22,13 +22,24 @@ setTimeout(() => {
 function closeSplash2() {
   const s2 = document.getElementById('splash2');
   s2.style.opacity = '0';
-  s2.style.transition = 'opacity 0.4s ease';
   setTimeout(() => {
     s2.style.display = 'none';
-    // ئێستا setup نیشان بدە
+    // splash3 نیشان بدە
+    const s3 = document.getElementById('splash3');
+    s3.style.display = 'block';
+    setTimeout(() => s3.style.opacity = '1', 50);
+  }, 400);
+}
+
+function closeSplash3() {
+  const s3 = document.getElementById('splash3');
+  s3.style.opacity = '0';
+  setTimeout(() => {
+    s3.style.display = 'none';
     document.getElementById('s-setup').classList.add('active');
   }, 400);
 }
+
 
 
 
