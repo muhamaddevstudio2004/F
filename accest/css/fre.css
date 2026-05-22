@@ -188,7 +188,7 @@ html, body {
   border-radius: var(--r2);
   padding: 20px;
   margin-bottom: 14px;
-  overflow: hideen;
+  overflow: visible;
 }
 
 .card-title {
@@ -250,7 +250,6 @@ input::placeholder { color: var(--muted); }
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   transition: background .2s, transform .15s;
-  order: 1; /* ← ئەمە زیاد بکە */
 }
 .del-btn:active { transform: scale(.88); background: rgba(255,77,109,.3); }
 
