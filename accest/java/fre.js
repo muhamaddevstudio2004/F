@@ -99,49 +99,65 @@ function sndWin() { [523,659,784,1047].forEach((f,i) => playTone(f,'sine',0.2,0.
 function sndLose() { [400,350,280,200].forEach((f,i) => playTone(f,'sawtooth',0.2,0.1,i*0.1)); }
 function sndBtn() { playTone(440, 'sine', 0.06, 0.1); }
 
-// ══════════ DATA ══════════
 const CATEGORIES = [
   {
     id:'food', name:'خواردن', color:'#ff8c42',
+    desc: 'خواردنی باشت باس بکە — بەبێ ناو بردن!',
+    img: 'accest/img/cats/food.png',
     icon:`<svg viewBox="0 0 40 40" fill="none"><path d="M10 8v10c0 4.418 4.477 8 10 8s10-3.582 10-8V8" stroke="#ff8c42" stroke-width="2" stroke-linecap="round"/><path d="M20 26v6M14 32h12" stroke="#ff8c42" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="18" r="5" stroke="#ff8c42" stroke-width="1.5"/></svg>`,
     words:['پیزا','بەرگر','مەستاو','کباب','بریانی','دۆلمە','سەموون','باقلاوە','برنج','ئاو','جبس','فەلافەل','پرتەقاڵ','مۆتە','شاورمە','ماسی','مۆز','سێو','شیر','چای']
   },
   {
     id:'animal', name:'گیانەوەر', color:'#38d9b4',
+    desc: 'گیانەوەرەکە وەسف بکە — فریودەرەکە بدۆزەرەوە!',
+    img: 'accest/img/cats/animal.png',
     icon:`<svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="22" rx="12" ry="9" stroke="#38d9b4" stroke-width="2"/><circle cx="20" cy="14" r="6" stroke="#38d9b4" stroke-width="2"/><path d="M14 8c-2-3-6-2-5 2M26 8c2-3 6-2 5 2" stroke="#38d9b4" stroke-width="1.5" stroke-linecap="round"/><circle cx="17" cy="14" r="1.5" fill="#38d9b4"/><circle cx="23" cy="14" r="1.5" fill="#38d9b4"/></svg>`,
     words:['مەیمون','تیمساح','فیل','زەرافە','دۆلفین','قرش','گورگ','رێوی','مار','ئەسپ','مانگا','مشک','سەگ','پشیلە','شێر','پڵنگ','ورچ','پاندا','کەنگەر','کۆتر']
   },
   {
     id:'sport', name:'وەرزش', color:'#4d8cff',
+    desc: 'وەرزشەکەت باس بکە — بەبێ ناو بردن!',
+    img: 'accest/img/cats/sport.png',
     icon:`<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="12" stroke="#4d8cff" stroke-width="2"/><path d="M8.5 15h23M8.5 25h23" stroke="#4d8cff" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="20" cy="20" rx="5" ry="12" stroke="#4d8cff" stroke-width="1.5"/></svg>`,
     words:['تایرە','یارئ شەبەکە','تێنس','زۆرانبازی','مەلەکردن','بەرشەلۆنە','یاریگا','نابژیوان','رۆبێرتۆ کارلوس','ریـال','رۆنالدۆ','مودەڕیب','کارتی سووری','لاپچین','گۆڵ','قازانج','یانەی هەولێر','فریز']
   },
   {
     id:'tech', name:'تەکنەلۆجی', color:'#a78bfa',
+    desc: 'تەکنەلۆجی زانیت؟ ئیسپاتی بکە!',
+    img: 'accest/img/cats/tech.png',
     icon:`<svg viewBox="0 0 40 40" fill="none"><rect x="6" y="10" width="28" height="18" rx="3" stroke="#a78bfa" stroke-width="2"/><path d="M14 32h12M20 28v4" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/><path d="M13 18h4M19 18h8" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/></svg>`,
     words:['مۆبایل','لاپتۆپ','تابلێت','درۆن','رۆبۆت','کامێرا','شاشە','کیبۆرد','ئینتەرنێت','پلەی دوو','وایەر شەحن','پاتری','سناپ','تیک تۆک','هاردسک','ئیفۆن','وێبسایت','یوتیوب']
   },
   {
     id:'job', name:'پیشە', color:'#fbbf24',
+    desc: 'پیشەکەت وەسف بکە — کێ فریودەرە؟',
+    img: 'accest/img/cats/job.png',
     icon:`<svg viewBox="0 0 40 40" fill="none"><rect x="10" y="16" width="20" height="16" rx="2" stroke="#fbbf24" stroke-width="2"/><path d="M15 16v-4a5 5 0 0110 0v4" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><path d="M10 23h20" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/></svg>`,
     words:['دکتۆر','مامۆستا','سەرتاش','ئەندازیار','پەرستار','ئاکتەر','خوێندکار','دادگا','پۆلیس','سەرۆک','کەناس','وتاربێژ','نووسەر','خۆجە','بازرگان','شۆفێر','میمار','کژێر']
   },
   {
     id:'object', name:'کەلوپەل', color:'#f472b6',
+    desc: 'شتەکە باس بکە بەبێ ناو بردن!',
+    img: 'accest/img/cats/object.png',
     icon:`<svg viewBox="0 0 40 40" fill="none"><rect x="8" y="12" width="24" height="18" rx="2" stroke="#f472b6" stroke-width="2"/><path d="M8 18h24" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="25" r="2" stroke="#f472b6" stroke-width="1.5"/><path d="M20 23h8M20 27h6" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round"/></svg>`,
     words:['کەرەستە','چادر','سەندوق','قوفل','کتێب','خازنە','سووچ','دووری','نووسەر','ساتک','میز','کورسی','پەنجەرە','شووشە','فرێزەر','بالیف','سەبەت','ئەسپیرین']
   },
   {
     id:'place', name:'شوێن', color:'#34d399',
+    desc: 'شوێنەکە وەسف بکە — کەسی تر نەزانێت!',
+    img: 'accest/img/cats/place.png',
     icon:`<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="16" r="7" stroke="#34d399" stroke-width="2"/><path d="M20 23v10M13 38h14" stroke="#34d399" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="16" r="2.5" fill="#34d399"/></svg>`,
     words:['بازار','نەخۆشخانە','قوتابخانە','فڕۆکەخانە','پارک','مزگەوت','سینەما','رستەران','هۆتێل','پرد','گوندێک','شار','دەریا','چیا','زەوی','کتێبخانە','ستەدیۆم','زیندان']
   },
   {
     id:'character', name:'کەسایەتی', color:'#fbbf24',
+    desc: 'کەسایەتیەکە وەسف بکە — بەبێ ناو بردن!',
+    img: 'accest/img/cats/character.png',
     icon:`<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="13" r="7" stroke="#fbbf24" stroke-width="2"/><path d="M6 36c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/></svg>`,
     words:['دکتۆر','مامۆستا','میمار','ئەندازیار','پەرستار','ئاکتەر','خوێندکار','سەرکردە','بەڕێوەبەر','دادگا','پۆلیس','مووسیقار','نووسەر','وەرزشکار','کارگێڕ','دیپلۆمات','زانا','تاجر']
   }
 ];
+
 
 // ── STATE ──
 let G = {
@@ -205,15 +221,14 @@ function renderCats() {
   CATEGORIES.forEach(cat => {
     const btn = document.createElement('div');
     btn.className = 'cat-btn' + (G.catIds.includes(cat.id) ? ' selected' : '');
-    btn.innerHTML = `
-      <div class="cat-check">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-          <path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="cat-icon">${cat.icon}</div>
-      <div class="cat-name">${cat.name}</div>
-    `;
+btn.innerHTML = `
+  <div class="cat-card-left">
+    <div class="cat-card-name" style="color:${isSelected ? cat.color : 'var(--text)'}">${cat.name}</div>
+    <div class="cat-card-desc">${cat.desc}</div>
+  </div>
+  <div class="cat-card-img"><img src="${cat.img}" alt="${cat.name}"></div>
+`;
+
     btn.onclick = () => {
       sndClick();
       const i = G.catIds.indexOf(cat.id);
