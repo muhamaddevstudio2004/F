@@ -676,3 +676,53 @@ input::placeholder { color: var(--muted); }
 #card-next-btn { display: none; }
 #card-next-btn.visible { display: flex; animation: slideUp .3s ease; }
 
+/* ── COUNTER BUTTONS (Settings) ── */
+.counter-btn {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.counter-btn:active { transform: scale(.9); background: var(--accent); color: #fff; }
+
+/* ── CAT SELECT SCREEN ── */
+#s-catselect .cats-grid {
+  width: 100%;
+}
+
+#s-catselect .screen-sub {
+  width: 100%;
+  margin-top: -10px;
+}
+
+/* ── SETTINGS SCREEN ── */
+#s-settings .card {
+  padding: 20px;
+}
+
+#s-settings .topbar {
+  justify-content: flex-start;
+  gap: 16px;
+  padding-top: 52px;
+}
+
+/* ── BACK BUTTON ── */
+.back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .15s;
+}
+.back-btn:active { transform: scale(.9); }
+
