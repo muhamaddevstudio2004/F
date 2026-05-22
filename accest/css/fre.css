@@ -67,7 +67,10 @@ html, body {
   inset: 0;
   z-index: 9998;
   display: none;
+  opacity: 0; /* ── ئەمە زیاد بکە ── */
+  transition: opacity 0.5s ease; /* ── ئەمەش ── */
 }
+
 .splash2-bg {
   width: 100%; height: 100%;
   background-color: #e8202a;
@@ -113,7 +116,16 @@ html, body {
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
+  /* ── ئەمانە زیاد بکە ── */
+  transform: scale(1);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
+.gotit-btn:active {
+  transform: scale(0.94);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
 
 
 
