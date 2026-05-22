@@ -54,7 +54,7 @@
 
 <!-- ══════════ SETUP ══════════ -->
 <div id="s-setup" class="screen">
-    <div class="topbar"><div class="brand"><span class="brand-dot"></span>فریودەر</div></div>
+  <div class="topbar"><div class="brand"><span class="brand-dot"></span>فریودەر</div></div>
   <div class="card">
     <div class="card-title">یاریزانەکان</div>
     <div id="player-list"></div>
@@ -65,10 +65,65 @@
       زیادکردنی یاریزان
     </button>
   </div>
+  <div class="section-gap"></div>
+  <button class="btn btn-primary" onclick="goToCatSelect()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M4 2l10 6-10 6V2z" fill="white"/>
+    </svg>
+    بەردەوام بوون
+  </button>
+  <div style="height:8px"></div>
+</div>
+
+
+<!-- ══════════ CAT SELECT ══════════ -->
+<div id="s-catselect" class="screen">
+  <div class="topbar" style="justify-content:flex-start;gap:16px;padding-top:52px">
+    <button onclick="show('s-setup');sndBtn();" style="background:none;border:none;cursor:pointer;color:var(--text)">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="brand" style="font-size:22px">جۆری وشە</div>
+  </div>
+  <div class="screen-sub">یەک یان زیاتر هەڵبژێرە</div>
+  <div class="cats-grid" id="cats-grid"></div>
+  <div class="section-gap"></div>
+  <button class="btn btn-primary" id="cat-next-btn" onclick="goToSettings()" style="display:none">
+    <span id="cat-next-label">بەردەوام بوون</span>
+  </button>
+  <div style="height:8px"></div>
+</div>
+
+<!-- ══════════ SETTINGS ══════════ -->
+<div id="s-settings" class="screen">
+  <div class="topbar" style="justify-content:flex-start;gap:16px;padding-top:52px">
+    <button onclick="show('s-catselect');sndBtn();" style="background:none;border:none;cursor:pointer;color:var(--text)">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="brand" style="font-size:22px">ڕێکخستنەکان</div>
+  </div>
 
   <div class="card">
-    <div class="card-title">جۆری وشە هەڵبژێرە</div>
-    <div class="cats-grid" id="cats-grid"></div>
+    <div class="card-title">فریودەرەکان</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">چەند فریودەر دەبێت؟</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:32px">
+      <button class="counter-btn" onclick="changeSpyCount(-1)">−</button>
+      <span id="spy-count-display" style="font-size:32px;font-weight:900;min-width:40px;text-align:center">1</span>
+      <button class="counter-btn" onclick="changeSpyCount(1)">+</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">کاتی گفتوگۆ</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">چەند چرکە؟</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:32px">
+      <button class="counter-btn" onclick="changeTimer(-30)">−</button>
+      <span id="timer-display" style="font-size:32px;font-weight:900;min-width:80px;text-align:center">1:00</span>
+      <button class="counter-btn" onclick="changeTimer(30)">+</button>
+    </div>
   </div>
 
   <div class="section-gap"></div>
@@ -80,6 +135,9 @@
   </button>
   <div style="height:8px"></div>
 </div>
+
+
+
 
 <!-- ══════════ PASS ══════════ -->
 <div id="s-pass" class="screen">
