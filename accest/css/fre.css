@@ -126,6 +126,29 @@ html, body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
+/* ── splash3 ── */
+#splash3 {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.splash3-bg {
+  width: 100%; height: 100%;
+  background-color: #1a6bcc;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: 36px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 60px;
+}
+
 
 
 
