@@ -1,3 +1,9 @@
+function startSplash() {
+  sndBtn();
+  show('s-setup');
+}
+
+
 // ══════════ AUDIO ENGINE ══════════
 const AC = new (window.AudioContext || window.webkitAudioContext)();
 
