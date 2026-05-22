@@ -8,6 +8,14 @@ setTimeout(() => {
     }, 600);
 }, 2500);
 
+function closeSplash2() {
+  const s2 = document.getElementById('splash2');
+  s2.style.opacity = '0';
+  s2.style.transition = 'opacity 0.5s ease';
+  setTimeout(() => s2.style.display = 'none', 500);
+}
+
+
 
 // ══════════ AUDIO ENGINE ══════════
 const AC = new (window.AudioContext || window.webkitAudioContext)();
