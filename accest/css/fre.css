@@ -44,7 +44,7 @@ html, body {
   #splash {
     position: fixed;
     inset: 0;
-    background: #0a0a0a;
+    background: #000000;
     display: flex;
     align-items: center;
     justify-content: center;
