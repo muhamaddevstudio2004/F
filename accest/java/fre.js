@@ -1,11 +1,12 @@
-
-  setTimeout(() => {
+setTimeout(() => {
     const s = document.getElementById('splash');
-    s.classList.add('hide');
-    setTimeout(() => s.remove(), 600);
-  }, 2500); // 2.5 چرکە
-
-
+    s.style.opacity = '0';
+    s.style.transition = 'opacity 0.6s ease';
+    setTimeout(() => {
+        s.style.display = 'none';
+        s.style.pointerEvents = 'none';
+    }, 600);
+}, 2500);
 
 
 // ══════════ AUDIO ENGINE ══════════
