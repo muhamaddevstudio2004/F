@@ -736,10 +736,10 @@ input::placeholder { color: var(--muted); }
 
 .cat-card {
   width: 100%;
-  background: var(--surface);
+  background: #1e2235;
   border: 2px solid transparent;
   border-radius: 20px;
-  padding: 16px 16px 16px 20px;
+  padding: 20px 16px 20px 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -753,7 +753,7 @@ input::placeholder { color: var(--muted); }
 
 .cat-card.selected {
   border-color: var(--accent);
-  background: rgba(255,77,109,.06);
+  background: #251820;
 }
 
 .cat-card-left {
@@ -765,25 +765,26 @@ input::placeholder { color: var(--muted); }
 }
 
 .cat-card-name {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 900;
-  color: var(--text);
+  color: #fff;
   transition: color .2s;
 }
 
 .cat-card-desc {
   font-size: 13px;
-  color: var(--muted);
+  color: rgba(255,255,255,0.5);
   line-height: 1.5;
+}
+
+.cat-card.selected .cat-card-name {
+  color: var(--accent);
 }
 
 .cat-card-img {
   width: 90px;
   height: 90px;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .cat-card-img img {
@@ -792,24 +793,50 @@ input::placeholder { color: var(--muted); }
   object-fit: contain;
 }
 
-/* selected check */
-.cat-card.selected .cat-card-name {
-  color: var(--accent);
-}
-
 .cat-card.selected::after {
   content: '✓';
   position: absolute;
   top: 10px;
   left: 12px;
-  width: 20px; height: 20px;
+  width: 22px; height: 22px;
   background: var(--accent);
   border-radius: 50%;
-  font-size: 11px;
+  font-size: 12px;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
 }
+
+/* دوگمەی بەردەوام بوون */
+#cat-next-btn {
+  position: sticky;
+  bottom: 20px;
+  z-index: 10;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+#s-catselect {
+  background-color: #e8202a;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+#s-catselect .topbar .brand {
+  background: none;
+  -webkit-text-fill-color: white;
+  color: white;
+}
+
+#s-catselect .screen-sub {
+  color: rgba(255,255,255,0.7);
+}
+
+#s-catselect .back-btn {
+  color: white;
+}
+
 
