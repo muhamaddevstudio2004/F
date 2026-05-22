@@ -217,28 +217,33 @@ function removePlayer(i) {
 
 function renderCats() {
   const grid = document.getElementById('cats-grid');
+  if (!grid) return;
   grid.innerHTML = '';
   CATEGORIES.forEach(cat => {
     const btn = document.createElement('div');
-    btn.className = 'cat-btn' + (G.catIds.includes(cat.id) ? ' selected' : '');
-btn.innerHTML = `
-  <div class="cat-card-left">
-    <div class="cat-card-name" style="color:${isSelected ? cat.color : 'var(--text)'}">${cat.name}</div>
-    <div class="cat-card-desc">${cat.desc}</div>
-  </div>
-  <div class="cat-card-img"><img src="${cat.img}" alt="${cat.name}"></div>
-`;
-
+    const isSelected = G.catIds.includes(cat.id);
+    btn.className = 'cat-card' + (isSelected ? ' selected' : '');
+    btn.innerHTML = `
+      <div class="cat-card-left">
+        <div class="cat-card-name">${cat.name}</div>
+        <div class="cat-card-desc">${cat.desc}</div>
+      </div>
+      <div class="cat-card-img">
+        <img src="${cat.img}" alt="${cat.name}">
+      </div>
+    `;
     btn.onclick = () => {
       sndClick();
       const i = G.catIds.indexOf(cat.id);
       if (i === -1) G.catIds.push(cat.id);
       else G.catIds.splice(i, 1);
       renderCats();
+      updateCatBtn();
     };
     grid.appendChild(btn);
   });
 }
+
 
 // ── START ──
 function startGame() {
