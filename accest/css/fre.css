@@ -30,10 +30,11 @@ html, body {
   inset: 0;
   flex-direction: column;
   align-items: center;
-  padding: 0 20px 120px 20px;
+  padding: 0 20px 120px 52px; /* ← چەپ 52px */
   overflow-y: auto;
-  overflow-x: visible;
+  overflow-x: hidden; /* ← visible بگۆڕە بۆ hidden */
 }
+
 .screen.active { display: flex; animation: slideUp .35s cubic-bezier(.4,0,.2,1); }
 @keyframes slideUp {
   from { opacity:0; transform:translateY(22px); }
@@ -188,8 +189,11 @@ html, body {
   border-radius: var(--r2);
   padding: 20px;
   margin-bottom: 14px;
-  overflow: visible;
+  overflow: visible; /* ← بمێنێتەوە visible */
+  margin-right: -32px; /* ← ئەمە زیاد بکە */
+  padding-right: 32px; /* ← ئەمەش */
 }
+
 
 .card-title {
   font-size: 11px;
