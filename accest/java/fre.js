@@ -595,15 +595,14 @@ function renderCats() {
   grid.innerHTML = '';
   CATEGORIES.forEach(cat => {
     const btn = document.createElement('div');
-    btn.className = 'cat-btn' + (G.catIds.includes(cat.id) ? ' selected' : '');
+    const isSelected = G.catIds.includes(cat.id);
+    btn.className = 'cat-card' + (isSelected ? ' selected' : '');
     btn.innerHTML = `
-      <div class="cat-check">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-          <path d="M2 5l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <div class="cat-card-left">
+        <div class="cat-card-name" style="color:${isSelected ? cat.color : 'var(--text)'}">${cat.name}</div>
+        <div class="cat-card-desc">${cat.desc}</div>
       </div>
-      <div class="cat-icon">${cat.icon}</div>
-      <div class="cat-name">${cat.name}</div>
+      <div class="cat-card-emoji">${cat.emoji}</div>
     `;
     btn.onclick = () => {
       sndClick();
@@ -616,6 +615,7 @@ function renderCats() {
     grid.appendChild(btn);
   });
 }
+
 
 function updateCatBtn() {
   const btn = document.getElementById('cat-next-btn');
