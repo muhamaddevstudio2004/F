@@ -103,7 +103,7 @@ const CATEGORIES = [
   {
     id:'food', name:'خواردن', color:'#ff8c42',
     desc: 'خواردنی باشت باس بکە — بەبێ ناو بردن!',
-    img: 'accest/img/cats/food.png',
+    img: 'accest/img/food.png',
     icon:`<svg viewBox="0 0 40 40" fill="none"><path d="M10 8v10c0 4.418 4.477 8 10 8s10-3.582 10-8V8" stroke="#ff8c42" stroke-width="2" stroke-linecap="round"/><path d="M20 26v6M14 32h12" stroke="#ff8c42" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="18" r="5" stroke="#ff8c42" stroke-width="1.5"/></svg>`,
     words:['پیزا','بەرگر','مەستاو','کباب','بریانی','دۆلمە','سەموون','باقلاوە','برنج','ئاو','جبس','فەلافەل','پرتەقاڵ','مۆتە','شاورمە','ماسی','مۆز','سێو','شیر','چای']
   },
