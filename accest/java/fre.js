@@ -1,25 +1,35 @@
 setTimeout(() => {
-    const s = document.getElementById('splash');
-    s.style.opacity = '0';
-    s.style.transition = 'opacity 0.6s ease';
+  const s = document.getElementById('splash');
+  s.style.opacity = '0';
+  s.style.transition = 'opacity 0.6s ease';
+
+  setTimeout(() => {
+    s.style.display = 'none';
+
+    // splash2 نیشان بدە — یاریەکە شاربکەوە
+    document.querySelectorAll('.screen').forEach(sc => sc.classList.remove('active'));
+
+    const s2 = document.getElementById('splash2');
+    s2.style.display = 'block';
     setTimeout(() => {
-        s.style.display = 'none';
-        s.style.pointerEvents = 'none';
-        // ── splash2 نیشان بدە ──
-        const s2 = document.getElementById('splash2');
-        s2.style.display = 'block';
-        s2.style.opacity = '0';
-        s2.style.transition = 'opacity 0.5s ease';
-        setTimeout(() => s2.style.opacity = '1', 50);
-    }, 600);
+      s2.style.opacity = '1';
+      s2.style.transition = 'opacity 0.5s ease';
+    }, 50);
+
+  }, 600);
 }, 2500);
 
 function closeSplash2() {
-    const s2 = document.getElementById('splash2');
-    s2.style.opacity = '0';
-    s2.style.transition = 'opacity 0.5s ease';
-    setTimeout(() => s2.style.display = 'none', 500);
+  const s2 = document.getElementById('splash2');
+  s2.style.opacity = '0';
+  s2.style.transition = 'opacity 0.4s ease';
+  setTimeout(() => {
+    s2.style.display = 'none';
+    // ئێستا setup نیشان بدە
+    document.getElementById('s-setup').classList.add('active');
+  }, 400);
 }
+
 
 
 
