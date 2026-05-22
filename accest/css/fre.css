@@ -234,6 +234,7 @@ html, body {
 
 input[type=text] {
   flex: 1;
+  max-width: calc(100% - 80px); /* ← ئەمە زیاد بکە */
   background: var(--surface2);
   border: 1.5px solid transparent;
   border-radius: 12px;
@@ -244,6 +245,7 @@ input[type=text] {
   outline: none;
   transition: border-color .2s;
 }
+
 input:focus { border-color: var(--accent); }
 input::placeholder { color: var(--muted); }
 .del-btn {
