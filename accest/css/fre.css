@@ -30,9 +30,9 @@ html, body {
   inset: 0;
   flex-direction: column;
   align-items: center;
-  padding: 0 20px 120px 44px;
+  padding: 0 20px 120px 20px;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: visible;
 }
 .screen.active { display: flex; animation: slideUp .35s cubic-bezier(.4,0,.2,1); }
 @keyframes slideUp {
