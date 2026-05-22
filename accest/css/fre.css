@@ -188,7 +188,7 @@ padding: 0 28px 120px;
   border-radius: var(--r2);
   padding: 20px;
   margin-bottom: 14px;
-  overflow: visible;
+  overflow: hideen;
 }
 
 .card-title {
@@ -202,11 +202,12 @@ padding: 0 28px 120px;
 
 /* ── PLAYER INPUTS ── */
 .player-row {
+  animation: fadeSlideIn .25s ease both;
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
-  animation: fadeSlideIn .25s ease both;
+  padding-right: 0;
 }
 @keyframes fadeSlideIn {
   from { opacity:0; transform:translateX(12px); }
