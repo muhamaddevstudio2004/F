@@ -189,21 +189,21 @@ function renderPlayers() {
     const row = document.createElement('div');
     row.className = 'player-row';
     row.style.animationDelay = (i * 0.05) + 's';
-row.innerHTML = `
-  <div class="player-num">${i+1}</div>
-  <input type="text" placeholder="ناوی یاریزانی ${i+1}" value="${name}"
-    oninput="G.players[${i}]=this.value" />
-  ${G.players.length > 2 ? `<button class="del-btn" onclick="removePlayer(${i}); sndClick();">
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-      <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-  </button>` : ''}
-`;
-
-
+    row.innerHTML = `
+      <div class="player-num">${i+1}</div>
+      <img src="${G.avatars[i]}" class="player-avatar" alt="avatar">
+      <input type="text" placeholder="ناوی یاریزانی ${i+1}" value="${name}"
+        oninput="G.players[${i}]=this.value" />
+      ${G.players.length > 2 ? `<button class="del-btn" onclick="removePlayer(${i}); sndClick();">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>` : ''}
+    `;
     el.appendChild(row);
   });
 }
+
 
 function addPlayer() {
   if (G.players.length >= 10) return;
@@ -221,8 +221,10 @@ function addPlayer() {
 function removePlayer(i) {
   if (G.players.length <= 2) return;
   G.players.splice(i, 1);
+  G.avatars.splice(i, 1);
   renderPlayers();
 }
+
 
 function renderCats() {
   const grid = document.getElementById('cats-grid');
