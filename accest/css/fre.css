@@ -931,20 +931,34 @@ input::placeholder { color: var(--muted); }
 }
 
 .hero-title {
-  font-size: 40px;
+  font-size: 52px;
   font-weight: 900;
-  color: #e8c87a;
+  color: #e8d5a3;
   font-family: 'Noto Kufi Arabic', sans-serif;
-  letter-spacing: -1px;
-  text-shadow: 0 2px 12px rgba(232,200,122,0.3);
+  letter-spacing: -2px;
+  text-shadow: 
+    0 2px 4px rgba(0,0,0,0.5),
+    0 0 40px rgba(232,213,163,0.2);
+  line-height: 1;
 }
 
 .hero-sub {
-  font-size: 13px;
-  color: rgba(255,255,255,0.65);
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
   line-height: 1.7;
+  margin-top: 8px;
 }
-.hero-hl { color: #ff4d6d; font-weight: 700; }
+
+.hero-hl { 
+  color: #ff4d6d; 
+  font-weight: 700; 
+}
+.hero-crown-img {
+  width: 36px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
 
 /* STATS */
 .stats-row {
