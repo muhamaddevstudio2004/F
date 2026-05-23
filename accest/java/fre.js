@@ -632,5 +632,22 @@ function changeTimer(delta) {
   updateSettingsDisplay();
 }
 
+const AVATARS = [
+  'accest/img/food.png',
+  'accest/img/avatars/2.png',
+  'accest/img/avatars/3.png',
+  'accest/img/avatars/4.png',
+  'accest/img/avatars/5.png',
+  'accest/img/avatars/6.png',
+  'accest/img/avatars/7.png',
+  'accest/img/avatars/8.png',
+  'accest/img/avatars/9.png',
+  'accest/img/avatars/10.png',
+];
+
+function getRandomAvatar() {
+  return AVATARS[Math.floor(Math.random() * AVATARS.length)];
+}
+
 
 init();
