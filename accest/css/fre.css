@@ -811,12 +811,10 @@ input::placeholder { color: var(--muted); }
 
 /* دوگمەی بەردەوام بوون */
 #cat-next-btn {
-  position: sticky;
-  bottom: 20px;
-  z-index: 10;
-  margin-top: 32px;
+  margin-top: 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
+
 
 #s-catselect {
   background-color: #e8202a;
