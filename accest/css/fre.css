@@ -209,10 +209,10 @@ html, body {
   animation: fadeSlideIn .25s ease both;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 10px;
   margin-right: 0;
-  margin-left: -42px;
+  margin-left: 0;
 }
 
 @keyframes fadeSlideIn {
