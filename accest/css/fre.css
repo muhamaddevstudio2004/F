@@ -934,12 +934,15 @@ input::placeholder { color: var(--muted); }
   font-size: 52px;
   font-weight: 900;
   letter-spacing: -2px;
-  line-height: 1;
+  line-height: 1.2;
   background: linear-gradient(135deg, #e8d5a3 40%, #c9973a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: none;
+  display: block;
+  overflow: visible;
 }
+
 
 
 .hero-sub {
@@ -965,8 +968,9 @@ input::placeholder { color: var(--muted); }
   width: 44px;
   height: auto;
   object-fit: contain;
-  margin-left: auto;
+  margin-right: 20px;
 }
+
 
 
 
