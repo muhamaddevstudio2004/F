@@ -957,15 +957,17 @@ input::placeholder { color: var(--muted); }
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 2px;
   margin-bottom: 8px;
 }
 
 .hero-crown-img {
-  width: 40px;
+  width: 44px;
   height: auto;
   object-fit: contain;
+  margin-left: auto;
 }
+
 
 
 /* STATS */
