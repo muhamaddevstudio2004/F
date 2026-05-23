@@ -916,7 +916,7 @@ input::placeholder { color: var(--muted); }
 
 .hero-info {
   position: absolute;
-  right: 18px;
+  right: 12px;
   top: 120px;
   text-align: right;
   max-width: 220px;
@@ -968,7 +968,7 @@ input::placeholder { color: var(--muted); }
   width: 44px;
   height: auto;
   object-fit: contain;
-  margin-right: 20px;
+  margin-right: 12px;
 }
 
 
