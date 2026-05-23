@@ -917,9 +917,9 @@ input::placeholder { color: var(--muted); }
 .hero-info {
   position: absolute;
   right: 18px;
-  bottom: 28px;
+  top: 120px;
   text-align: right;
-  max-width: 200px;
+  max-width: 220px;
 }
 
 .hero-logo-row {
