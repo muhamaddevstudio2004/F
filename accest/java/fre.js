@@ -171,9 +171,16 @@ let selectedVote = null;
 // ── INIT ──
 function init() {
   G.players = ['','','',''];
+  G.avatars = [
+    getRandomAvatar(),
+    getRandomAvatar(),
+    getRandomAvatar(),
+    getRandomAvatar(),
+  ];
   renderPlayers();
   renderCats();
 }
+
 
 function renderPlayers() {
   const el = document.getElementById('player-list');
@@ -202,12 +209,14 @@ function addPlayer() {
   if (G.players.length >= 10) return;
   sndClick();
   G.players.push('');
+  G.avatars.push(getRandomAvatar());
   renderPlayers();
   setTimeout(() => {
     const inputs = document.querySelectorAll('#player-list input');
     inputs[inputs.length-1].focus();
   }, 60);
 }
+
 
 function removePlayer(i) {
   if (G.players.length <= 2) return;
