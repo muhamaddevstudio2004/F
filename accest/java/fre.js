@@ -161,7 +161,7 @@ const CATEGORIES = [
 
 // ── STATE ──
 let G = {
-  players: [], catIds: [], word: '',
+  players: [], avatars: [], catIds: [], word: '',
   spyIdx: -1, roles: [], curPlayer: 0,
   votes: {}, curVoter: 0,
   timerInterval: null, timerSec: 60,
