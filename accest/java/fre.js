@@ -589,33 +589,6 @@ function goToCatSelect() {
   show('s-catselect');
 }
 
-function renderCats() {
-  const grid = document.getElementById('cats-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  CATEGORIES.forEach(cat => {
-    const btn = document.createElement('div');
-    const isSelected = G.catIds.includes(cat.id);
-    btn.className = 'cat-card' + (isSelected ? ' selected' : '');
-    btn.innerHTML = `
-      <div class="cat-card-left">
-        <div class="cat-card-name" style="color:${isSelected ? cat.color : 'var(--text)'}">${cat.name}</div>
-        <div class="cat-card-desc">${cat.desc}</div>
-      </div>
-      <div class="cat-card-emoji">${cat.emoji}</div>
-    `;
-    btn.onclick = () => {
-      sndClick();
-      const i = G.catIds.indexOf(cat.id);
-      if (i === -1) G.catIds.push(cat.id);
-      else G.catIds.splice(i, 1);
-      renderCats();
-      updateCatBtn();
-    };
-    grid.appendChild(btn);
-  });
-}
-
 
 function updateCatBtn() {
   const btn = document.getElementById('cat-next-btn');
