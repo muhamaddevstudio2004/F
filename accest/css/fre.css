@@ -839,73 +839,88 @@ input::placeholder { color: var(--muted); }
   color: white;
 }
 
-/* ══════════ SETUP NEW ══════════ */
+/* ══════════ SETUP REDESIGN ══════════ */
 #s-setup {
   padding: 0 0 40px 0;
-  background: #0d0f18;
+  background: #0d0f1a;
+  align-items: stretch;
 }
 
+/* TOPBAR */
 .setup-topbar {
-  width: 100%;
+  position: absolute;
+  top: 0; left: 0; right: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 56px 20px 0;
-  position: absolute;
-  top: 0; left: 0;
+  padding: 54px 18px 0;
   z-index: 10;
 }
 
 .setup-menu-btn {
-  width: 44px; height: 44px;
+  width: 42px; height: 42px;
   background: rgba(255,255,255,0.08);
   border: none; border-radius: 12px;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
 }
 
 .setup-profile-btn {
-  width: 44px; height: 44px;
-  background: rgba(255,255,255,0.08);
-  border: none; border-radius: 50%;
+  width: 46px; height: 46px;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 50%;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   position: relative;
+  overflow: visible;
 }
+
+.setup-profile-btn img {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-default-icon { opacity: 0.8; }
 
 .profile-crown {
   position: absolute;
-  bottom: -4px; right: -4px;
+  bottom: -5px; right: -5px;
   width: 18px; height: 18px;
-  background: #1a1a2e;
+  background: #1a1208;
   border-radius: 50%;
+  border: 1.5px solid #0d0f1a;
   display: flex; align-items: center; justify-content: center;
 }
 
 /* HERO */
 .setup-hero {
   width: 100%;
-  height: 300px;
+  height: 310px;
   position: relative;
   flex-shrink: 0;
-  display: flex;
-  align-items: flex-end;
+  background: linear-gradient(180deg, #12152a 0%, #0d0f1a 100%);
 }
 
 .hero-char {
   position: absolute;
-  left: 0; bottom: 0;
-  height: 290px;
+  left: -10px;
+  bottom: 0;
+  height: 300px;
   width: auto;
   object-fit: contain;
-  object-position: bottom;
+  object-position: bottom left;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
 }
 
 .hero-info {
   position: absolute;
-  right: 20px;
-  bottom: 24px;
+  right: 18px;
+  bottom: 28px;
   text-align: right;
+  max-width: 200px;
 }
 
 .hero-logo-row {
@@ -913,38 +928,37 @@ input::placeholder { color: var(--muted); }
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .hero-title {
-  font-size: 38px;
+  font-size: 40px;
   font-weight: 900;
   color: #e8c87a;
-  letter-spacing: -1px;
   font-family: 'Noto Kufi Arabic', sans-serif;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 12px rgba(232,200,122,0.3);
 }
 
 .hero-sub {
   font-size: 13px;
-  color: rgba(255,255,255,0.7);
-  line-height: 1.6;
-  max-width: 180px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
 }
-
 .hero-hl { color: #ff4d6d; font-weight: 700; }
 
 /* STATS */
 .stats-row {
-  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
-  padding: 14px 16px;
+  padding: 12px 16px 4px;
+  flex-shrink: 0;
 }
 
 .stat-card {
-  background: #181c27;
-  border: 1px solid rgba(255,255,255,0.07);
+  background: #181c2e;
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: 16px;
   padding: 12px 8px;
   display: flex;
@@ -952,39 +966,42 @@ input::placeholder { color: var(--muted); }
   align-items: center;
   gap: 5px;
   text-align: center;
+  transition: all .2s;
 }
 
 .stat-card.active {
-  border-color: rgba(255,77,109,0.3);
-  background: rgba(255,77,109,0.08);
+  background: rgba(255,77,109,0.1);
+  border-color: rgba(255,77,109,0.35);
 }
 
-.stat-icon-wrap {
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
+.stat-img {
+  width: 32px; height: 32px;
+  object-fit: contain;
 }
 
 .stat-title {
   font-size: 11px;
   font-weight: 700;
-  color: var(--text);
+  color: #e0e4f0;
 }
+
+.stat-card.active .stat-title { color: #ff4d6d; }
 
 .stat-sub {
   font-size: 10px;
-  color: var(--muted);
+  color: #5a6080;
   line-height: 1.3;
 }
 
 /* SETUP CARD */
 .setup-card {
-  width: calc(100% - 32px);
-  margin: 0 16px 14px;
-  background: #181c27;
+  margin: 10px 14px 12px;
+  background: #151828;
   border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
+  border-radius: 22px;
   padding: 16px 16px 16px 52px;
   overflow: visible;
+  flex-shrink: 0;
 }
 
 .setup-card-header {
@@ -997,7 +1014,7 @@ input::placeholder { color: var(--muted); }
 .setup-card-title {
   font-size: 16px;
   font-weight: 700;
-  color: var(--text);
+  color: #f0f2f8;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1007,47 +1024,53 @@ input::placeholder { color: var(--muted); }
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255,77,109,0.12);
+  background: rgba(255,77,109,0.15);
   border: none;
   border-radius: 10px;
-  padding: 7px 12px;
-  color: var(--accent);
+  padding: 8px 12px;
+  color: #ff4d6d;
   font-family: 'Noto Kufi Arabic', sans-serif;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: background .2s;
 }
-.setup-add-btn:active { background: rgba(255,77,109,0.25); }
+.setup-add-btn:active { background: rgba(255,77,109,0.3); }
 
 /* CONTINUE BTN */
 .setup-bottom {
-  width: calc(100% - 32px);
-  margin: 4px 16px 0;
+  padding: 4px 14px 0;
+  flex-shrink: 0;
 }
 
 .btn-gold {
   width: 100%;
-  background: linear-gradient(135deg, #c9973a, #e8c87a, #c9973a);
+  background: linear-gradient(135deg, #b8832a, #e8c87a, #c9973a);
   border: none;
-  border-radius: 20px;
+  border-radius: 18px;
   padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
   transition: transform .15s;
-  box-shadow: 0 8px 24px rgba(200,150,60,0.35);
+  box-shadow: 0 8px 28px rgba(200,150,50,0.3);
+  gap: 12px;
 }
-
 .btn-gold:active { transform: scale(.97); }
 
+.btn-gold-icon-img {
+  width: 28px; height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .btn-gold-text {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  flex: 1;
 }
 
 .btn-gold-main {
@@ -1060,7 +1083,5 @@ input::placeholder { color: var(--muted); }
 .btn-gold-sub {
   font-family: 'Noto Kufi Arabic', sans-serif;
   font-size: 11px;
-  color: rgba(0,0,0,0.5);
+  color: rgba(0,0,0,0.45);
 }
-
-
