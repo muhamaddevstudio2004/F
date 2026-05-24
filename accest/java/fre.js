@@ -21,15 +21,24 @@ setTimeout(() => {
 
 function closeSplash2() {
   const s2 = document.getElementById('splash2');
+  s2.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+  s2.style.transform = 'translateX(100%)';
   s2.style.opacity = '0';
   setTimeout(() => {
     s2.style.display = 'none';
-    // splash3 نیشان بدە
+    s2.style.transform = '';
+    s2.style.opacity = '0';
     const s3 = document.getElementById('splash3');
+    s3.style.transform = 'translateX(-100%)';
     s3.style.display = 'block';
-    setTimeout(() => s3.style.opacity = '1', 50);
-  }, 400);
+    setTimeout(() => {
+      s3.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+      s3.style.transform = 'translateX(0)';
+      s3.style.opacity = '1';
+    }, 50);
+  }, 500);
 }
+
 
 function closeSplash3() {
   const s3 = document.getElementById('splash3');
