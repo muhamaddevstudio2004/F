@@ -1125,3 +1125,21 @@ input::placeholder { color: var(--muted); }
 }
 /* ── julay dugma ── */
 
+.toggle-track {
+  width: 50px; height: 28px;
+  border-radius: 14px;
+  background: var(--surface2);
+  position: relative;
+  cursor: pointer;
+  transition: background .2s;
+}
+.toggle-track.on { background: var(--accent); }
+.toggle-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 3px; right: 3px;
+  transition: transform .2s;
+}
+.toggle-track.on .toggle-thumb { transform: translateX(-22px); }
