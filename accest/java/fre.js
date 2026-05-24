@@ -381,10 +381,14 @@ function nextPlayer() {
 
 // ── DISCUSS ──
 function startDiscuss() {
-G.timerSec = Settings.timerSec;
-
+  G.timerSec = Settings.timerSec;
   updateTimer();
   show('s-discuss');
+  
+  // ناوی یاریزانی یەکەم نیشان بدە
+  const firstPlayer = G.players[0];
+  document.getElementById('discuss-sub').textContent = `نۆبەتی ${firstPlayer}ە — دەست پێ بکە!`;
+
   if (G.timerInterval) clearInterval(G.timerInterval);
   G.timerInterval = setInterval(() => {
     G.timerSec--;
