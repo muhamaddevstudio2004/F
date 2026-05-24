@@ -170,9 +170,8 @@ let selectedVote = null;
 
 // ── INIT ──
 function init() {
-  G.players = ['','','',''];
+  G.players = ['','',''];
   G.avatars = [
-    getRandomAvatar(),
     getRandomAvatar(),
     getRandomAvatar(),
     getRandomAvatar(),
@@ -194,7 +193,7 @@ function renderPlayers() {
       <img src="${G.avatars[i]}" class="player-avatar" alt="avatar">
       <input type="text" placeholder="ناوی یاریزانی ${i+1}" value="${name}"
         oninput="G.players[${i}]=this.value" />
-      ${G.players.length > 2 ? `<button class="del-btn" onclick="removePlayer(${i}); sndClick();">
+      ${G.players.length > 3 ? `<button class="del-btn" onclick="removePlayer(${i}); sndClick();">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
           <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
@@ -262,7 +261,7 @@ function startGame() {
   const inputs = document.querySelectorAll('#player-list input');
   inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
   const valid = G.players.filter(p => p.length > 0);
-  if (valid.length < 3) { alert('لانیکەم 2 یاریزان پێویستە!'); return; }
+  if (valid.length < 3) { alert('لانیکەم 3 یاریزان پێویستە!'); return; }
   if (G.catIds.length === 0) { alert('لانیکەم یەک جۆر هەڵبژێرە!'); return; }
 
   G.players = valid;
@@ -594,7 +593,7 @@ function goToCatSelect() {
   const inputs = document.querySelectorAll('#player-list input');
   inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
   const valid = G.players.filter(p => p.length > 0);
-  if (valid.length < 2) { alert('لانیکەم ٢ یاریزان پێویستە!'); return; }
+  if (valid.length < 3) { alert('لانیکەم 3 یاریزان پێویستە!'); return; }
   G.players = valid;
   renderCats();
   show('s-catselect');
