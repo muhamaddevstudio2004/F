@@ -270,8 +270,8 @@ function startGame() {
   const inputs = document.querySelectorAll('#player-list input');
   inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
   const valid = G.players.filter(p => p.length > 0);
-  if (valid.length < 3) { alert('لانیکەم 3 یاریزان پێویستە!'); return; }
-  if (G.catIds.length === 0) { alert('لانیکەم یەک جۆر هەڵبژێرە!'); return; }
+  if (valid.length < 3) { showToast('لانیکەم 3 یاریزان پێویستە!'); return; }
+  if (G.catIds.length === 0) { showToast('لانیکەم یەک جۆر هەڵبژێرە!'); return; }
 
   G.players = valid;
   const allWords = CATEGORIES
@@ -622,7 +622,7 @@ function goToCatSelect() {
   const inputs = document.querySelectorAll('#player-list input');
   inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
   const valid = G.players.filter(p => p.length > 0);
-  if (valid.length < 3) { alert('لانیکەم 3 یاریزان پێویستە!'); return; }
+  if (valid.length < 3) { showToast('لانیکەم 3 یاریزان پێویستە!'); return; }
   G.players = valid;
   renderCats();
   show('s-catselect');
@@ -643,7 +643,7 @@ function updateCatBtn() {
 
 function goToSettings() {
   sndBtn();
-  if (G.catIds.length === 0) { alert('لانیکەم یەک جۆر هەڵبژێرە!'); return; }
+  if (G.catIds.length === 0) { showToast('لانیکەم یەک جۆر هەڵبژێرە!'); return; }
   updateSettingsDisplay();
   show('s-settings');
 }
@@ -698,6 +698,46 @@ const AVATARS = [
 
 function getRandomAvatar() {
   return AVATARS[Math.floor(Math.random() * AVATARS.length)];
+}
+
+function showToast(msg) {
+  const existing = document.getElementById('toast');
+  if (existing) existing.remove();
+  
+  const toast = document.createElement('div');
+  toast.id = 'toast';
+  toast.textContent = msg;
+  toast.style.cssText = `
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(30,20,50,0.95);
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    z-index: 99999;
+    border: 1px solid rgba(255,77,109,0.4);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(.3,1.4,.5,1);
+    white-space: nowrap;
+  `;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+  }, 10);
+  
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(-20px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
 }
 
 
