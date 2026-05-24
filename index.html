@@ -176,15 +176,13 @@
   </div>
 
   <!-- NAME -->
-  <div style="width:100%;background:var(--surface);border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;cursor:pointer;">
-    <span style="font-size:14px;color:var(--muted)">ناوت</span>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span id="profile-name-display" style="font-size:14px;font-weight:600">مێوان</span>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M6 4l4 4-4 4" stroke="#666" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </div>
-  </div>
+<div style="width:100%;background:var(--surface);border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+  <span style="font-size:14px;color:var(--muted);flex-shrink:0">ناوت</span>
+  <input id="profile-name-input" type="text" value="مێوان"
+    oninput="updateProfileName(this.value)"
+    style="background:transparent;border:none;outline:none;color:var(--text);font-family:'Noto Kufi Arabic',sans-serif;font-size:14px;font-weight:600;text-align:left;flex:1;padding:0 8px;">
+</div>
+
 
   <!-- PREMIUM CARD -->
   <div style="width:100%;border-radius:20px;padding:20px;background:linear-gradient(135deg,#2d1b4e,#4a1a3a,#6b2d1a);border:1px solid rgba(180,100,255,0.3);position:relative;overflow:hidden;">
