@@ -271,17 +271,30 @@ function startGame() {
   G.word = allWords[Math.floor(Math.random() * allWords.length)];
 // هەڵبژاردنی چەند فریودەر
 G.spyIdx = Math.floor(Math.random() * G.players.length);
+// کۆن
 if (Settings.autoSpy) {
   Settings.spyCount = Math.floor(Math.random() * (G.players.length - 1)) + 1;
 }
 G.spyIdx = Math.floor(Math.random() * G.players.length);
+G.roles = G.players.map((_, i) => i === G.spyIdx ? 'spy' : 'normal');
 
-  G.roles = G.players.map((_, i) => i === G.spyIdx ? 'spy' : 'normal');
-  G.curPlayer = 0;
-  G.votes = {};
-  G.curVoter = 0;
-  showPass(0);
+// نوێ
+if (Settings.autoSpy) {
+  Settings.spyCount = Math.floor(Math.random() * (G.players.length - 1)) + 1;
 }
+
+// هەموو ئیندێکسەکان لە شوێنێکدا بخە
+const indices = [...Array(G.players.length).keys()];
+// راندۆم بکەرەوە
+for (let i = indices.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [indices[i], indices[j]] = [indices[j], indices[i]];
+}
+// یەکەم N ئیندێکس بکە فریودەر
+const spyIndices = indices.slice(0, Settings.spyCount);
+G.spyIdx = spyIndices[0]; // بۆ پاشماوەی کۆدەکە
+G.roles = G.players.map((_, i) => spyIndices.includes(i) ? 'spy' : 'normal');
+
 
 // ── PASS ──
 function showPass(idx) {
