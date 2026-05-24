@@ -63,7 +63,11 @@
         <path d="M2 5h16M2 10h16M2 15h16" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
       </svg>
     </button>
-<button class="setup-profile-btn" onclick="show('s-profile'); sndBtn();">
+<button class="setup-profile-btn" 
+  ontouchstart="this.style.transform='scale(0.88)'; vibrate();"
+  ontouchend="this.style.transform='scale(1)'; setTimeout(()=>{ sndBtn(); show('s-profile'); }, 150);"
+  style="transition: transform 0.2s cubic-bezier(.3,1.4,.5,1);">
+
       <img src="accest/img/profile.png" alt="" onerror="this.style.display='none'">
       <svg class="profile-default-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
         <circle cx="10" cy="7" r="4" stroke="white" stroke-width="1.6"/>
