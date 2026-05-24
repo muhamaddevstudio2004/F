@@ -56,6 +56,50 @@ function closeSplash3() {
 
 
 
+// ── AVATAR PICKER ──
+let selectedAvatarTemp = null;
+
+function openAvatarSheet() {
+  sndClick();
+  selectedAvatarTemp = null;
+  const grid = document.getElementById('avatar-grid');
+  grid.innerHTML = '';
+  AVATARS.forEach((src, i) => {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'flex-shrink:0;cursor:pointer;';
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.cssText = `
+      width:80px;height:80px;border-radius:50%;
+      object-fit:cover;border:3px solid transparent;
+      transition:border-color .2s, transform .2s;
+    `;
+    img.onclick = () => {
+      sndClick();
+      grid.querySelectorAll('img').forEach(im => {
+        im.style.borderColor = 'transparent';
+        im.style.transform = 'scale(1)';
+      });
+      img.style.borderColor = '#fff';
+      img.style.transform = 'scale(1.1)';
+      selectedAvatarTemp = src;
+    };
+    wrap.appendChild(img);
+    grid.appendChild(wrap);
+  });
+  document.getElementById('avatar-sheet').style.display = 'block';
+}
+
+function closeAvatarSheet() {
+  document.getElementById('avatar-sheet').style.display = 'none';
+}
+
+function confirmAvatar() {
+  if (selectedAvatarTemp) {
+    document.getElementById('profile-avatar').src = selectedAvatarTemp;
+  }
+  closeAvatarSheet();
+}
 
 
 
