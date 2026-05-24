@@ -1088,7 +1088,7 @@ input::placeholder { color: var(--muted); }
 .btn-gold:active { transform: scale(.97); }
 
 .btn-gold-icon-img {
-  width: 28px; height: 28px;
+  width: 50px; height: 50px;
   object-fit: contain;
   flex-shrink: 0;
 }
