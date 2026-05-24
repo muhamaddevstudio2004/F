@@ -97,9 +97,13 @@ function closeAvatarSheet() {
 function confirmAvatar() {
   if (selectedAvatarTemp) {
     document.getElementById('profile-avatar').src = selectedAvatarTemp;
+    // وێنەی پرۆفایل لە s-setup شیش نوێ بکەرەوە
+    const setupProfile = document.querySelector('.setup-profile-btn img');
+    if (setupProfile) setupProfile.src = selectedAvatarTemp;
   }
   closeAvatarSheet();
 }
+
 
 
 
