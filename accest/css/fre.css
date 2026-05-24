@@ -1144,36 +1144,5 @@ input::placeholder { color: var(--muted); }
 }
 .toggle-track.on .toggle-thumb { transform: translateX(-22px); }
 
-/* ── SWIPE CARD ── */
-.swipe-card {
-  width: 100%;
-  background: var(--surface2);
-  border: 1.5px solid var(--border);
-  border-radius: var(--r2);
-  padding: 60px 24px;
-  text-align: center;
-  margin-bottom: 14px;
-  user-select: none;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
 
-.swipe-arrow {
-  font-size: 36px;
-  color: var(--teal);
-  margin-bottom: 12px;
-  animation: bounceUp 1.2s ease infinite;
-}
-
-@keyframes bounceUp {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-10px); }
-}
-
-.swipe-text {
-  font-size: 14px;
-  color: var(--muted);
-  font-weight: 600;
-}
 
