@@ -155,15 +155,24 @@ repeat;
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
-  /* ── ئەمانە زیاد بکە ── */
   transform: scale(1);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.2s cubic-bezier(.3,1.4,.5,1), 
+              box-shadow 0.2s ease,
+              background 0.2s ease;
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
+
 .gotit-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.92);
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  background: #2a2a4e;
 }
+
+.gotit-btn:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+}
+
 
 /* ── splash3 ── */
 #splash3 {
