@@ -941,6 +941,7 @@ input::placeholder { color: var(--muted); }
   text-shadow: none;
   display: block;
   overflow: visible;
+  right: 10px;
 }
 
 
@@ -968,7 +969,7 @@ input::placeholder { color: var(--muted); }
   width: 44px;
   height: auto;
   object-fit: contain;
-  margin-right: 5px;
+  margin-right: -10px;
 }
 
 
