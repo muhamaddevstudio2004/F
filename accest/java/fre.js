@@ -145,7 +145,7 @@ const CATEGORIES = [
   {
     id:'place', name:'شوێن', color:'#34d399',
     desc: 'شوێنەکە وەسف بکە — کەسی تر نەزانێت!',
-    img: 'accest/img/place.png',
+    img: 'accest/img/place.webp',
     icon:`<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="16" r="7" stroke="#34d399" stroke-width="2"/><path d="M20 23v10M13 38h14" stroke="#34d399" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="16" r="2.5" fill="#34d399"/></svg>`,
     words:['بازار','نەخۆشخانە','قوتابخانە','فڕۆکەخانە','پارک','مزگەوت','سینەما','رستەران','هۆتێل','پرد','گوندێک','شار','دەریا','چیا','زەوی','کتێبخانە','ستەدیۆم','زیندان']
   },
