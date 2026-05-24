@@ -620,7 +620,7 @@ function goToSettings() {
 }
 
 // ── SETTINGS ──
-let Settings = { spyCount: 1, timerSec: 60 };
+let Settings = { spyCount: 1, timerSec: 60, autoSpy: false };
 
 function updateSettingsDisplay() {
   document.getElementById('spy-count-display').textContent = Settings.spyCount;
@@ -641,6 +641,15 @@ function changeTimer(delta) {
   Settings.timerSec = Math.min(300, Math.max(30, Settings.timerSec + delta));
   updateSettingsDisplay();
 }
+
+function toggleAutoSpy() {
+  sndClick();
+  Settings.autoSpy = !Settings.autoSpy;
+  document.getElementById('auto-spy-track').classList.toggle('on', Settings.autoSpy);
+  const counter = document.querySelector('#s-settings .card div[style*="justify-content:center"]');
+  if (counter) counter.style.opacity = Settings.autoSpy ? '0.3' : '1';
+}
+
 
 const AVATARS = [
   'accest/img/food.png',
