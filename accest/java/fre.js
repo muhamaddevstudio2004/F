@@ -299,7 +299,9 @@ function showPass(idx) {
   G.curPlayer = idx;
   document.getElementById('pass-name').textContent = G.players[idx];
   show('s-pass');
+  setTimeout(() => initSwipeCard(), 100);
 }
+
 
 // ── CARD FLIP ──
 function showCard() {
@@ -688,6 +690,30 @@ const AVATARS = [
 
 function getRandomAvatar() {
   return AVATARS[Math.floor(Math.random() * AVATARS.length)];
+}
+
+// ── SWIPE TO REVEAL ──
+function initSwipeCard() {
+  const card = document.getElementById('swipe-card');
+  if (!card) return;
+
+  let startY = 0;
+  let isDragging = false;
+
+  card.addEventListener('touchstart', (e) => {
+    startY = e.touches[0].clientY;
+    isDragging = true;
+  }, { passive: true });
+
+  card.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const deltaY = startY - e.touches[0].clientY;
+    if (deltaY > 60) {
+      isDragging = false;
+      sndFlip();
+      showCard();
+    }
+  }, { passive: true });
 }
 
 
