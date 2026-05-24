@@ -90,7 +90,7 @@ background-color: #1a0a2e;
 .splash2-chars {
   width: 85%;
   max-width: 360px;
-  margin-bottom: 32px;
+  margin-bottom: -10px;
 }
 .splash2-text {
   text-align: center;
