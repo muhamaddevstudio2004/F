@@ -387,7 +387,7 @@ function startDiscuss() {
   
   // ناوی یاریزانی یەکەم نیشان بدە
   const firstPlayer = G.players[0];
-  document.getElementById('discuss-sub').textContent = `نۆبەتی ${firstPlayer}ە — دەست پێ بکە!`;
+  document.getElementById('discuss-sub').textContent = `نۆرەی ${firstPlayer}ـە — دەست پێ بکە!`;
 
   if (G.timerInterval) clearInterval(G.timerInterval);
   G.timerInterval = setInterval(() => {
