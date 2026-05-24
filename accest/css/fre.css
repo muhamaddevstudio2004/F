@@ -75,10 +75,11 @@ html, body {
 
 .splash2-bg {
   width: 100%; height: 100%;
-background-color: #e8202a;
-background-image:
-  linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
-  linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
+background-color: #1a0a2e;
+  background-image:
+    radial-gradient(ellipse at top, #2d0a3e 0%, #0a0a1a 60%),
+    linear-gradient(rgba(120,0,180,0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,0,180,0.15) 1px, transparent 1px);
   background-size: 36px 36px;
   display: flex;
   flex-direction: column;
@@ -95,17 +96,20 @@ background-image:
   text-align: center;
   color: white;
 }
-.splash2-text h1 {
+.splash2-text h2 {
   font-family: 'Noto Kufi Arabic', sans-serif;
   font-size: 32px;
   font-weight: 900;
   margin-bottom: 16px;
+  color: #e0c0ff;
+  text-shadow: 0 0 20px rgba(180,0,255,0.5);
 }
 .splash2-text p {
   font-family: 'Noto Kufi Arabic', sans-serif;
   font-size: 16px;
   line-height: 1.8;
   opacity: 0.9;
+  color: rgba(200,170,255,0.8);
 }
 .gotit-btn {
   margin-top: 32px;
