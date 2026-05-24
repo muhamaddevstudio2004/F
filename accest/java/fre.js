@@ -98,8 +98,17 @@ function confirmAvatar() {
   if (selectedAvatarTemp) {
     document.getElementById('profile-avatar').src = selectedAvatarTemp;
     // وێنەی پرۆفایل لە s-setup شیش نوێ بکەرەوە
-    const setupProfile = document.querySelector('.setup-profile-btn img');
-    if (setupProfile) setupProfile.src = selectedAvatarTemp;
+   // وێنەی پرۆفایل لە s-setup
+const setupProfile = document.querySelector('.setup-profile-btn img');
+if (setupProfile) {
+  setupProfile.src = selectedAvatarTemp;
+  setupProfile.style.display = 'block';
+}
+
+// ئایکۆنی پێشکەوتووی پرۆفایل شاربکەوە
+const defaultIcon = document.querySelector('.profile-default-icon');
+if (defaultIcon) defaultIcon.style.display = 'none';
+
   }
   closeAvatarSheet();
 }
