@@ -19,6 +19,11 @@ setTimeout(() => {
   }, 600);
 }, 2500);
 
+function vibrate() {
+  if (navigator.vibrate) navigator.vibrate(50);
+}
+
+
 function closeSplash2() {
   const s2 = document.getElementById('splash2');
   s2.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
