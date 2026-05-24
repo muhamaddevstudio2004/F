@@ -262,7 +262,7 @@ function startGame() {
   const inputs = document.querySelectorAll('#player-list input');
   inputs.forEach((inp, i) => G.players[i] = inp.value.trim());
   const valid = G.players.filter(p => p.length > 0);
-  if (valid.length < 2) { alert('لانیکەم ٢ یاریزان پێویستە!'); return; }
+  if (valid.length < 3) { alert('لانیکەم 2 یاریزان پێویستە!'); return; }
   if (G.catIds.length === 0) { alert('لانیکەم یەک جۆر هەڵبژێرە!'); return; }
 
   G.players = valid;
