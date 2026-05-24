@@ -104,6 +104,15 @@ function confirmAvatar() {
   closeAvatarSheet();
 }
 
+function updateProfileName(val) {
+  const name = val.trim();
+  if (!name) return;
+  // ناوی یاریزانی ١ نوێ بکەرەوە
+  G.players[0] = name;
+  const inputs = document.querySelectorAll('#player-list input');
+  if (inputs[0]) inputs[0].value = name;
+}
+
 
 
 
