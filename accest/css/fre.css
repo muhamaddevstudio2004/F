@@ -172,15 +172,51 @@ repeat;
   z-index: 9997;
   display: none;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transform: translateX(-100%);
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }
+
 .splash3-bg {
   width: 100%; height: 100%;
-  background-color: #1a6bcc;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
-  background-size: 36px 36px;
+background-color: #050008;
+
+background-image:
+
+/* سەرەوەی مۆر تاریک */
+radial-gradient(
+ellipse at 50% 0%,
+rgba(120, 0, 255, 0.28) 0%,
+transparent 65%
+),
+
+/* خوارەوەی شین-مۆر */
+radial-gradient(
+ellipse at 100% 100%,
+rgba(0, 170, 255, 0.10) 0%,
+transparent 55%
+),
+
+/* ناوەڕاستی سوور ترسناک */
+radial-gradient(
+circle at 50% 50%,
+rgba(255, 0, 90, 0.08) 0%,
+transparent 45%
+),
+
+/* هێماکانی یاری فێڵکردن */
+url("data:image/svg+xml,%3Csvg width='160' height='80' viewBox='0 0 160 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1.2'%3E%3Cpolygon points='20,10 40,40 0,40'/%3E%3Cline x1='70' y1='10' x2='95' y2='35'/%3E%3Cline x1='95' y1='10' x2='70' y2='35'/%3E%3Ccircle cx='130' cy='25' r='16'/%3E%3Crect x='45' y='55' width='22' height='22' transform='rotate(45 56 66)'/%3E%3C/g%3E%3C/svg%3E");
+
+background-size:
+auto,
+auto,
+auto,
+160px 80px;
+
+background-repeat:
+no-repeat,
+no-repeat,
+no-repeat,
+repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
