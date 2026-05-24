@@ -270,9 +270,11 @@ function startGame() {
     .flatMap(c => c.words);
   G.word = allWords[Math.floor(Math.random() * allWords.length)];
 
-  if (Settings.autoSpy) {
-    Settings.spyCount = Math.floor(Math.random() * (G.players.length - 1)) + 1;
-  }
+if (Settings.autoSpy) {
+  const max = Math.floor(G.players.length / 2);
+  Settings.spyCount = Math.floor(Math.random() * max) + 1;
+}
+
 
   const indices = [...Array(G.players.length).keys()];
   for (let i = indices.length - 1; i > 0; i--) {
