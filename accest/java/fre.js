@@ -271,6 +271,10 @@ function startGame() {
   G.word = allWords[Math.floor(Math.random() * allWords.length)];
 // هەڵبژاردنی چەند فریودەر
 G.spyIdx = Math.floor(Math.random() * G.players.length);
+if (Settings.autoSpy) {
+  Settings.spyCount = Math.floor(Math.random() * (G.players.length - 1)) + 1;
+}
+G.spyIdx = Math.floor(Math.random() * G.players.length);
 
   G.roles = G.players.map((_, i) => i === G.spyIdx ? 'spy' : 'normal');
   G.curPlayer = 0;
@@ -646,9 +650,12 @@ function toggleAutoSpy() {
   sndClick();
   Settings.autoSpy = !Settings.autoSpy;
   document.getElementById('auto-spy-track').classList.toggle('on', Settings.autoSpy);
-  const counter = document.querySelector('#s-settings .card div[style*="justify-content:center"]');
-  if (counter) counter.style.opacity = Settings.autoSpy ? '0.3' : '1';
+  // counter چالاک/ناچالاک بکە
+  const counterDiv = document.getElementById('spy-counter-wrap');
+  if (counterDiv) counterDiv.style.opacity = Settings.autoSpy ? '0.3' : '1';
+  if (counterDiv) counterDiv.style.pointerEvents = Settings.autoSpy ? 'none' : 'auto';
 }
+
 
 
 const AVATARS = [
