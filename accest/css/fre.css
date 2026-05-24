@@ -916,7 +916,7 @@ input::placeholder { color: var(--muted); }
 
 .hero-info {
   position: absolute;
-  right: -10px;
+  right: -30px;
   top: 120px;
   text-align: right;
   max-width: 220px;
@@ -931,7 +931,7 @@ input::placeholder { color: var(--muted); }
 }
 
 .hero-title {
-  font-size: 52px;
+  font-size: 50px;
   font-weight: 900;
   letter-spacing: -2px;
   line-height: 1.2;
@@ -941,7 +941,7 @@ input::placeholder { color: var(--muted); }
   text-shadow: none;
   display: block;
   overflow: visible;
-  right: 10px;
+  right: 20px;
 }
 
 
