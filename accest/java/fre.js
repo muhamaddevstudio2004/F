@@ -272,8 +272,10 @@ function startGame() {
 
 if (Settings.autoSpy) {
   const max = Math.floor(G.players.length / 2);
-  Settings.spyCount = Math.floor(Math.random() * max) + 1;
+  const min = Math.floor(G.players.length / 4) || 1;
+  Settings.spyCount = Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
 
 
   const indices = [...Array(G.players.length).keys()];
