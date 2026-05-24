@@ -1123,3 +1123,32 @@ input::placeholder { color: var(--muted); }
   flex-shrink: 0;
   border: 2px solid var(--border);
 }
+/* ── julay dugma ── */
+.btn:active,
+.btn-gold:active,
+.setup-add-btn:active,
+.setup-menu-btn:active,
+.setup-profile-btn:active,
+.counter-btn:active,
+.del-btn:active,
+.add-row-btn:active,
+.cat-card:active,
+.vote-item:active,
+.tap-card:active {
+  transform: scale(0.94);
+  transition: transform 0.15s ease;
+}
+
+.btn,
+.btn-gold,
+.setup-add-btn,
+.setup-menu-btn,
+.setup-profile-btn,
+.counter-btn,
+.del-btn,
+.add-row-btn,
+.cat-card,
+.vote-item,
+.tap-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
