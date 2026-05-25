@@ -122,6 +122,25 @@ function updateProfileName(val) {
   if (inputs[0]) inputs[0].value = name;
 }
 
+function openProfile() {
+  sndBtn();
+  // ئەگەر هێشتا ئەڤاتار هەڵنەبژێراوە، یەکەم ئەڤاتار بخە
+  const profileAvatar = document.getElementById('profile-avatar');
+  if (!profileAvatar.src || profileAvatar.src.includes('assect/img/place.png') || profileAvatar.naturalWidth === 0) {
+    const randomAvatar = getRandomAvatar();
+    profileAvatar.src = randomAvatar;
+    // لە setup شیش نوێ بکەرەوە
+    const setupProfile = document.querySelector('.setup-profile-btn img');
+    if (setupProfile) {
+      setupProfile.src = randomAvatar;
+      setupProfile.style.display = 'block';
+    }
+    const defaultIcon = document.querySelector('.profile-default-icon');
+    if (defaultIcon) defaultIcon.style.display = 'none';
+  }
+  show('s-profile');
+}
+
 
 
 
