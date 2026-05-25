@@ -1228,5 +1228,99 @@ input::placeholder { color: var(--muted); }
 }
 .toggle-track.on .toggle-thumb { transform: translateX(-22px); }
 
+/* ══════════ SETTINGS MODAL ══════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 9990;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.active { display: flex; animation: fadeIn .25s ease; }
+
+.modal-sheet {
+  width: 100%;
+  background: #1a1d2e;
+  border-radius: 28px 28px 0 0;
+  padding: 28px 20px 48px;
+  position: relative;
+  animation: slideUpModal .3s cubic-bezier(.4,0,.2,1);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+@keyframes slideUpModal {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px; left: 20px;
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.1);
+  border: none; border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .15s;
+}
+.modal-close:active { transform: scale(.9); }
+
+.modal-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 24px;
+  text-align: right;
+}
+
+.settings-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: #6b4dff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.settings-group {
+  background: #222638;
+  border-radius: 16px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.settings-item:active { background: rgba(255,255,255,0.05); }
+
+.settings-icon-wrap {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.settings-item-text { flex: 1; }
+.settings-item-title { font-size: 15px; font-weight: 600; color: #fff; }
+.settings-item-sub { font-size: 12px; color: #6b7494; margin-top: 2px; }
+
+.settings-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 0 16px;
+}
 
 
