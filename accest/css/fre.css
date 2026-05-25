@@ -81,7 +81,7 @@ html, body {
   color: rgba(255,255,255,0.2);
   line-height: 1.1;
   font-family: 'Noto Kufi Arabic', sans-serif;
-  animation: scrollUp 8s linear infinite;
+  animation: scrollUp 4s linear infinite;
 }
 
 @keyframes scrollUp {
