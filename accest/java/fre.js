@@ -461,6 +461,8 @@ function showCard() {
   btn.classList.remove('visible');
 
   show('s-card');
+  setTimeout(() => initCardSwipe(), 100);
+
 }
 
 function flipCard() {
@@ -838,6 +840,53 @@ function showToast(msg) {
     toast.style.transform = 'translateX(-50%) translateY(-20px)';
     setTimeout(() => toast.remove(), 300);
   }, 2500);
+}
+
+// ── SWIPE RIGHT TO REVEAL CARD ──
+function initCardSwipe() {
+  const front = document.querySelector('.flip-front');
+  if (!front) return;
+
+  let startX = 0;
+  let isDragging = false;
+  let currentX = 0;
+
+  front.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+    front.style.transition = 'none';
+  }, { passive: true });
+
+  front.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    currentX = e.touches[0].clientX - startX;
+    if (currentX > 0) {
+      front.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.05}deg)`;
+      front.style.opacity = 1 - (currentX / 300);
+    }
+  }, { passive: true });
+
+  front.addEventListener('touchend', () => {
+    isDragging = false;
+    if (currentX > 100) {
+      // تەواو سڕینەوە
+      front.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      front.style.transform = 'translateX(400px) rotate(20deg)';
+      front.style.opacity = '0';
+      setTimeout(() => {
+        flipCard();
+        front.style.transition = 'none';
+        front.style.transform = '';
+        front.style.opacity = '';
+      }, 300);
+    } else {
+      // گەڕانەوە
+      front.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      front.style.transform = '';
+      front.style.opacity = '';
+    }
+    currentX = 0;
+  });
 }
 
 
