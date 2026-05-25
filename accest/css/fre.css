@@ -197,7 +197,12 @@ html, body {
   font-size: 42px;
   font-weight: 900;
   letter-spacing: -1px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+ background: linear-gradient(
+135deg,
+#fff27a 0%,
+#ffd400 35%,
+#ffcc00 65%,
+#ffea61 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
