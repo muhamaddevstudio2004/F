@@ -1000,7 +1000,7 @@ input::placeholder { color: var(--muted); }
 
 .hero-info {
   position: absolute;
-  right: -50px;
+  right: 10px;
   top: 120px;
   text-align: right;
   max-width: 220px;
