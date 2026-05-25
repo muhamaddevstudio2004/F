@@ -30,34 +30,7 @@ function closeSettings() {
   document.getElementById('settings-modal').classList.remove('active');
 }
 
-function openProfile() {
-  sndBtn();
-  const profileAvatar = document.getElementById('profile-avatar');
-  if (!profileAvatar.src || profileAvatar.naturalWidth === 0) {
-    const randomAvatar = getRandomAvatar();
-    profileAvatar.src = randomAvatar;
-    const setupProfile = document.querySelector('.setup-profile-btn img');
-    if (setupProfile) {
-      setupProfile.src = randomAvatar;
-      setupProfile.style.display = 'block';
-    }
-    const defaultIcon = document.querySelector('.profile-default-icon');
-    if (defaultIcon) defaultIcon.style.display = 'none';
-  }
-  document.getElementById('profile-overlay').classList.add('active');
-  document.getElementById('s-profile').classList.add('active');
-  document.querySelectorAll('.screen').forEach(s => {
-    if (s.id !== 's-profile') s.style.filter = 'blur(4px)';
-  });
-}
 
-function closeProfile() {
-  sndBtn();
-  document.getElementById('profile-overlay').classList.remove('active');
-  document.getElementById('s-profile').classList.remove('active');
-  document.querySelectorAll('.screen').forEach(s => s.style.filter = '');
-  document.getElementById('s-setup').classList.add('active');
-}
 
 
 
