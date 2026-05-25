@@ -63,44 +63,74 @@ html, body {
     pointer-events: none;
   }
 
+
+
 /* ── splash2 ── */
-.splash2-bigtext {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
+#splash2 {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.splash2-bg {
+  width: 100%; height: 100%;
+  background-color: #e8202a;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 36px 36px;
+  position: relative;
   overflow: hidden;
 }
 
-.splash2-bigtext span {
-  font-size: 80px;
+.splash2-bigtext {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 320px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.splash2-bigtext-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 20px;
+  animation: scrollUp 5s linear infinite;
+}
+
+.splash2-bigtext-inner span {
+  font-size: 76px;
   font-weight: 900;
-  color: rgba(255,255,255,0.2);
-  line-height: 1.1;
+  color: rgba(255,255,255,0.18);
+  line-height: 1.15;
   font-family: 'Noto Kufi Arabic', sans-serif;
-  animation: scrollUp 4s linear infinite;
+  white-space: nowrap;
 }
 
 @keyframes scrollUp {
   0%   { transform: translateY(0); }
-  100% { transform: translateY(-100%); }
+  100% { transform: translateY(-50%); }
 }
 
 .splash2-card {
   position: absolute;
   bottom: 0; left: 0; right: 0;
   background: #fff;
-  border-radius: 24px 24px 0 0;
-  padding: 32px 24px 48px;
+  border-radius: 28px 28px 0 0;
+  padding: 28px 24px 52px;
   text-align: center;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.15);
 }
 
 .splash2-card-emoji {
-  font-size: 40px;
-  margin-bottom: 12px;
+  font-size: 42px;
+  margin-bottom: 10px;
 }
 
 .splash2-card-title {
@@ -114,14 +144,14 @@ html, body {
 .splash2-card-sub {
   font-size: 14px;
   color: #666;
-  line-height: 1.7;
+  line-height: 1.8;
   margin-bottom: 24px;
   font-family: 'Noto Kufi Arabic', sans-serif;
 }
 
 .splash2-card-btn {
   width: 100%;
-  padding: 16px;
+  padding: 17px;
   background: #e8202a;
   color: #fff;
   border: none;
@@ -130,17 +160,31 @@ html, body {
   font-weight: 700;
   cursor: pointer;
   font-family: 'Noto Kufi Arabic', sans-serif;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease;
   margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(232,32,42,0.35);
+}
+
+.splash2-card-btn:active {
+  transform: scale(0.96);
+  background: #c4161f;
 }
 
 .splash2-card-sub2 {
   font-size: 13px;
-  color: #999;
+  color: #aaa;
   cursor: pointer;
   font-family: 'Noto Kufi Arabic', sans-serif;
+  transition: color 0.15s;
 }
 
+.splash2-card-sub2:active {
+  color: #666;
+}
+
+.gotit-btn {
+  display: none;
+}
 
 
 
