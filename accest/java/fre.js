@@ -56,7 +56,9 @@ function closeProfile() {
   document.getElementById('profile-overlay').classList.remove('active');
   document.getElementById('s-profile').classList.remove('active');
   document.querySelectorAll('.screen').forEach(s => s.style.filter = '');
+  document.getElementById('s-setup').classList.add('active');
 }
+
 
 
 function closeSplash2() {
