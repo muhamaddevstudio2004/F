@@ -875,99 +875,13 @@ input::placeholder { color: var(--muted); }
 /* ══════════ SETUP REDESIGN ══════════ */
 #s-setup {
   padding: 0 0 40px 0;
-    background-color:#050008;
-
-  background-image:
-
-  /* مۆری نێئۆنی سەرەوە */
-
-  radial-gradient(
-
-    ellipse at top,
-
-    rgba(140,0,255,0.30) 0%,
-
-    transparent 60%
-
-  ),
-
-  /* شینی لاوەکی راست */
-
-  radial-gradient(
-
-    circle at 100% 100%,
-
-    rgba(0,170,255,0.12) 0%,
-
-    transparent 50%
-
-  ),
-
-  /* سووری ترسناک لە ناوەڕاست */
-
-  radial-gradient(
-
-    circle at 50% 45%,
-
-    rgba(255,0,90,0.10) 0%,
-
-    transparent 40%
-
-  ),
-
-  /* تاریکی خوارەوە */
-
-  linear-gradient(
-
-    to bottom,
-
-    rgba(0,0,0,0) 0%,
-
-    rgba(0,0,0,0.55) 100%
-
-  ),
-
-  /* هێماکان */
-
-  url("data:image/svg+xml,%3Csvg width='180' height='90' viewBox='0 0 180 90' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1.4'%3E%3Cpolygon points='25,12 45,42 5,42'/%3E%3Cline x1='78' y1='12' x2='105' y2='39'/%3E%3Cline x1='105' y1='12' x2='78' y2='39'/%3E%3Ccircle cx='145' cy='28' r='17'/%3E%3Crect x='58' y='58' width='24' height='24' transform='rotate(45 70 70)'/%3E%3C/g%3E%3C/svg%3E");
-
-  background-size:
-
-    auto,
-
-    auto,
-
-    auto,
-
-    auto,
-
-    180px 90px;
-
-  background-repeat:
-
-    no-repeat,
-
-    no-repeat,
-
-    no-repeat,
-
-    no-repeat,
-
-    repeat;
-
-  background-position:
-
-    top center,
-
-    bottom right,
-
-    center,
-
-    center,
-
-    center;
-
-  align-items: stretch;
+background: linear-gradient(
+135deg,
+#fff27a 0%,
+#ffd400 35%,
+#ffcc00 65%,
+#ffea61 100%
+);
 }
 
 /* TOPBAR */
@@ -1025,7 +939,6 @@ input::placeholder { color: var(--muted); }
   height: 310px;
   position: relative;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #12152a 0%, #0d0f1a 100%);
 }
 
 .hero-char {
