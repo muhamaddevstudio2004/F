@@ -42,7 +42,7 @@ html, body {
   to   { opacity:1; transform:translateY(0); }
 }
 
-
+/* ── splash ── */
   #splash {
     position: fixed;
     inset: 0;
@@ -64,140 +64,82 @@ html, body {
   }
 
 /* ── splash2 ── */
-#splash2 {
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  display: none;
-  opacity: 0; /* ── ئەمە زیاد بکە ── */
-  transition: opacity 0.5s ease; /* ── ئەمەش ── */
-}
-
-.splash2-bg {
-  width: 100%; height: 100%;
-background-color: #FACC15;
-
+.splash2-bigtext {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 60px;
+  justify-content: center;
+  gap: 0;
+  overflow: hidden;
 }
-.splash2-chars {
-  width: 85%;
-  max-width: 360px;
-  margin-bottom: -10px;
-}
-.splash2-text {
-  text-align: center;
-  color: white;
-}
-.splash2-text h2 {
-  font-family: 'Noto Kufi Arabic', sans-serif;
-  font-size: 32px;
+
+.splash2-bigtext span {
+  font-size: 80px;
   font-weight: 900;
-  margin-bottom: 16px;
-  color: #e0c0ff;
-  text-shadow: 0 0 20px rgba(180,0,255,0.5);
-}
-.splash2-text p {
+  color: rgba(255,255,255,0.2);
+  line-height: 1.1;
   font-family: 'Noto Kufi Arabic', sans-serif;
-  font-size: 16px;
-  line-height: 1.8;
-  opacity: 0.9;
-  color: rgba(200,170,255,0.8);
+  animation: scrollUp 8s linear infinite;
 }
-.gotit-btn {
-  margin-top: 32px;
-  padding: 16px 80px;
-  background: #ffffff;
-  color: #000000;
+
+@keyframes scrollUp {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+.splash2-card {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 32px 24px 48px;
+  text-align: center;
+}
+
+.splash2-card-emoji {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.splash2-card-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #111;
+  margin-bottom: 10px;
+  font-family: 'Noto Kufi Arabic', sans-serif;
+}
+
+.splash2-card-sub {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  font-family: 'Noto Kufi Arabic', sans-serif;
+}
+
+.splash2-card-btn {
+  width: 100%;
+  padding: 16px;
+  background: #e8202a;
+  color: #fff;
   border: none;
-  border-radius: 50px;
-  font-family: 'Noto Kufi Arabic', sans-serif;
-  font-size: 18px;
+  border-radius: 14px;
+  font-size: 17px;
   font-weight: 700;
   cursor: pointer;
-  transform: scale(1);
-  transition: transform 0.2s cubic-bezier(.3,1.4,.5,1), 
-              box-shadow 0.2s ease,
-              background 0.2s ease;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  transition: transform 0.15s ease;
+  margin-bottom: 16px;
 }
 
-.gotit-btn:active {
-  transform: scale(0.92);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  background: #2a2a4e;
+.splash2-card-sub2 {
+  font-size: 13px;
+  color: #999;
+  cursor: pointer;
+  font-family: 'Noto Kufi Arabic', sans-serif;
 }
-
-.gotit-btn:hover {
-  transform: scale(1.04);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
-}
-
-
-/* ── splash3 ── */
-#splash3 {
-  position: fixed;
-  inset: 0;
-  z-index: 9997;
-  display: none;
-  opacity: 0;
-  transform: translateX(-100%);
-  transition: transform 0.5s ease, opacity 0.5s ease;
-}
-
-.splash3-bg {
-  width: 100%; height: 100%;
-background-color: #FACC15;
-
-background-image:
-
-/* سەرەوەی مۆر تاریک */
-radial-gradient(
-ellipse at 50% 0%,
-rgba(120, 0, 255, 0.28) 0%,
-transparent 65%
-),
-
-/* خوارەوەی شین-مۆر */
-radial-gradient(
-ellipse at 100% 100%,
-rgba(0, 170, 255, 0.10) 0%,
-transparent 55%
-),
-
-/* ناوەڕاستی سوور ترسناک */
-radial-gradient(
-circle at 50% 50%,
-rgba(255, 0, 90, 0.08) 0%,
-transparent 45%
-),
-
-/* هێماکانی یاری فێڵکردن */
-url("data:image/svg+xml,%3Csvg width='160' height='80' viewBox='0 0 160 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1.2'%3E%3Cpolygon points='20,10 40,40 0,40'/%3E%3Cline x1='70' y1='10' x2='95' y2='35'/%3E%3Cline x1='95' y1='10' x2='70' y2='35'/%3E%3Ccircle cx='130' cy='25' r='16'/%3E%3Crect x='45' y='55' width='22' height='22' transform='rotate(45 56 66)'/%3E%3C/g%3E%3C/svg%3E");
-
-background-size:
-auto,
-auto,
-auto,
-160px 80px;
-
-background-repeat:
-no-repeat,
-no-repeat,
-no-repeat,
-repeat;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 60px;
-}
-
 
 
 
