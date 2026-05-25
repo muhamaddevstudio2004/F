@@ -844,50 +844,51 @@ function showToast(msg) {
 
 // ── SWIPE RIGHT TO REVEAL CARD ──
 function initCardSwipe() {
-  const front = document.querySelector('.flip-front');
-  if (!front) return;
+  const scene = document.querySelector('.flip-scene');
+  if (!scene) return;
 
   let startX = 0;
   let isDragging = false;
   let currentX = 0;
 
-  front.addEventListener('touchstart', (e) => {
+  scene.addEventListener('touchstart', (e) => {
+    if (document.getElementById('flip-card').classList.contains('flipped')) return;
     startX = e.touches[0].clientX;
     isDragging = true;
-    front.style.transition = 'none';
   }, { passive: true });
 
-  front.addEventListener('touchmove', (e) => {
+  scene.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
     currentX = e.touches[0].clientX - startX;
     if (currentX > 0) {
-      front.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.05}deg)`;
-      front.style.opacity = 1 - (currentX / 300);
+      const rotate = Math.min(currentX / 3, 60);
+      document.getElementById('flip-card').style.transition = 'none';
+      document.getElementById('flip-card').style.transform = `rotateY(${rotate}deg)`;
     }
   }, { passive: true });
 
-  front.addEventListener('touchend', () => {
+  scene.addEventListener('touchend', () => {
+    if (!isDragging) return;
     isDragging = false;
-    if (currentX > 100) {
-      // تەواو سڕینەوە
-      front.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-      front.style.transform = 'translateX(400px) rotate(20deg)';
-      front.style.opacity = '0';
+    if (currentX > 80) {
+      sndFlip();
+      document.getElementById('flip-card').style.transition = 'transform 0.65s cubic-bezier(.4,0,.2,1)';
+      document.getElementById('flip-card').style.transform = 'rotateY(180deg)';
       setTimeout(() => {
-        flipCard();
-        front.style.transition = 'none';
-        front.style.transform = '';
-        front.style.opacity = '';
-      }, 300);
+        document.getElementById('flip-card').classList.add('flipped');
+        const isSpy = G.roles[G.curPlayer] === 'spy';
+        if (isSpy) sndSpy();
+        document.getElementById('card-next-btn').classList.add('visible');
+      }, 350);
     } else {
       // گەڕانەوە
-      front.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-      front.style.transform = '';
-      front.style.opacity = '';
+      document.getElementById('flip-card').style.transition = 'transform 0.3s ease';
+      document.getElementById('flip-card').style.transform = 'rotateY(0deg)';
     }
     currentX = 0;
   });
 }
+
 
 
 init();
