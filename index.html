@@ -156,10 +156,9 @@ ontouchend="this.style.transform='scale(1)'; setTimeout(()=>openProfile(), 150);
 </div>
 
 <!-- ══════════ PROFILE ══════════ -->
-<div id="profile-overlay" onclick="closeProfile()"></div>
 <div id="s-profile" class="screen">
   <div class="topbar" style="justify-content:flex-start;gap:16px;padding-top:52px">
-  <button onclick="closeProfile();" style="background:rgba(255,255,255,0.1);border:none;cursor:pointer;color:var(--text);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+ <button onclick="show('s-setup');sndBtn();" style="background:rgba(255,255,255,0.1);border:none;cursor:pointer;color:var(--text);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
         <path d="M13 16l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
