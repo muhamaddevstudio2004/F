@@ -46,7 +46,7 @@ html, body {
   #splash {
     position: fixed;
     inset: 0;
-    background: #ffffff;
+    background: #FACC15;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -75,7 +75,7 @@ html, body {
 
 .splash2-bg {
   width: 100%; height: 100%;
-background-color: #050008;
+background-color: #FACC15;
 
 background-image:
 
@@ -189,7 +189,7 @@ repeat;
 
 .splash3-bg {
   width: 100%; height: 100%;
-background-color: #050008;
+background-color: #FACC15;
 
 background-image:
 
