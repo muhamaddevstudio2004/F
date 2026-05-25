@@ -875,13 +875,7 @@ input::placeholder { color: var(--muted); }
 /* ══════════ SETUP REDESIGN ══════════ */
 #s-setup {
   padding: 0 0 40px 0;
-background: linear-gradient(
-135deg,
-#fff27a 0%,
-#ffd400 35%,
-#ffcc00 65%,
-#ffea61 100%
-);
+background: #FFD400;
 }
 
 /* TOPBAR */
@@ -992,7 +986,7 @@ background: linear-gradient(
 }
 
 .hero-hl { 
-  color: #ff4d6d; 
+  color: #fff; 
   font-weight: 700; 
 }
 .hero-logo-col {
@@ -1111,7 +1105,7 @@ background: linear-gradient(
 
 .btn-gold {
   width: 100%;
-  background: linear-gradient(135deg, #b8832a, #e8c87a, #c9973a);
+  background: #10B981;
   border: none;
   border-radius: 18px;
   padding: 16px 20px;
@@ -1149,7 +1143,7 @@ background: linear-gradient(
 .btn-gold-sub {
   font-family: 'Noto Kufi Arabic', sans-serif;
   font-size: 11px;
-  color: rgba(0,0,0,0.45);
+  color: #fff;
 }
 
 /* ── PLAYER AVATAR ── */
