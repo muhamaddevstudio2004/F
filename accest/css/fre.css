@@ -97,7 +97,7 @@ html, body {
   align-items: center;
   gap: 16px;
   padding-top: 20px;
-  animation: scrollUp 5s linear infinite;
+  animation: scrollUp 30s linear infinite;
 }
 
 .splash2-bigtext-inner span {
