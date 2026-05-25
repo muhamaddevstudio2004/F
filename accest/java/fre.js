@@ -23,6 +23,13 @@ function vibrate() {
   if (navigator.vibrate) navigator.vibrate(50);
 }
 
+function openSettings() {
+  document.getElementById('settings-modal').classList.add('active');
+}
+function closeSettings() {
+  document.getElementById('settings-modal').classList.remove('active');
+}
+
 
 function closeSplash2() {
   const s2 = document.getElementById('splash2');
