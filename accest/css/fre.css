@@ -1208,16 +1208,7 @@ background: #fff;
   flex-shrink: 0;
 }
 
-.hero-char {
-  position: absolute;
-  right: -10px;
-  bottom: 0;
-  height: 300px;
-  width: auto;
-  object-fit: contain;
-  object-position: bottom left;
-  filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
-}
+
 
 .hero-info {
   position: absolute;
@@ -1258,10 +1249,6 @@ background: #fff;
   margin-top: 8px;
 }
 
-.hero-hl { 
-  color: #fff; 
-  font-weight: 700; 
-}
 .hero-logo-col {
   display: flex;
   flex-direction: column;
@@ -1270,12 +1257,6 @@ background: #fff;
   margin-bottom: 8px;
 }
 
-.hero-crown-img {
-  width: 44px;
-  height: auto;
-  object-fit: contain;
-  margin-right: -10px;
-}
 
 /* SETUP CARD
 .setup-card {
@@ -1298,7 +1279,7 @@ background: #fff;
 .setup-card-title {
   font-size: 16px;
   font-weight: 700;
-  color: #f0f2f8;
+  color: #000000;
   display: flex;
   align-items: center;
   gap: 8px;
