@@ -89,10 +89,11 @@
 </div>
 
 <!-- ══════════ acc ══════════ -->
-<div class="acc-login-page">
-  <div class="acc-close-btn">
-    <span>×</span>
-  </div>
+<div id="acc-modal" class="modal-overlay" onclick="closeAccount()">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="acc-close-btn" onclick="closeAccount()">
+      <span>×</span>
+    </div>
   <div class="acc-content">
     <div class="acc-logo-box">
       <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8">
