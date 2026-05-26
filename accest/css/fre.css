@@ -1148,7 +1148,7 @@ input::placeholder { color: var(--muted); }
 /* ══════════ SETUP REDESIGN ══════════ */
 #s-setup {
   padding: 0 0 40px 0;
-background: #FFD400;
+background: #fff;
 }
 
 /* TOPBAR */
@@ -1210,7 +1210,7 @@ background: #FFD400;
 
 .hero-char {
   position: absolute;
-  right: 10px;
+  right: -10px;
   bottom: 0;
   height: 300px;
   width: auto;
@@ -1246,7 +1246,7 @@ background: #FFD400;
   text-shadow: none;
   display: block;
   overflow: visible;
-  right: 10px;
+  right: 20px;
 }
 
 
