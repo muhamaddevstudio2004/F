@@ -139,6 +139,12 @@ function openProfile() {
 
 
 
+l
+
+function openacclogin(){
+  document.querySelector(".home-page").style.display = "none";
+  document.querySelector(".acc-login-page").style.display = "flex";
+}
 
 // ══════════ AUDIO ENGINE ══════════
 const AC = new (window.AudioContext || window.webkitAudioContext)();
