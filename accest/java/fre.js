@@ -139,7 +139,9 @@ function openProfile() {
 
 
 
-l
+function openacclogin() {
+  openAccount();
+}
 
 function openAccount() {
   document.getElementById('acc-modal').classList.add('active');
