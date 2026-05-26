@@ -201,6 +201,11 @@ transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
 }
 
+#acc-modal.active {
+  display: block !important;
+}
+
+
 .acc-close-btn{
 
   position:absolute;
