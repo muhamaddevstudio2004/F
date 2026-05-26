@@ -51,6 +51,13 @@ function closeSplash2() {
 
 
 
+function openacclogin() {
+  document.getElementById('acc-modal').classList.add('active');
+}
+
+function closeAccount() {
+  document.getElementById('acc-modal').classList.remove('active');
+}
 
 
 
