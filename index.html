@@ -78,11 +78,10 @@
         ontouchend="this.style.transform='scale(1)'; setTimeout(()=>closeSplash2(), 150);">
         بـا بـڕوا
       </button>
-      <div class="splash2-card-sub2" 
-        ontouchstart="vibrate();"
-        ontouchend="setTimeout(()=>openacclogin(), 150);">
-        هەژمارت هەیە؟ بچۆرە ژوورەوە
-      </div>
+      <div class="splash2-card-sub2" onclick="if(navigator.vibrate) navigator.vibrate(50); openAccount();">
+  هەژمارت هەیە؟ بچۆرە ژوورەوە
+</div>
+
     </div>
 
   </div>
