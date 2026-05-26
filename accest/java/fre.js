@@ -139,17 +139,7 @@ function openProfile() {
 
 
 
-function openacclogin() {
-  openAccount();
-}
 
-function openAccount() {
-  document.getElementById('acc-modal').classList.add('active');
-}
-
-function closeAccount() {
-  document.getElementById('acc-modal').classList.remove('active');
-}
 
 
 // ══════════ AUDIO ENGINE ══════════
