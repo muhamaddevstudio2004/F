@@ -267,7 +267,7 @@ const CATEGORIES = [
 
 // ── STATE ──
 let G = {
-  players: [], avatars: [], catIds: [], word: '',
+  players: [], catIds: [], word: '',
   spyIdx: -1, roles: [], curPlayer: 0,
   votes: {}, curVoter: 0,
   timerInterval: null, timerSec: 60,
@@ -277,10 +277,6 @@ let selectedVote = null;
 // ── INIT ──
 function init() {
   G.players = ['','',''];
-  G.avatars = [
-    getRandomAvatar(),
-    getRandomAvatar(),
-    getRandomAvatar(),
   ];
   renderPlayers();
   renderCats();
@@ -296,7 +292,6 @@ function renderPlayers() {
     row.style.animationDelay = (i * 0.05) + 's';
     row.innerHTML = `
       <div class="player-num">${i+1}</div>
-      <img src="${G.avatars[i]}" class="player-avatar" alt="avatar">
       <input type="text" placeholder="ناوی یاریزانی ${i+1}" value="${name}"
         oninput="G.players[${i}]=this.value" />
       ${G.players.length > 3 ? `<button class="del-btn" onclick="removePlayer(${i}); sndClick();">
@@ -314,7 +309,6 @@ function addPlayer() {
   if (G.players.length >= 10) return;
   sndClick();
   G.players.push('');
-  G.avatars.push(getRandomAvatar());
   renderPlayers();
   setTimeout(() => {
     const inputs = document.querySelectorAll('#player-list input');
@@ -326,7 +320,6 @@ function addPlayer() {
 function removePlayer(i) {
   if (G.players.length <= 2) return;
   G.players.splice(i, 1);
-  G.avatars.splice(i, 1);
   renderPlayers();
 }
 
@@ -780,24 +773,6 @@ function toggleAutoSpy() {
   if (counterDiv) counterDiv.style.pointerEvents = Settings.autoSpy ? 'none' : 'auto';
 }
 
-
-
-const AVATARS = [
-  'accest/img/food.png',
-  'accest/img/avatars/2.png',
-  'accest/img/avatars/3.png',
-  'accest/img/avatars/4.png',
-  'accest/img/avatars/5.png',
-  'accest/img/avatars/6.png',
-  'accest/img/avatars/7.png',
-  'accest/img/avatars/8.png',
-  'accest/img/avatars/9.png',
-  'accest/img/avatars/10.png',
-];
-
-function getRandomAvatar() {
-  return AVATARS[Math.floor(Math.random() * AVATARS.length)];
-}
 
 function showToast(msg) {
   const existing = document.getElementById('toast');
