@@ -141,10 +141,14 @@ function openProfile() {
 
 l
 
-function openacclogin(){
-  document.querySelector(".home-page").style.display = "none";
-  document.querySelector(".acc-login-page").style.display = "flex";
+function openAccount() {
+  document.getElementById('acc-modal').classList.add('active');
 }
+
+function closeAccount() {
+  document.getElementById('acc-modal').classList.remove('active');
+}
+
 
 // ══════════ AUDIO ENGINE ══════════
 const AC = new (window.AudioContext || window.webkitAudioContext)();
