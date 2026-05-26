@@ -1277,7 +1277,7 @@ background: #FFD400;
   margin-right: -10px;
 }
 
-/* SETUP CARD */
+/* SETUP CARD
 .setup-card {
   margin: 10px 14px 12px;
   background: #151828;
@@ -1286,7 +1286,7 @@ background: #FFD400;
   padding: 16px 16px 16px 52px;
   overflow: visible;
   flex-shrink: 0;
-}
+} */
 
 .setup-card-header {
   display: flex;
