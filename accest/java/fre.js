@@ -43,9 +43,11 @@ function closeSplash2() {
     s2.style.display = 'none';
     s2.style.transform = '';
     s2.style.opacity = '0';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('s-setup').classList.add('active');
   }, 500);
 }
+
 
 
 
