@@ -123,23 +123,73 @@ button{
 .info-word-badge{display:inline-block;background:#ffd400;color:#111;border-radius:10px;padding:2px 10px;font-size:13px;font-weight:800;}
 
 /* ── What's New splash ── */
-.wnew-overlay{position:fixed;inset:0;z-index:2000;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .35s ease;}
-.wnew-overlay.active{opacity:1;pointer-events:auto;}
-.wnew-sheet{width:100%;max-width:480px;background:#111;border-radius:36px 36px 0 0;padding:28px 24px 44px;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.1,.64,1);position:relative;overflow:hidden;}
-.wnew-overlay.active .wnew-sheet{transform:translateY(0);}
-.wnew-strip{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#ffd400,#ffbc00,#fff7a0,#ffbc00,#ffd400);background-size:200% 100%;animation:shimmer 2.5s linear infinite;}
+/* ── What's New: floating card ── */
+@keyframes wnewIn{
+  from{opacity:0;transform:translateY(-24px) scale(.96);}
+  to  {opacity:1;transform:translateY(0)     scale(1);}
+}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.wnew-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:10px;margin:0 auto 22px;}
-.wnew-tag{display:inline-flex;align-items:center;gap:6px;background:#ffd400;color:#111;font-size:12px;font-weight:800;padding:5px 12px;border-radius:100px;margin-bottom:14px;letter-spacing:.5px;}
-.wnew-tag svg{width:13px;height:13px;fill:#111;}
-.wnew-title{font-size:28px;font-weight:800;color:#fff;margin-bottom:6px;}
-.wnew-sub{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:24px;}
-.wnew-item{display:flex;align-items:flex-start;gap:14px;padding:14px;margin-bottom:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:20px;}
-.wnew-icon{width:44px;height:44px;border-radius:14px;background:#ffd400;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.wnew-icon svg{width:22px;height:22px;fill:#111;}
-.wnew-item-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:3px;}
-.wnew-item-desc{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;}
-.wnew-btn{width:100%;height:62px;border:none;border-radius:22px;background:linear-gradient(135deg,#ffd400,#ffbc00);color:#111;font-size:18px;font-weight:800;cursor:pointer;margin-top:20px;}
+.wnew-wrap{
+  position:fixed;top:18px;left:16px;right:16px;z-index:3000;
+  pointer-events:none;opacity:0;
+  transition:opacity .25s ease;
+}
+.wnew-wrap.active{pointer-events:auto;opacity:1;}
+.wnew-card{
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,188,0,.45);
+  border-radius:26px;
+  box-shadow:0 12px 40px rgba(0,0,0,.14);
+  overflow:hidden;
+  animation:wnewIn .45s cubic-bezier(.34,1.2,.64,1) both;
+}
+.wnew-bar{
+  height:5px;
+  background:linear-gradient(90deg,#ffd400,#ffbc00,#fff7a0,#ffbc00,#ffd400);
+  background-size:200% 100%;
+  animation:shimmer 2s linear infinite;
+}
+.wnew-body{padding:16px 18px 18px;}
+.wnew-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.wnew-label{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#111;color:#ffd400;
+  font-size:11px;font-weight:800;letter-spacing:.6px;
+  padding:4px 10px;border-radius:100px;
+}
+.wnew-label svg{width:11px;height:11px;fill:#ffd400;}
+.wnew-dismiss{
+  width:30px;height:30px;border:none;border-radius:10px;
+  background:rgba(0,0,0,.07);
+  color:#111;font-size:16px;font-weight:900;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  line-height:1;
+}
+.wnew-rows{display:flex;flex-direction:column;gap:9px;}
+.wnew-row{display:flex;align-items:center;gap:11px;padding:10px 12px;background:#fffbe8;border-radius:16px;}
+.wnew-ico{
+  width:34px;height:34px;border-radius:11px;
+  background:#ffd400;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.wnew-ico svg{width:17px;height:17px;fill:#111;}
+.wnew-rtitle{font-size:13px;font-weight:800;margin-bottom:1px;}
+.wnew-rdesc{font-size:12px;color:#555;line-height:1.5;}
+
+/* min-players inline error */
+.minp-err{
+  display:flex;align-items:center;gap:9px;
+  background:#fff3cd;border:1.5px solid #ffc107;
+  color:#7a5200;
+  padding:12px 16px;border-radius:18px;
+  font-size:14px;font-weight:700;
+  margin-top:12px;
+  opacity:0;max-height:0;overflow:hidden;
+  transition:opacity .3s ease, max-height .3s ease, margin .3s ease;
+}
+.minp-err.show{opacity:1;max-height:80px;margin-top:12px;}
+.minp-err svg{width:20px;height:20px;fill:#e6a800;flex-shrink:0;}
 
 /* empty-input error */
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
@@ -198,6 +248,10 @@ button{
     </select>
   </div>
   <button class="start-btn" onclick="goCategory()">دەستپێکردنی یاری</button>
+  <div class="minp-err" id="minpErr">
+    <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+    کەمترین ژمارە ٣ یاریزانە — تکایە یاریزانی زیاتر زیاد بکە
+  </div>
 </section>
 
 <!-- SCREEN 2 -->
@@ -450,7 +504,21 @@ function renderPlayers(){
 }
 
 function goCategory(){
-  if(players.length < 3){ alert("کەمترین ژمارە 3 یاریزانە"); return; }
+  if(players.length < 3){
+    const err = document.getElementById("minpErr");
+    err.classList.remove("show");
+    void err.offsetWidth;
+    err.classList.add("show");
+    // shake the players card
+    const card = document.querySelector("#screen1 .input-card");
+    card.style.animation = "none";
+    void card.offsetWidth;
+    card.style.animation = "shake .35s ease";
+    // auto-hide after 3s
+    setTimeout(()=> err.classList.remove("show"), 3000);
+    return;
+  }
+  document.getElementById("minpErr").classList.remove("show");
   showScreen("screen2");
 }
 
@@ -637,85 +705,76 @@ function resetAll(){
   showScreen("screen1");
 }
 
-/* ── Spring press: works on both touch and mouse ── */
-function pressBtn(btn){
-  if(!btn || btn.disabled) return;
-  btn.style.transition = "transform .08s ease";
-  btn.style.transform = "scale(0.86)";
+/* ── Spring press on buttons (attach per-button to avoid card conflicts) ── */
+function attachPress(btn){
+  if(btn._pressAttached) return;
+  btn._pressAttached = true;
+  const down = ()=>{
+    btn.style.transition = "transform .09s ease";
+    btn.style.transform = "scale(0.85)";
+  };
+  const up = ()=>{
+    // wait 90ms so the squish is always visible before bouncing back
+    setTimeout(()=>{
+      btn.style.transition = "transform .45s cubic-bezier(.34,1.7,.64,1)";
+      btn.style.transform = "scale(1)";
+    }, 90);
+  };
+  btn.addEventListener("touchstart", down, {passive:true});
+  btn.addEventListener("touchend",   up,   {passive:true});
+  btn.addEventListener("touchcancel",up,   {passive:true});
+  btn.addEventListener("mousedown",  down);
+  btn.addEventListener("mouseup",    up);
+  btn.addEventListener("mouseleave", up);
 }
-function releaseBtn(btn){
-  if(!btn) return;
-  // small delay so the press is always visible
-  setTimeout(()=>{
-    btn.style.transition = "transform .4s cubic-bezier(.34,1.56,.64,1)";
-    btn.style.transform = "scale(1)";
-  }, 80);
+// Attach to all current + future buttons via MutationObserver
+function attachAllButtons(){
+  document.querySelectorAll("button").forEach(attachPress);
 }
-// Touch devices
-document.addEventListener("touchstart", e=>{
-  const btn = e.target.closest("button");
-  if(btn) pressBtn(btn);
-},{passive:true});
-document.addEventListener("touchend", e=>{
-  const btn = e.target.closest("button");
-  if(btn) releaseBtn(btn);
-},{passive:true});
-document.addEventListener("touchcancel", e=>{
-  const btn = e.target.closest("button");
-  if(btn) releaseBtn(btn);
-},{passive:true});
-// Mouse
-document.addEventListener("mousedown", e=>{
-  const btn = e.target.closest("button");
-  if(btn) pressBtn(btn);
-});
-document.addEventListener("mouseup", e=>{
-  const btn = e.target.closest("button");
-  if(btn) releaseBtn(btn);
-});
+attachAllButtons();
+const _pressObs = new MutationObserver(attachAllButtons);
+_pressObs.observe(document.body, {childList:true, subtree:true});
 
 /* ── What's New: show every time ── */
 function closeWnew(){
-  document.getElementById("wnewOverlay").classList.remove("active");
+  const w = document.getElementById("wnewWrap");
+  w.style.transition = "opacity .2s ease, transform .2s ease";
+  w.style.opacity = "0";
+  w.style.transform = "translateY(-12px)";
+  setTimeout(()=>{ w.classList.remove("active"); w.style.transform=""; }, 220);
 }
 setTimeout(()=>{
-  document.getElementById("wnewOverlay").classList.add("active");
+  document.getElementById("wnewWrap").classList.add("active");
 }, 600);
 </script>
 
-<!-- WHAT'S NEW SPLASH -->
-<div class="wnew-overlay" id="wnewOverlay">
-  <div class="wnew-sheet">
-    <div class="wnew-strip"></div>
-    <div class="wnew-handle"></div>
-    <div class="wnew-tag">
-      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-      ئەپدەیتی نوێ
-    </div>
-    <div class="wnew-title">چی نوێ هاتووە؟ 🎉</div>
-    <div class="wnew-sub">وەرژنی ١.٢ — نوێترین گۆڕانکارییەکان</div>
-    <div class="wnew-item">
-      <div class="wnew-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
-      <div>
-        <div class="wnew-item-title">ڕێنمایی یاری زیادکرا</div>
-        <div class="wnew-item-desc">دوگمەی "چۆن یاری بکەین؟" زیادکرا — هەر کاتێک دەتوانیت یاساکان بخوێنیتەوە.</div>
+<!-- WHAT'S NEW CARD -->
+<div class="wnew-wrap" id="wnewWrap">
+  <div class="wnew-card">
+    <div class="wnew-bar"></div>
+    <div class="wnew-body">
+      <div class="wnew-head">
+        <div class="wnew-label">
+          <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+          نوێکارییەکان
+        </div>
+        <button class="wnew-dismiss" onclick="closeWnew()">&#x2715;</button>
+      </div>
+      <div class="wnew-rows">
+        <div class="wnew-row">
+          <div class="wnew-ico"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+          <div><div class="wnew-rtitle">ڕێنمایی یاری</div><div class="wnew-rdesc">دوگمەی "چۆن یاری بکەین؟" زیادکرا</div></div>
+        </div>
+        <div class="wnew-row">
+          <div class="wnew-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+          <div><div class="wnew-rtitle">ئاڤەتەری ڕاندۆم</div><div class="wnew-rdesc">هەر یاریزانێک ئاڤەتەری جیاوازی هەیە</div></div>
+        </div>
+        <div class="wnew-row">
+          <div class="wnew-ico"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          <div><div class="wnew-rtitle">کارتی هۆڵد</div><div class="wnew-rdesc">تەنها بە هۆڵد کردن کارتەکە دەسەلمێنرێت</div></div>
+        </div>
       </div>
     </div>
-    <div class="wnew-item">
-      <div class="wnew-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-      <div>
-        <div class="wnew-item-title">ئاڤەتەری ڕاندۆم</div>
-        <div class="wnew-item-desc">هەر یاریزانێک ئاڤەتەرێکی تایبەت و جیاواز دەگرێت بە شێوەی ئەوتۆماتیکی.</div>
-      </div>
-    </div>
-    <div class="wnew-item">
-      <div class="wnew-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-      <div>
-        <div class="wnew-item-title">کارتی هۆڵد چاکترا</div>
-        <div class="wnew-item-desc">تەنها بە هۆڵد کردن کارتەکە دەسەلمێنرێت، دوگمەی دواتر چالاک دەبێت.</div>
-      </div>
-    </div>
-    <button class="wnew-btn" onclick="closeWnew()">باشە، دەزانم ✓</button>
   </div>
 </div>
 
