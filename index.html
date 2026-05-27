@@ -2,607 +2,722 @@
 <html lang="ku" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>GRAW</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>یاری وشە</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="accest/css/fre.css" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Arabic',sans-serif;-webkit-tap-highlight-color:transparent;}
+body{background:linear-gradient(135deg,#fff7cf 0%,#ffd84d 100%);min-height:100vh;overflow:hidden;color:#1b1b1b;}
+.hidden{display:none !important;}
+.screen{position:absolute;inset:0;padding:22px;overflow-y:auto;animation:fade .35s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.glass{background:rgba(255,255,255,.72);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.55);border-radius:28px;box-shadow:0 10px 35px rgba(0,0,0,.08);}
+.title{font-size:36px;font-weight:800;margin-bottom:8px;}
+.sub{font-size:15px;opacity:.7;margin-bottom:25px;}
+.input-card{padding:22px;margin-bottom:18px;}
+label{display:block;margin-bottom:10px;font-weight:700;font-size:15px;}
+input,select{width:100%;height:58px;border:none;outline:none;border-radius:18px;padding:0 18px;font-size:16px;background:#fff;transition:box-shadow .2s;}
+input:focus{box-shadow:0 0 0 3px rgba(255,188,0,.4);}
+.players-box{display:flex;flex-direction:column;gap:12px;margin-top:15px;}
+.player-item{display:flex;align-items:center;gap:14px;padding:12px;background:#fff;border-radius:20px;animation:slideIn .3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+.avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;border:3px solid #ffe066;background:#fff;flex-shrink:0;}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.player-name{font-size:17px;font-weight:700;}
 
-  <!-- Linke Web -->
-<meta property="og:title" content="GRAW" />
-<meta property="og:description" content="گرەو بکە،و یاری بکە" />
-<meta property="og:image" content="https://devmuhamad1991.github.io/F/accest/img/app.png" />
-<meta property="og:url" content="https://devmuhamad1991.github.io/F/" />
-<meta property="og:type" content="website" />
-<link rel="icon" type="image/png" href="https://devmuhamad1991.github.io/F/accest/img/app.png" />
-<link rel="apple-touch-icon" href="https://devmuhamad1991.github.io/F/accest/img/app.png" />
+/* ── Universal spring-press (applied via JS) ── */
+button{
+  -webkit-tap-highlight-color:transparent;
+  transition:
+    transform .25s cubic-bezier(.34,1.56,.64,1),
+    box-shadow .25s ease,
+    opacity .25s ease;
+  will-change:transform;
+}
+.add-btn{height:58px;padding:0 22px;border:none;border-radius:18px;background:#111;color:#fff;font-size:16px;font-weight:800;cursor:pointer;}
+.start-btn,.play-btn,.restart-btn{width:100%;height:66px;border:none;border-radius:24px;margin-top:22px;font-size:20px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#ffd400,#ffbc00);color:#111;box-shadow:0 6px 20px rgba(255,188,0,.35);}
+.dark-btn{background:#111;color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.18);}
+.category-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:20px;}
+.category{padding:20px;border-radius:28px;position:relative;overflow:hidden;min-height:170px;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1), outline .15s, box-shadow .2s;}
+.category:active{transform:scale(.96);}
+.category.active{outline:4px solid #111;transform:scale(1.03);box-shadow:0 10px 30px rgba(0,0,0,.12);}
+.category h2{font-size:23px;margin-bottom:10px;}
+.category p{font-size:14px;line-height:1.8;opacity:.7;}
+.category img{position:absolute;bottom:-10px;left:-10px;width:95px;opacity:.12;}
+.cat1{background:#fff4ba;}.cat2{background:#fff0c7;}.cat3{background:#fff7dd;}.cat4{background:#fff2a2;}
+.top-status{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
+.badge{padding:10px 18px;border-radius:100px;background:#fff;font-size:14px;font-weight:700;}
+.player-turn{font-size:30px;font-weight:800;text-align:center;margin-bottom:25px;}
+.player-turn span{color:#b88600;}
+.card-area{display:flex;justify-content:center;perspective:1200px;}
+.word-card{width:280px;height:380px;position:relative;transform-style:preserve-3d;transition:1s;}
+.word-card.flip{transform:rotateY(180deg);}
+.card-face{position:absolute;inset:0;border-radius:34px;padding:24px;backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 40px rgba(0,0,0,.12);}
+.card-front{background:linear-gradient(145deg,#fff,#ffe68b);}
+.card-back{background:linear-gradient(145deg,#111,#2b2b2b);color:#fff;transform:rotateY(180deg);}
+.card-top{display:flex;justify-content:space-between;align-items:center;}
+.avatar-big{width:74px;height:74px;border-radius:50%;overflow:hidden;background:#fff;}
+.avatar-big img{width:100%;height:100%;object-fit:cover;}
+.secret-word{font-size:34px;font-weight:800;text-align:center;line-height:1.5;}
+.card-hint{text-align:center;font-size:15px;opacity:.7;font-weight:700;}
+.next-btn{width:100%;height:66px;border:none;border-radius:24px;margin-top:30px;font-size:20px;font-weight:800;background:#111;color:#fff;opacity:.35;pointer-events:none;transition:opacity .3s,transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s;}
+.next-btn.active{opacity:1;pointer-events:auto;box-shadow:0 6px 20px rgba(0,0,0,.18);}
+.start-player-box{padding:35px 25px;border-radius:35px;text-align:center;margin-top:50px;}
+.start-avatar{width:130px;height:130px;border-radius:50%;overflow:hidden;margin:auto;border:6px solid #fff;}
+.start-avatar img{width:100%;height:100%;object-fit:cover;}
+.start-name{font-size:40px;font-weight:800;margin-top:20px;}
+.start-text{font-size:20px;opacity:.7;margin-top:8px;}
+.timer{font-size:72px;font-weight:800;margin-top:25px;text-align:center;transition:color .3s;}
+.timer-controls{display:flex;justify-content:center;gap:18px;margin-top:30px;}
+.icon-btn{width:70px;height:70px;border:none;border-radius:24px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.icon-btn svg{width:30px;height:30px;fill:#111;}
+.end-btn{background:#111;}
+.end-btn svg{fill:#fff;}
+.result-box{padding:25px;margin-top:25px;text-align:center;}
+.word-result{padding:16px;border-radius:18px;background:#fff4ba;font-size:22px;font-weight:800;margin-bottom:18px;}
+.spy-list{display:flex;flex-direction:column;gap:12px;margin-top:18px;}
+.spy-item{padding:16px;border-radius:18px;background:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;animation:slideIn .4s ease;}
+.spy-item svg{width:20px;height:20px;fill:#111;}
+.end-buttons{display:flex;flex-direction:column;gap:14px;margin-top:25px;}
+.pause-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:.3s;}
+.pause-overlay.active{opacity:1;pointer-events:auto;}
+.pause-box{background:#fff;padding:35px;border-radius:30px;text-align:center;width:300px;}
+.pause-box svg{width:55px;height:55px;fill:#111;margin-bottom:10px;}
+.pause-box h2{font-size:34px;margin-bottom:10px;}
+.pause-box p{opacity:.7;font-size:16px;}
+.resume-btn{margin-top:20px;width:100%;height:58px;border:none;border-radius:18px;background:#111;color:#fff;font-size:18px;font-weight:800;cursor:pointer;}
+.remove-player{margin-right:auto;width:42px;height:42px;border:none;border-radius:14px;background:#ff4d4d;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;line-height:1;flex-shrink:0;}
 
+/* Screen 1 top bar */
+.screen1-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.info-btn{
+  display:flex;align-items:center;gap:7px;
+  height:44px;padding:0 14px;
+  border:none;border-radius:22px;
+  background:rgba(255,255,255,.85);
+  border:2px solid rgba(0,0,0,.08);
+  cursor:pointer;
+  font-size:13px;font-weight:800;color:#111;
+  box-shadow:0 3px 10px rgba(0,0,0,.07);
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
+  white-space:nowrap;
+}
+.info-btn svg{width:18px;height:18px;fill:#111;flex-shrink:0;}
+.info-btn:active{transform:scale(.9);box-shadow:0 1px 4px rgba(0,0,0,.06);}
 
+/* Info Modal */
+.info-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:.3s;}
+.info-overlay.active{opacity:1;pointer-events:auto;}
+.info-sheet{background:#fff;border-radius:32px 32px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.1,.64,1);}
+.info-overlay.active .info-sheet{transform:translateY(0);}
+.info-handle{width:44px;height:5px;background:#e0e0e0;border-radius:10px;margin:0 auto 20px;}
+.info-title{font-size:26px;font-weight:800;margin-bottom:18px;text-align:center;}
+.info-step{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px;padding:14px;background:#fffbe8;border-radius:18px;}
+.info-num{width:36px;height:36px;border-radius:12px;background:#111;color:#ffd400;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.info-text{font-size:15px;line-height:1.9;font-weight:500;}
+.info-close{width:100%;height:58px;border:none;border-radius:18px;background:#111;color:#fff;font-size:17px;font-weight:800;cursor:pointer;margin-top:20px;transition:transform .18s cubic-bezier(.34,1.56,.64,1);}
+.info-close:active{transform:scale(.96);}
+.info-spy-badge{display:inline-block;background:#ff4d4d;color:#fff;border-radius:10px;padding:2px 10px;font-size:13px;font-weight:800;}
+.info-word-badge{display:inline-block;background:#ffd400;color:#111;border-radius:10px;padding:2px 10px;font-size:13px;font-weight:800;}
 
+/* ── What's New splash ── */
+.wnew-overlay{position:fixed;inset:0;z-index:2000;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .35s ease;}
+.wnew-overlay.active{opacity:1;pointer-events:auto;}
+.wnew-sheet{width:100%;max-width:480px;background:#111;border-radius:36px 36px 0 0;padding:28px 24px 44px;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.1,.64,1);position:relative;overflow:hidden;}
+.wnew-overlay.active .wnew-sheet{transform:translateY(0);}
+.wnew-strip{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#ffd400,#ffbc00,#fff7a0,#ffbc00,#ffd400);background-size:200% 100%;animation:shimmer 2.5s linear infinite;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.wnew-handle{width:44px;height:5px;background:rgba(255,255,255,.15);border-radius:10px;margin:0 auto 22px;}
+.wnew-tag{display:inline-flex;align-items:center;gap:6px;background:#ffd400;color:#111;font-size:12px;font-weight:800;padding:5px 12px;border-radius:100px;margin-bottom:14px;letter-spacing:.5px;}
+.wnew-tag svg{width:13px;height:13px;fill:#111;}
+.wnew-title{font-size:28px;font-weight:800;color:#fff;margin-bottom:6px;}
+.wnew-sub{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:24px;}
+.wnew-item{display:flex;align-items:flex-start;gap:14px;padding:14px;margin-bottom:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:20px;}
+.wnew-icon{width:44px;height:44px;border-radius:14px;background:#ffd400;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wnew-icon svg{width:22px;height:22px;fill:#111;}
+.wnew-item-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:3px;}
+.wnew-item-desc{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;}
+.wnew-btn{width:100%;height:62px;border:none;border-radius:22px;background:linear-gradient(135deg,#ffd400,#ffbc00);color:#111;font-size:18px;font-weight:800;cursor:pointer;margin-top:20px;}
+
+/* empty-input error */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.input-shake{ animation:shake .35s ease; }
+.input-error{
+  border:2px solid #ff4d4d !important;
+  box-shadow:0 0 0 3px rgba(255,77,77,.2) !important;
+}
+.input-err-msg{
+  display:none;
+  color:#ff4d4d;font-size:13px;font-weight:700;
+  margin-top:8px;padding:8px 14px;
+  background:rgba(255,77,77,.08);
+  border-radius:12px;
+}
+.input-err-msg.show{display:block;}
+</style>
 </head>
 <body>
-  
-<div id="splash">
-  <img src="https://devmuhamad1991.github.io/F/accest/img/app.png" alt="logo">
-</div>
 
-<div id="splash2">
-  <div class="splash2-bg">
-    
-    <!-- نووسینی گەورەی پاشمینە -->
-<div class="splash2-bigtext">
-  <div class="splash2-bigtext-inner">
-    <span>فێڵباز</span>
-    <span>گـرەو</span>
-    <span>بردنەوە</span>
-    <span>دۆران</span>
-    <span>چـێژ</span>
-    <span>متمانە</span>
-    <span>فێربوون</span>
-    <span>قوربانی</span>
-    <span>هەڵخەڵەتاندن</span>
-<span>شانس</span>
-<span>رێکەوت</span>
-<span>سەرکەوتن</span>
-<span>هەست</span>
-<span>بێ هیوا</span>
-<span>چاونەترس</span>
-<span>بازنە</span>
-<span>بەخت</span>
-<span>ئاگر</span>
-<span>خەیاڵ</span>
-<span>هەڵبژاردن</span>
-<span>پاداشت</span>
-<span>سەرنج</span>
-<span>شەڕ</span>
-<span>خۆشی</span>
-<span>ئارەزوو</span>
-<span>لێهاتوویی</span>
-<span>کێبڕکێ</span>
-<span>تاقیکردنەوە</span>
-<span>یاری</span>
-<span>ئاڵوگۆڕ</span>
-<span>چارەنووس</span>
-<span>گەڕان</span>
-  </div>
-</div>
-
-
-    <!-- کارتی سپی لە خوارەوە -->
-    <div class="splash2-card">
-      <div class="splash2-card-emoji">🎉</div>
-      <div class="splash2-card-title">بەخێربێیت بۆ گرەو!</div>
-      <div class="splash2-card-sub">گرەو هاورێ و خێزانمان کۆدەکاتەوە — بە خەندە، خۆشی و پێشبڕکێ!</div>
-      <button class="splash2-card-btn" 
-        ontouchstart="this.style.transform='scale(0.96)'; vibrate();"
-        ontouchend="this.style.transform='scale(1)'; setTimeout(()=>closeSplash2(), 150);">
-        بـا بـڕوا
-      </button>
-<div class="splash2-card-sub2" onclick="openacclogin()">
-  هەژمارت هەیە؟ بچۆرە ژوورەوە
-</div>
-
+<!-- SCREEN 1 -->
+<section class="screen" id="screen1">
+  <div class="screen1-top">
+    <div>
+      <div class="title">یاری وشە</div>
+      <div class="sub">یارییەکی مۆدێرن بۆ هاورێکانت</div>
     </div>
-  </div>
-</div>
-
-<!-- ══════════ ACC ══════════ -->
-<div id="acc-modal" class="modal-overlay" onclick="closeAccount()">
-  <div class="acc-login-page" onclick="event.stopPropagation()">
-
-    <div class="acc-close-btn" onclick="closeAccount()">
-      <span>×</span>
-    </div>
-
-    <div class="acc-content">
-      <div class="acc-logo-box">
-        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8">
-          <path stroke-linecap="round" stroke-linejoin="round"
-          d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0ZM4.5 20.118a7.5 7.5 0 0115 0"/>
-        </svg>
-      </div>
-      <h1 class="acc-title">هەژمارێک دروست بکە</h1>
-      <p class="acc-desc">
-        ئاستەکانت پاراستوو بمێننەوە،
-        خۆت بخەرە ناو پێشبڕکێی یاریزانەکان
-      </p>
-      <div class="acc-btns">
-        <button class="acc-btn acc-google-btn">
-          <div class="acc-google-icon">G</div>
-          بە گووگڵ بچۆ ژوورەوە
-        </button>
-        <button class="acc-btn acc-apple-btn">
-          <div class="acc-apple-icon"></div>
-          بە ئەپڵ بچۆ ژوورەوە
-        </button>
-      </div>
-      <div class="acc-footer">
-        بە بەردەوامبوون تۆ مەرجەکان و
-        سیاسەتی تایبەتمەندی قبوڵ دەکەیت
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-<!-- ══════════ SETUP ══════════ -->
-<!-- ══════════ SETUP ══════════ -->
-<!-- ══════════ SETUP ══════════ -->
-<div id="s-setup" class="screen active">
-
-  <!-- TOPBAR -->
-  <div class="setup-topbar">
-<button class="setup-menu-btn" onclick="openSettings()">
-
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="white" stroke-width="1.8"/>
-    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="white" stroke-width="1.8"/>
-  </svg>
-</button>
-
-
-<button class="setup-profile-btn" 
-  ontouchstart="this.style.transform='scale(0.88)'; vibrate();"
-ontouchend="this.style.transform='scale(1)'; setTimeout(()=>openProfile(), 150);"
-  style="transition: transform 0.2s cubic-bezier(.3,1.4,.5,1);">
-
-      <img src="accest/img/profile.png" alt="" onerror="this.style.display='none'">
-      <svg class="profile-default-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <circle cx="10" cy="7" r="4" stroke="white" stroke-width="1.6"/>
-        <path d="M2 18c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-      </svg>
-      <div class="profile-crown">
-        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-          <path d="M1 7L2.5 2L5 4.5L7.5 2L9 7H1Z" fill="#f5c842"/>
-        </svg>
-      </div>
+    <button class="info-btn" onclick="openInfo()">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      چۆن یاری بکەین؟
     </button>
   </div>
+  <div class="glass input-card">
+    <label>ناوی یاریزانەکان</label>
+    <div style="display:flex;gap:10px;">
+      <input type="text" id="playerInput" placeholder="ناوی یاریزان" onkeydown="if(event.key==='Enter')addPlayer()">
+      <button class="add-btn" onclick="addPlayer()">زیادکردن</button>
+    </div>
+    <div class="input-err-msg" id="inputErrMsg">⚠ تکایە ناوی یاریزان بنووسە</div>
+    <div class="players-box" id="playersBox"></div>
+  </div>
+  <div class="glass input-card">
+    <label>ژمارەی سیخور</label>
+    <select id="spyCount">
+      <option value="1">1 سیخور</option>
+      <option value="2">2 سیخور</option>
+      <option value="3">3 سیخور</option>
+    </select>
+    <br><br>
+    <label>کاتی یاری</label>
+    <select id="gameTime">
+      <option value="60">1 خولەک</option>
+      <option value="120">2 خولەک</option>
+      <option value="180">3 خولەک</option>
+      <option value="300">5 خولەک</option>
+    </select>
+  </div>
+  <button class="start-btn" onclick="goCategory()">دەستپێکردنی یاری</button>
+</section>
 
-  <!-- HERO -->
-<div class="setup-hero">
-  <div class="hero-info">
-    <div class="hero-logo-col">
-      <span class="hero-title">فریودەر</span>
+<!-- SCREEN 2 -->
+<section class="screen hidden" id="screen2">
+  <div class="title">کەتەگۆری</div>
+  <div class="sub">چەند کەتەگۆرییەک هەڵبژێرە</div>
+  <div class="category-grid">
+    <div class="category cat1" onclick="selectCategory(this,'Movies')">
+      <h2>فیلم</h2><p>فیلم و دراما</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/2503/2503508.png">
+    </div>
+    <div class="category cat2" onclick="selectCategory(this,'Countries')">
+      <h2>وڵات</h2><p>شار و وڵات</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/201/201623.png">
+    </div>
+    <div class="category cat3" onclick="selectCategory(this,'Food')">
+      <h2>خواردن</h2><p>خواردن و شیرینی</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/5787/5787016.png">
+    </div>
+    <div class="category cat4" onclick="selectCategory(this,'Games')">
+      <h2>یاری</h2><p>ناوی یارییەکان</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/686/686589.png">
     </div>
   </div>
-</div>
+  <button class="start-btn" onclick="startCards()">بەردەوامبە</button>
+</section>
 
-
-  <!-- PLAYERS CARD -->
-  <div class="setup-card">
-    <div class="setup-card-header">
-      <div class="setup-card-title">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <circle cx="6.5" cy="5.5" r="3" stroke="#888" stroke-width="1.5"/>
-          <circle cx="11.5" cy="5.5" r="3" stroke="#888" stroke-width="1.5"/>
-          <path d="M1 16c0-3 2.5-5 5.5-5M17 16c0-3-2.5-5-5.5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        یاریزانەکان
+<!-- SCREEN 3 -->
+<section class="screen hidden" id="screen3">
+  <div class="top-status">
+    <div class="badge" id="playerCounter"></div>
+    <div class="badge" id="categoryBadge"></div>
+  </div>
+  <div class="player-turn">کارتی <span id="turnPlayer"></span></div>
+  <div class="card-area">
+    <div class="word-card" id="wordCard">
+      <div class="card-face card-front">
+        <div class="card-top">
+          <div>کارت</div>
+          <div class="avatar-big" id="avatarFront"></div>
+        </div>
+        <div class="secret-word">؟</div>
+        <div class="card-hint">دەستت لەسەر کارتەکە راگرە</div>
       </div>
-      <button class="setup-add-btn" onclick="addPlayer(); sndClick();">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        زیادکردنی یاریزان
+      <div class="card-face card-back">
+        <div class="card-top">
+          <div id="roleText"></div>
+          <div class="avatar-big" id="avatarBack"></div>
+        </div>
+        <div class="secret-word" id="secretWord"></div>
+        <div class="card-hint">وشەکە لەبیر بگرە</div>
+      </div>
+    </div>
+  </div>
+  <button class="next-btn" id="nextBtn" onclick="nextPlayer()">یاریزانی دواتر</button>
+</section>
+
+<!-- SCREEN 4 -->
+<section class="screen hidden" id="screen4">
+  <div class="title">دەستپێکەر</div>
+  <div class="glass start-player-box">
+    <div class="start-avatar"><img id="starterAvatar" src=""></div>
+    <div class="start-name" id="starterName"></div>
+    <div class="start-text">تۆ دەست پێ بکە</div>
+    <button class="play-btn" id="startRoundBtn" onclick="startTimer()">دەستپێکردنی خول</button>
+    <div class="timer" id="timer">00:00</div>
+    <div class="timer-controls hidden" id="timerControls">
+      <button class="icon-btn" onclick="togglePause()">
+        <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+      <button class="icon-btn end-btn" onclick="finishRound()">
+        <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14"/></svg>
+      </button>
+      <button class="icon-btn" onclick="restartTimer()">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/></svg>
       </button>
     </div>
-    <div id="player-list"></div>
   </div>
+</section>
 
-  <!-- CONTINUE BTN -->
-  <div class="setup-bottom">
-    <button class="btn-gold" onclick="goToCatSelect(); sndBtn();">
-      <img src="accest/img/rocket.png" class="btn-gold-icon-img" alt=""
-        onerror="this.outerHTML='<svg width=20 height=20 viewBox=\'0 0 20 20\' fill=\'none\'><path d=\'M12 2L4 11h6l-2 7 8-9h-6l2-7z\' fill=\'rgba(0,0,0,0.4)\'/></svg>'">
-      <div class="btn-gold-text">
-        <span class="btn-gold-main">بەردەوام یوون</span>
-        <span class="btn-gold-sub">ئامادەیە بۆ یاری!</span>
+<!-- SCREEN 5 -->
+<section class="screen hidden" id="screen5">
+  <div class="title">کۆتایی خول</div>
+  <div class="glass result-box">
+    <div class="word-result" id="wordResult"></div>
+    <div class="spy-list" id="spyList"></div>
+    <div class="end-buttons">
+      <button class="restart-btn" onclick="playAgain()">دووبارە یاری بکەن</button>
+      <button class="restart-btn dark-btn" onclick="resetAll()">یاریزانە نوێکان تۆمار بکە</button>
+    </div>
+  </div>
+</section>
+
+<!-- PAUSE -->
+<div class="pause-overlay" id="pauseOverlay">
+  <div class="pause-box">
+    <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+    <h2>وەستاوە</h2>
+    <p>کاتەکە وەستاوە</p>
+    <button class="resume-btn" onclick="togglePause()">بەردەوامبە</button>
+  </div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="info-overlay" id="infoOverlay" onclick="closeInfoOutside(event)">
+  <div class="info-sheet">
+    <div class="info-handle"></div>
+    <div class="info-title">⚡ چۆن یاری بکەین؟</div>
+
+    <div class="info-step">
+      <div class="info-num">١</div>
+      <div class="info-text">ناوی هەموو یاریزانەکان بنووسە و ژمارەی <span class="info-spy-badge">سیخور</span> و کاتی یاریش دیاری بکە.</div>
+    </div>
+    <div class="info-step">
+      <div class="info-num">٢</div>
+      <div class="info-text">کەتەگۆریی دڵخوازت هەڵبژێرە — فیلم، وڵات، خواردن یا یاری.</div>
+    </div>
+    <div class="info-step">
+      <div class="info-num">٣</div>
+      <div class="info-text">هەر یاریزانێک مۆبایلەکەی دەستی بگرێت و دەستی لەسەر کارتەکە راگرێت تا <span class="info-word-badge">وشەکە</span> ببینێت — کەسی تر نەیبینێت!</div>
+    </div>
+    <div class="info-step">
+      <div class="info-num">٤</div>
+      <div class="info-text"><span class="info-spy-badge">سیخور</span> وشەکەی نازانێت. یاریزانی ئاسایی دەبێت وشەکە وەسف بکات بەبێ ئەوەی ڕاستەوخۆ بیبێژێت.</div>
+    </div>
+    <div class="info-step">
+      <div class="info-num">٥</div>
+      <div class="info-text">کاتەکە تەواو بوو، گروپەکە دەنگی دەدات بۆ ئەوەی سیخورەکە دیاری بکەن. ئەگەر سیخورەکە دیاری کرا — یاریزانی ئاسایی بردن! ئەگەر نەیانکرد — <span class="info-spy-badge">سیخور</span> برد!</div>
+    </div>
+
+    <button class="info-close" onclick="closeInfo()">تێگەیشتم ✓</button>
+  </div>
+</div>
+
+<script>
+const avatars = [
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Zara",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Titan",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Blaze",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Nova",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Cleo",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Orion",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Luna",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Axel",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Sage",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Flynn",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Ember",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Dusk",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=River",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Cedar",
+  "https://api.dicebear.com/7.x/adventurer/svg?seed=Wren"
+];
+
+const words = {
+  Movies:["Interstellar","Avatar","Batman","Joker","Titanic","Venom"],
+  Countries:["Iraq","Japan","Brazil","France","Italy","Egypt"],
+  Food:["Burger","Pizza","Kebab","Cake","Pasta","Shawarma"],
+  Games:["Minecraft","PUBG","Valorant","FIFA","Fortnite","Roblox"]
+};
+
+let players = [];
+// Track which avatar seed index each player uses (random, no repeats)
+let playerAvatarIndexes = [];
+let selectedCategories = [];
+let selectedCategory = "";
+let currentIndex = 0;
+let spyIndexes = [];
+let gameWord = "";
+let usedWords = [];
+let holdTimer;
+let timerInterval;
+let currentTime = 0;
+let timerStarted = false;
+let isPaused = false;
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+
+/* Info modal */
+function openInfo(){
+  document.getElementById("infoOverlay").classList.add("active");
+}
+function closeInfo(){
+  document.getElementById("infoOverlay").classList.remove("active");
+}
+function closeInfoOutside(e){
+  if(e.target === document.getElementById("infoOverlay")) closeInfo();
+}
+
+/* Random avatar that hasn't been used yet */
+function getRandomAvatar(){
+  const used = new Set(playerAvatarIndexes);
+  const available = avatars.map((_,i)=>i).filter(i=>!used.has(i));
+  if(available.length === 0){
+    // All used, just pick any random
+    return Math.floor(Math.random()*avatars.length);
+  }
+  return available[Math.floor(Math.random()*available.length)];
+}
+
+function addPlayer(){
+  const input = document.getElementById("playerInput");
+  const errMsg = document.getElementById("inputErrMsg");
+  const value = input.value.trim();
+  if(!value){
+    // shake + red border + error message
+    input.classList.remove("input-shake","input-error");
+    errMsg.classList.remove("show");
+    void input.offsetWidth; // reflow to restart animation
+    input.classList.add("input-shake","input-error");
+    errMsg.classList.add("show");
+    input.focus();
+    // auto-clear error after user starts typing
+    input.addEventListener("input", ()=>{
+      input.classList.remove("input-error");
+      errMsg.classList.remove("show");
+    }, {once:true});
+    return;
+  }
+  input.classList.remove("input-error");
+  errMsg.classList.remove("show");
+  if(players.includes(value)){ alert("ئەم یاریزانە هەیە"); return; }
+  if(players.length >= 10){ alert("زیاتر لە 10 یاریزان نابێت"); return; }
+  players.push(value);
+  playerAvatarIndexes.push(getRandomAvatar());
+  renderPlayers();
+  input.value = "";
+}
+
+function removePlayer(index){
+  players.splice(index,1);
+  playerAvatarIndexes.splice(index,1);
+  renderPlayers();
+}
+
+function renderPlayers(){
+  const box = document.getElementById("playersBox");
+  box.innerHTML = "";
+  players.forEach((p,i)=>{
+    const avatarUrl = avatars[playerAvatarIndexes[i]];
+    box.innerHTML += `
+      <div class="player-item">
+        <div class="avatar"><img src="${avatarUrl}"></div>
+        <div class="player-name">${p}</div>
+        <button class="remove-player" onclick="removePlayer(${i})">&#x2715;</button>
+      </div>`;
+  });
+}
+
+function goCategory(){
+  if(players.length < 3){ alert("کەمترین ژمارە 3 یاریزانە"); return; }
+  showScreen("screen2");
+}
+
+function selectCategory(el,cat){
+  el.classList.toggle("active");
+  if(selectedCategories.includes(cat)){
+    selectedCategories = selectedCategories.filter(c=>c!==cat);
+  } else {
+    selectedCategories.push(cat);
+  }
+}
+
+function prepareGame(){
+  selectedCategory = selectedCategories[Math.floor(Math.random()*selectedCategories.length)];
+  let availableWords = words[selectedCategory].filter(w=>!usedWords.includes(w));
+  if(availableWords.length === 0){ usedWords = []; availableWords = words[selectedCategory]; }
+  gameWord = availableWords[Math.floor(Math.random()*availableWords.length)];
+  usedWords.push(gameWord);
+
+  spyIndexes = [];
+  const spyCount = parseInt(document.getElementById("spyCount").value);
+  while(spyIndexes.length < spyCount){
+    const rand = Math.floor(Math.random()*players.length);
+    if(!spyIndexes.includes(rand)) spyIndexes.push(rand);
+  }
+  currentIndex = 0;
+}
+
+function startCards(){
+  if(selectedCategories.length === 0){ alert("لانیکەم یەک کەتەگۆری هەڵبژێرە"); return; }
+  prepareGame();
+  showScreen("screen3");
+  showPlayer();
+}
+
+function showPlayer(){
+  cardWasOpened = false;
+  document.getElementById("wordCard").classList.remove("flip");
+  document.getElementById("nextBtn").classList.remove("active");
+  document.getElementById("turnPlayer").innerText = players[currentIndex];
+  document.getElementById("playerCounter").innerText = `${currentIndex+1} / ${players.length}`;
+  document.getElementById("categoryBadge").innerText = selectedCategory;
+  const avatarUrl = avatars[playerAvatarIndexes[currentIndex]];
+  document.getElementById("avatarFront").innerHTML = `<img src="${avatarUrl}">`;
+  document.getElementById("avatarBack").innerHTML = `<img src="${avatarUrl}">`;
+  if(spyIndexes.includes(currentIndex)){
+    document.getElementById("roleText").innerText = "سیخور";
+    document.getElementById("secretWord").innerText = "تۆ سیخوریت";
+  } else {
+    document.getElementById("roleText").innerText = "وشە";
+    document.getElementById("secretWord").innerText = gameWord;
+  }
+}
+
+// Track whether card was actually held open
+let cardWasOpened = false;
+
+function openCard(){
+  cardWasOpened = true;
+  document.getElementById("wordCard").classList.add("flip");
+}
+
+function closeCard(){
+  document.getElementById("wordCard").classList.remove("flip");
+  if(cardWasOpened){
+    document.getElementById("nextBtn").classList.add("active");
+  }
+  cardWasOpened = false;
+}
+
+const card = document.getElementById("wordCard");
+card.addEventListener("touchstart", e=>{
+  e.preventDefault();
+  cardWasOpened = false;
+  holdTimer = setTimeout(openCard, 400);
+},{passive:false});
+card.addEventListener("touchend", e=>{
+  e.preventDefault();
+  clearTimeout(holdTimer);
+  if(cardWasOpened) closeCard();
+},{passive:false});
+card.addEventListener("mousedown", ()=>{
+  cardWasOpened = false;
+  holdTimer = setTimeout(openCard, 400);
+});
+card.addEventListener("mouseup", ()=>{
+  clearTimeout(holdTimer);
+  if(cardWasOpened) closeCard();
+});
+card.addEventListener("mouseleave", ()=>{
+  clearTimeout(holdTimer);
+  if(cardWasOpened) closeCard();
+});
+
+function nextPlayer(){
+  currentIndex++;
+  if(currentIndex >= players.length){ showStarter(); return; }
+  showPlayer();
+}
+
+function showStarter(){
+  showScreen("screen4");
+  const starter = Math.floor(Math.random()*players.length);
+  document.getElementById("starterName").innerText = players[starter];
+  document.getElementById("starterAvatar").src = avatars[playerAvatarIndexes[starter]];
+  resetTimerUI();
+}
+
+function resetTimerUI(){
+  clearInterval(timerInterval);
+  timerStarted = false;
+  isPaused = false;
+  document.getElementById("pauseOverlay").classList.remove("active");
+  document.getElementById("timer").innerText = "00:00";
+  document.getElementById("timer").style.color = "#111";
+  document.getElementById("startRoundBtn").classList.remove("hidden");
+  document.getElementById("timerControls").classList.add("hidden");
+}
+
+function startTimer(){
+  if(timerStarted) return;
+  timerStarted = true;
+  document.getElementById("startRoundBtn").classList.add("hidden");
+  document.getElementById("timerControls").classList.remove("hidden");
+  currentTime = parseInt(document.getElementById("gameTime").value);
+  updateTimer(currentTime);
+  timerInterval = setInterval(()=>{
+    if(isPaused) return;
+    currentTime--;
+    updateTimer(currentTime);
+    if(currentTime <= 0) finishRound();
+  },1000);
+}
+
+function togglePause(){
+  isPaused = !isPaused;
+  document.getElementById("pauseOverlay").classList.toggle("active", isPaused);
+}
+
+function restartTimer(){
+  clearInterval(timerInterval);
+  timerStarted = false;
+  startTimer();
+}
+
+function finishRound(){
+  clearInterval(timerInterval);
+  document.getElementById("timer").innerText = "END";
+  document.getElementById("timer").style.color = "#d60000";
+  showResults();
+}
+
+function updateTimer(sec){
+  const m = Math.floor(sec/60).toString().padStart(2,"0");
+  const s = (sec%60).toString().padStart(2,"0");
+  document.getElementById("timer").innerText = `${m}:${s}`;
+}
+
+function showResults(){
+  showScreen("screen5");
+  document.getElementById("wordResult").innerText = `وشەکە: ${gameWord}`;
+  const list = document.getElementById("spyList");
+  list.innerHTML = "";
+  spyIndexes.forEach(i=>{
+    list.innerHTML += `
+      <div class="spy-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+        ${players[i]}
+      </div>`;
+  });
+}
+
+function playAgain(){
+  prepareGame();
+  showScreen("screen3");
+  showPlayer();
+}
+
+function resetAll(){
+  // Keep players, avatars and categories — just reset game state
+  spyIndexes = [];
+  usedWords = [];
+  document.getElementById("spyList").innerHTML = "";
+  showScreen("screen1");
+}
+
+/* ── Spring press: works on both touch and mouse ── */
+function pressBtn(btn){
+  if(!btn || btn.disabled) return;
+  btn.style.transition = "transform .08s ease";
+  btn.style.transform = "scale(0.86)";
+}
+function releaseBtn(btn){
+  if(!btn) return;
+  // small delay so the press is always visible
+  setTimeout(()=>{
+    btn.style.transition = "transform .4s cubic-bezier(.34,1.56,.64,1)";
+    btn.style.transform = "scale(1)";
+  }, 80);
+}
+// Touch devices
+document.addEventListener("touchstart", e=>{
+  const btn = e.target.closest("button");
+  if(btn) pressBtn(btn);
+},{passive:true});
+document.addEventListener("touchend", e=>{
+  const btn = e.target.closest("button");
+  if(btn) releaseBtn(btn);
+},{passive:true});
+document.addEventListener("touchcancel", e=>{
+  const btn = e.target.closest("button");
+  if(btn) releaseBtn(btn);
+},{passive:true});
+// Mouse
+document.addEventListener("mousedown", e=>{
+  const btn = e.target.closest("button");
+  if(btn) pressBtn(btn);
+});
+document.addEventListener("mouseup", e=>{
+  const btn = e.target.closest("button");
+  if(btn) releaseBtn(btn);
+});
+
+/* ── What's New: show every time ── */
+function closeWnew(){
+  document.getElementById("wnewOverlay").classList.remove("active");
+}
+setTimeout(()=>{
+  document.getElementById("wnewOverlay").classList.add("active");
+}, 600);
+</script>
+
+<!-- WHAT'S NEW SPLASH -->
+<div class="wnew-overlay" id="wnewOverlay">
+  <div class="wnew-sheet">
+    <div class="wnew-strip"></div>
+    <div class="wnew-handle"></div>
+    <div class="wnew-tag">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+      ئەپدەیتی نوێ
+    </div>
+    <div class="wnew-title">چی نوێ هاتووە؟ 🎉</div>
+    <div class="wnew-sub">وەرژنی ١.٢ — نوێترین گۆڕانکارییەکان</div>
+    <div class="wnew-item">
+      <div class="wnew-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+      <div>
+        <div class="wnew-item-title">ڕێنمایی یاری زیادکرا</div>
+        <div class="wnew-item-desc">دوگمەی "چۆن یاری بکەین؟" زیادکرا — هەر کاتێک دەتوانیت یاساکان بخوێنیتەوە.</div>
       </div>
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <path d="M7 4l5 5-5 5" stroke="rgba(0,0,0,0.35)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-  </div>
-
-</div>
-
-<!-- ══════════ PROFILE ══════════ -->
-<div id="s-profile" class="screen">
-  <div class="topbar" style="justify-content:flex-start;gap:16px;padding-top:52px">
- <button onclick="show('s-setup');sndBtn();" style="background:rgba(255,255,255,0.1);border:none;cursor:pointer;color:var(--text);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path d="M13 16l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-    <div style="font-size:18px;font-weight:700;color:white">پرۆفایل</div>
-  </div>
-
-  <!-- AVATAR -->
-  <div style="display:flex;flex-direction:column;align-items:center;margin:20px 0 32px;">
-    <div style="position:relative;width:120px;height:120px;">
-      <img id="profile-avatar" src="accest/img/avatars/1.png" 
-        style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.1);">
-<div onclick="openAvatarSheet()" style="position:absolute;bottom:4px;right:4px;width:36px;height:36px;background:#222;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #333;">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    </div>
+    <div class="wnew-item">
+      <div class="wnew-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+      <div>
+        <div class="wnew-item-title">ئاڤەتەری ڕاندۆم</div>
+        <div class="wnew-item-desc">هەر یاریزانێک ئاڤەتەرێکی تایبەت و جیاواز دەگرێت بە شێوەی ئەوتۆماتیکی.</div>
       </div>
     </div>
-  </div>
-
-  <!-- NAME -->
-<div style="width:100%;background:var(--surface);border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-  <span style="font-size:14px;color:var(--muted);flex-shrink:0">ناوت بنووسە:</span>
-  <input id="profile-name-input" type="text" value="زەردۆ"
-    oninput="updateProfileName(this.value)"
-style="background:transparent;border:none;outline:none;color:var(--text);font-family:'Noto Kufi Arabic',sans-serif;font-size:14px;font-weight:600;text-align:right;direction:rtl;flex:1;padding:0 8px;">
-
-
-</div>
-
-
-  <!-- PREMIUM CARD -->
-  <div style="width:100%;border-radius:20px;padding:20px;background:linear-gradient(135deg,#2d1b4e,#4a1a3a,#6b2d1a);border:1px solid rgba(180,100,255,0.3);position:relative;overflow:hidden;">
-    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(150,50,255,0.15),rgba(255,100,50,0.1));pointer-events:none;"></div>
-    <div style="font-size:20px;font-weight:900;color:white;margin-bottom:8px;">
-      ✨ Premium Account
-    </div>
-    <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:20px;">
-      Luxury Profile & Game Settings<br>
-      دەستگەیشتن بە هەموو تایبەتمەندییەکان
-    </div>
-    <button style="width:100%;padding:14px;border:none;border-radius:50px;background:linear-gradient(135deg,#c850f0,#ff8c42);color:white;font-family:'Noto Kufi Arabic',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">
-      دەستپێ بکە
-    </button>
-  </div>
-
-</div>
-
-
-<!-- ══════════ CAT SELECT ══════════ -->
-<div id="s-catselect" class="screen">
-  <div class="topbar" style="justify-content:flex-start;gap:16px;padding-top:52px">
-    <button onclick="show('s-setup');sndBtn();" style="background:none;border:none;cursor:pointer;color:var(--text)">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-    <div class="brand" style="font-size:22px">جۆری وشە</div>
-  </div>
-  <div class="screen-sub">یەک یان زیاتر هەڵبژێرە</div>
-  <div class="cats-grid" id="cats-grid"></div>
-  <div class="section-gap"></div>
-  <button class="btn btn-primary" id="cat-next-btn" onclick="goToSettings()" style="display:none">
-    <span id="cat-next-label">بەردەوام بوون</span>
-  </button>
-  <div style="height:8px"></div>
-</div>
-
-<!-- ══════════ SETTINGS ══════════ -->
-<div id="s-settings" class="screen">
-  <div class="topbar" style="justify-content:flex-start;gap:16px;padding-top:52px">
-    <button onclick="show('s-catselect');sndBtn();" style="background:none;border:none;cursor:pointer;color:var(--text)">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-    <div class="brand" style="font-size:22px">ڕێکخستنەکان</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">فریودەرەکان</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">چەند فریودەر دەبێت؟</div>
-<div id="spy-counter-wrap" style="display:flex;align-items:center;justify-content:center;gap:32px">
-      <button class="counter-btn" onclick="changeSpyCount(-1)">−</button>
-      <span id="spy-count-display" style="font-size:32px;font-weight:900;min-width:40px;text-align:center">1</span>
-      <button class="counter-btn" onclick="changeSpyCount(1)">+</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">کاتی گفتوگۆ</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">چەند چرکە؟</div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:32px">
-      <button class="counter-btn" onclick="changeTimer(-30)">−</button>
-      <span id="timer-display" style="font-size:32px;font-weight:900;min-width:80px;text-align:center">1:00</span>
-      <button class="counter-btn" onclick="changeTimer(30)">+</button>
-    </div>
-  </div>
-  
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-  <div>
-    <div style="font-size:14px;font-weight:700">ئۆتۆماتیک</div>
-    <div style="font-size:12px;color:var(--muted)">ژمارەی فریودەر ئۆتۆماتیکی دیاری بکات</div>
-  </div>
-  <div class="toggle-wrap" onclick="toggleAutoSpy()">
-    <div class="toggle-track" id="auto-spy-track">
-      <div class="toggle-thumb" id="auto-spy-thumb"></div>
-    </div>
-  </div>
-</div>
-
-
-  <div class="section-gap"></div>
-  <button class="btn btn-primary" onclick="startGame()">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M4 2l10 6-10 6V2z" fill="white"/>
-    </svg>
-    دەستپێکردنی یاری
-  </button>
-  <div style="height:8px"></div>
-</div>
-
-
-
-
-<!-- ══════════ PASS ══════════ -->
-<div id="s-pass" class="screen">
-  <div class="topbar" style="padding-top:44px; padding-bottom:20px;"></div>
-
-  <div class="pass-hero">
-    <div class="pass-avatar">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="12" r="6" fill="white" opacity=".9"/>
-        <path d="M4 28c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity=".9"/>
-      </svg>
-    </div>
-    <div class="pass-name" id="pass-name">---</div>
-    <div class="pass-sub">نۆبەتی تۆیە</div>
-  </div>
-
-  <div class="warn-box">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0">
-      <path d="M8 1L15 14H1L8 1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-      <path d="M8 6v4M8 11.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    مۆبایلەکە دواتر بدەرەوە — کەسی تر نەبینێت
-  </div>
-
-  <div class="tap-card" onclick="showCard()">
-    <div class="tap-icon-wrap">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <circle cx="14" cy="10" r="5" stroke="#38d9b4" stroke-width="2"/>
-        <path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#38d9b4" stroke-width="2" stroke-linecap="round"/>
-        <path d="M20 16l2 2 4-4" stroke="#38d9b4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <div class="tap-text">تەنیا تۆ ببینە<br>بێ کەسی تر</div>
-  </div>
-</div>
-
-
-<!-- ══════════ CARD REVEAL ══════════ -->
-<div id="s-card" class="screen">
-  <div class="topbar" style="padding-top:44px; padding-bottom:16px;"></div>
-  <div class="progress-wrap" id="prog-dots"></div>
-
-  <!-- flip scene -->
-  <div class="flip-scene">
-    <div class="flip-card" id="flip-card">
-
-      <!-- front (locked) -->
-      <div class="flip-front" onclick="flipCard()">
-        <div class="flip-front-icon">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <rect x="6" y="12" width="16" height="12" rx="3" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
-            <path d="M10 12V9a4 4 0 018 0v3" stroke="rgba(255,255,255,.3)" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="14" cy="18" r="2" fill="rgba(255,255,255,.3)"/>
-          </svg>
-        </div>
-        <div class="flip-front-label">کلیک بکە ببینە</div>
-      </div>
-
-      <!-- back (card content) -->
-      <div class="flip-back" id="flip-back">
-        <div class="reveal-badge" id="reveal-badge">---</div>
-        <div class="reveal-word" id="reveal-word">---</div>
-        <div class="reveal-hint" id="reveal-hint"></div>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="warn-box" id="card-warn">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0">
-      <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
-      <path d="M8 5v4M8 10.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    <span id="card-warn-text"></span>
-  </div>
-
-  <button class="btn btn-primary" id="card-next-btn" onclick="nextPlayer()">داهاتوو</button>
-</div>
-
-<!-- ══════════ DISCUSS ══════════ -->
-<div id="s-discuss" class="screen">
-  <div class="topbar"><div class="brand" style="font-size:22px">گفتوگۆ</div></div>
-
-  <div class="screen-sub" style="margin-top:-10px">
-    هەریەک لەبارەی وشەی خۆی قسە بکات<br>بەبێ ئاشکراکردن
-  </div>
-  <div id="discuss-sub" style="font-size:16px;font-weight:700;color:var(--accent);text-align:center;margin-bottom:16px"></div>
-
-
-  <div class="timer-ring-wrap">
-    <svg class="timer-svg" width="140" height="140" viewBox="0 0 140 140">
-      <circle class="timer-track" cx="70" cy="70" r="54"/>
-      <circle class="timer-prog" id="timer-prog" cx="70" cy="70" r="54"
-              stroke-dasharray="339.3" stroke-dashoffset="0"/>
-    </svg>
-    <div class="timer-overlay">
-      <div class="timer-num-big" id="timer-num">60</div>
-      <div class="timer-label-sm">چرکە</div>
-    </div>
-  </div>
-
-  <button class="btn btn-primary" onclick="goToVote()">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <rect x="2" y="2" width="12" height="12" rx="3" stroke="white" stroke-width="1.5"/>
-      <path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    دەنگدان دەستپێ بکات
-  </button>
-  <button class="btn btn-secondary" style="margin-top:10px" onclick="skipTimer()">بێ کات بروو بۆ دەنگدان</button>
-</div>
-
-<!-- ══════════ VOTE ══════════ -->
-<div id="s-vote" class="screen">
-  <div class="topbar"><div class="brand" style="font-size:22px">دەنگدان</div></div>
-  <div class="voter-tag" id="voter-tag">--- دەنگ دەدات</div>
-  <div class="vote-list" id="vote-list"></div>
-  <button class="btn btn-primary" id="vote-btn" onclick="confirmVote()" disabled>دڵنیاکردنەوەی دەنگ</button>
-</div>
-
-<!-- ══════════ TALLY ══════════ -->
-<div id="s-tally" class="screen">
-  <div class="topbar"><div class="brand" style="font-size:22px">ئەنجامی دەنگ</div></div>
-  <div class="tally-rows" id="tally-rows"></div>
-  <div id="tally-winner" style="width:100%;text-align:center;font-size:15px;color:var(--accent);font-weight:700;margin-bottom:20px;"></div>
-  <button class="btn btn-primary" onclick="showResult()">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M3 8l4 4 6-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    دەرئەنجامی کۆتایی
-  </button>
-</div>
-
-<!-- ══════════ RESULT ══════════ -->
-<div id="s-result" class="screen">
-  <div class="topbar"></div>
-  <div id="confetti-wrap" class="confetti-wrap"></div>
-
-  <div class="result-hero" id="result-hero">
-    <div class="result-icon-wrap" id="result-icon-wrap">
-      <svg id="result-icon-svg" width="40" height="40" viewBox="0 0 40 40" fill="none"></svg>
-    </div>
-    <div class="result-title-big" id="result-title">---</div>
-    <div class="result-sub" id="result-sub">---</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">ئاشکراکردنی هەموو کارتەکان</div>
-    <div class="reveal-list" id="reveal-list"></div>
-  </div>
-
-  <div class="section-gap"></div>
-  <button class="btn btn-primary" onclick="restartSame()">یاری تازە — هەمان کەسان</button>
-  <button class="btn btn-secondary" style="margin-top:10px" onclick="goSetup()">گەڕانەوە بۆ دەستپێک</button>
-  <div style="height:8px"></div>
-</div>
-
-<!-- AVATAR PICKER -->
-<div id="avatar-sheet" style="display:none;position:fixed;inset:0;z-index:99999;">
-  <div onclick="closeAvatarSheet()" style="position:absolute;inset:0;background:rgba(0,0,0,0.6);"></div>
-  <div style="position:absolute;bottom:0;left:0;right:0;background:#1a1a2e;border-radius:24px 24px 0 0;padding:20px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-      <button onclick="closeAvatarSheet()" style="width:36px;height:36px;background:rgba(255,255,255,0.1);border:none;border-radius:50%;color:white;font-size:18px;cursor:pointer;">✕</button>
-      <div style="font-size:16px;font-weight:700;color:white;">ئەڤاتار هەڵبژێرە</div>
-      <button onclick="confirmAvatar()" style="width:36px;height:36px;background:#4d8cff;border:none;border-radius:50%;color:white;font-size:18px;cursor:pointer;">✓</button>
-    </div>
-    <div id="avatar-grid" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;"></div>
-  </div>
-</div>
-
-<!-- ══════════ SETTINGS MODAL ══════════ -->
-<div id="settings-modal" class="modal-overlay" onclick="closeSettings()">
-  <div class="modal-sheet" onclick="event.stopPropagation()">
-    
-    <button class="modal-close" onclick="closeSettings()">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M2 2l12 12M14 2L2 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </button>
-
-    <h2 class="modal-title">Settings</h2>
-
-    <!-- Profile -->
-    <div class="settings-item">
-      <div class="settings-avatar">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="8" r="4" stroke="white" stroke-width="1.8"/>
-          <path d="M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <div class="settings-item-text">
-        <div class="settings-item-title">پرۆفایل</div>
-        <div class="settings-item-sub">پرۆفایلەکەت</div>
-      </div>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M6 4l-4 4 4 4" stroke="#888" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-
-    <!-- Divider -->
-    <div class="settings-group">
-      <div class="settings-item">
-        <div class="settings-icon-wrap" style="background:#ff4d6d22">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M9 1l2 5h5l-4 3 1.5 5L9 11l-4.5 3L6 9 2 6h5L9 1z" stroke="#ff4d6d" stroke-width="1.5" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="settings-item-text">
-          <div class="settings-item-title">خەڵاتەکان</div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M6 4l-4 4 4 4" stroke="#888" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="settings-divider"></div>
-      <div class="settings-item">
-        <div class="settings-icon-wrap" style="background:#4d8cff22">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <rect x="3" y="3" width="12" height="12" rx="3" stroke="#4d8cff" stroke-width="1.5"/>
-            <rect x="6" y="6" width="6" height="6" rx="1.5" stroke="#4d8cff" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <div class="settings-item-text">
-          <div class="settings-item-title">ئایکۆنی ئەپ</div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M6 4l-4 4 4 4" stroke="#888" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    <div class="wnew-item">
+      <div class="wnew-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+      <div>
+        <div class="wnew-item-title">کارتی هۆڵد چاکترا</div>
+        <div class="wnew-item-desc">تەنها بە هۆڵد کردن کارتەکە دەسەلمێنرێت، دوگمەی دواتر چالاک دەبێت.</div>
       </div>
     </div>
-
-    <div class="settings-group">
-      <div class="settings-item">
-        <div class="settings-icon-wrap" style="background:#2ecc7122">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M9 1l1.5 4h4l-3 2.5 1 4L9 9l-3.5 2.5 1-4L3.5 5h4L9 1z" stroke="#2ecc71" stroke-width="1.5" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="settings-item-text">
-          <div class="settings-item-title">هەڵسەنگاندنی ئەپ</div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M6 4l-4 4 4 4" stroke="#888" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="settings-divider"></div>
-      <div class="settings-item">
-        <div class="settings-icon-wrap" style="background:#ff8c4222">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M9 2v4M9 12v4M2 9h4M12 9h4" stroke="#ff8c42" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="9" cy="9" r="2.5" stroke="#ff8c42" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <div class="settings-item-text">
-          <div class="settings-item-title">بانگکردنی هاوڕێ</div>
-          <div class="settings-item-sub">بەردەستە لە iOS و Android</div>
-        </div>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M6 4l-4 4 4 4" stroke="#888" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-    </div>
-
+    <button class="wnew-btn" onclick="closeWnew()">باشە، دەزانم ✓</button>
   </div>
 </div>
-
-
-  <script  src="accest/java/fre.js"></script>
 
 </body>
 </html>
