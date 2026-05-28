@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>یاری وشە</title>
+<title>یاری سیخور</title>
 
 <!-- ── FAVICON: SVG inline as data URI ── -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='bg' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23FFE040'/%3E%3Cstop offset='100%25' stop-color='%23FFB300'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23bg)'/%3E%3Ccircle cx='32' cy='22' r='12' fill='%23111'/%3E%3Ccircle cx='32' cy='22' r='9' fill='%23FFE040'/%3E%3Ccircle cx='29' cy='20' r='2.5' fill='%23111'/%3E%3Ccircle cx='35' cy='20' r='2.5' fill='%23111'/%3E%3Cellipse cx='32' cy='25' rx='4' ry='2.5' fill='%23111'/%3E%3Crect x='18' y='36' width='28' height='18' rx='6' fill='%23111'/%3E%3Crect x='21' y='39' width='22' height='12' rx='4' fill='%23FFE040'/%3E%3Ccircle cx='32' cy='45' r='3' fill='%23111'/%3E%3C/svg%3E">
@@ -594,8 +594,8 @@ button{
 <section class="screen" id="screen1">
   <div class="screen1-top">
     <div>
-      <div class="title">یاری وشە</div>
-      <div class="sub">یارییەکی مۆدێرن بۆ هاورێکانت</div>
+      <div class="title">یاری سیخور</div>
+      <div class="sub">  هاورێیان و خێزانی </div>
     </div>
     <button class="info-btn" onclick="vib();openInfo()">
       <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
@@ -607,7 +607,7 @@ button{
     <label>ناوی یاریزانەکان</label>
     <div style="display:flex;gap:10px;align-items:flex-start;">
       <div class="input-wrap">
-        <input type="text" id="playerInput" placeholder="ناوی یاریزان" autocomplete="off"
+        <input type="text" id="playerInput" placeholder="ناو بنووسە" autocomplete="off"
           oninput="onPlayerInput()"
           onkeydown="if(event.key==='Enter'){vib();addPlayerFromInput();}"
           onfocus="onPlayerFocus()"
@@ -639,14 +639,13 @@ button{
   <button class="start-btn" onclick="vib();goCategory()">دەستپێکردنی یاری</button>
   <div class="minp-err" id="minpErr">
     <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-    کەمترین ژمارە ٣ یاریزانە — تکایە یاریزانی زیاتر زیاد بکە
+    کەمترین یاریزان ٣ یاریزانە — تکایە یاریزان زیاد بکە
   </div>
 
   <div class="footer-credit">
-    <span>دروستکراوی</span>
     <span class="footer-name">Muhamad Yousif</span>
     <div class="footer-dot"></div>
-    <a class="footer-wa-link" href="https://wa.me/9647509648683" target="_blank">
+    <a class="footer-wa-link" href="https://wa.me/9647830674844" target="_blank">
       <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       WhatsApp
     </a>
@@ -660,9 +659,9 @@ button{
       <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
       گەرانەوە
     </button>
-    <div class="title">کەتەگۆری</div>
+    <div class="title">وشە</div>
   </div>
-  <div class="sub">چەند کەتەگۆرییەک هەڵبژێرە</div>
+  <div class="sub">جۆری وشە هەڵبژێرە</div>
   <div class="category-grid">
     <div class="category cat1" onclick="vib();selectCategory(this,'Movies')">
       <h2><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>فیلم</h2>
@@ -691,7 +690,7 @@ button{
     </div>
     <div class="category cat6" onclick="vib();selectCategory(this,'Animals')">
       <h2><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 11c1.381 0 2.5-1.343 2.5-3S5.881 5 4.5 5 2 6.343 2 8s1.119 3 2.5 3zm15 0c1.381 0 2.5-1.343 2.5-3S20.881 5 19.5 5 17 6.343 17 8s1.119 3 2.5 3zM20 13c-1.381 0-2.5 1.119-2.5 2.5S18.619 18 20 18s2.5-1.119 2.5-2.5S21.381 13 20 13zM4 13c-1.381 0-2.5 1.119-2.5 2.5S2.619 18 4 18s2.5-1.119 2.5-2.5S5.381 13 4 13zm8.5-6c-2.481 0-4.5 2.239-4.5 5 0 3.866 2.686 7 6 7s6-3.134 6-7c0-2.761-2.019-5-4.5-5H12.5z"/></svg>ئاژەڵ</h2>
-      <p>ناوی ئاژەڵەکان</p>
+      <p> ئاژەڵەکان</p>
       <div class="cat-bg-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 11c1.381 0 2.5-1.343 2.5-3S5.881 5 4.5 5 2 6.343 2 8s1.119 3 2.5 3zm15 0c1.381 0 2.5-1.343 2.5-3S20.881 5 19.5 5 17 6.343 17 8s1.119 3 2.5 3zM20 13c-1.381 0-2.5 1.119-2.5 2.5S18.619 18 20 18s2.5-1.119 2.5-2.5S21.381 13 20 13zM4 13c-1.381 0-2.5 1.119-2.5 2.5S2.619 18 4 18s2.5-1.119 2.5-2.5S5.381 13 4 13zm8.5-6c-2.481 0-4.5 2.239-4.5 5 0 3.866 2.686 7 6 7s6-3.134 6-7c0-2.761-2.019-5-4.5-5H12.5z"/></svg></div>
     </div>
     <div class="category cat7" onclick="vib();selectCategory(this,'Jobs')">
@@ -706,7 +705,7 @@ button{
     </div>
     <div class="category cat9" onclick="vib();selectCategory(this,'Places')">
       <h2><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>شوێن</h2>
-      <p>شوێنە سەرنجڕاکێشەکان</p>
+      <p>شوێنەکان</p>
       <div class="cat-bg-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg></div>
     </div>
     <div class="category cat10" onclick="vib();selectCategory(this,'Music')">
@@ -737,7 +736,7 @@ button{
           <div class="avatar-big" id="avatarFront"></div>
         </div>
         <div class="secret-word">؟</div>
-        <div class="card-hint">دەستت لەسەر کارتەکە راگرە</div>
+        <div class="card-hint">پەنجە لەسەر کارتەکە راگرە</div>
       </div>
       <div class="card-face card-back">
         <div class="card-top">
@@ -745,7 +744,7 @@ button{
           <div class="avatar-big" id="avatarBack"></div>
         </div>
         <div class="secret-word" id="secretWord"></div>
-        <div class="card-hint">وشەکە لەبیر بگرە</div>
+        <div class="card-hint"> وشەکە لەبیرمەکە</div>
       </div>
     </div>
   </div>
@@ -764,7 +763,7 @@ button{
   <div class="glass start-player-box">
     <div class="start-avatar"><img id="starterAvatar" src=""></div>
     <div class="start-name" id="starterName"></div>
-    <div class="start-text">تۆ دەست پێ بکە</div>
+    <div class="start-text"> دەست پێ بکە</div>
     <button class="play-btn" id="startRoundBtn" onclick="vib();startTimer()">دەستپێکردنی خول</button>
     <div class="timer" id="timer">00:00</div>
     <div class="timer-controls hidden" id="timerControls">
@@ -808,8 +807,8 @@ button{
     </div>
 
     <div class="end-buttons">
-      <button class="restart-btn" onclick="vib();playAgain()">دووبارە یاری بکەن</button>
-      <button class="restart-btn dark-btn" onclick="vib();resetAll()">یاریزانە نوێکان تۆمار بکە</button>
+      <button class="restart-btn" onclick="vib();playAgain()">خولی دواتر</button>
+      <button class="restart-btn dark-btn" onclick="vib();resetAll()">  گۆرانەوە بۆ سەرەتا </button>
     </div>
   </div>
 </section>
@@ -917,8 +916,8 @@ const avatars=[
 
 const nameSuggestions=[
   "ئەحمەد","موحەمەد","عەلی","سارا","ئایا","ئەمین","ڕێناس","شیلان","ئەرمان","ڕووناک",
-  "باخان","ژیار","هەژار","دیلان","شێرکۆ","نازدار","بینا","بەرزان","لانە","کاروان",
-  "هاوژین","ئارام","سروە","ڕاپەرین","گوڵالە","ئاکۆ","ئاسۆ","نالین","ئاوار","پیشتیوان"
+  "باخان","ژیار","هەژار","دیلان","جیهاد","نازدار","بینا","زیکە","لانە","کاروان",
+  "هاوژین","ئارام","سروە","ڕاپەرین","گوڵالە","ئاکۆ","ئاسۆ","نالین","رویا","پیشتیوان"
 ];
 
 const words={
@@ -997,7 +996,7 @@ async function confirmFinishRound(){
   if(!wasPaused){isPaused=true;}
   const yes=await showModal({
     title:"کۆتایی هێنانی خول",
-    msg:"دڵنیای کە دەتەوێت یارییەکە کۆتایی بهێنیت؟ کاتەکە وەستاوە.",
+    msg:"دڵنیای کە دەتەوێت یارییەکە کۆتایی پێ بهێنیت؟ ",
     icon:"danger",
     dangerConfirm:true
   });
