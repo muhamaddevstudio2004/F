@@ -8,6 +8,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>یاری وشە</title>
+
+<!-- ── FAVICON: SVG inline as data URI ── -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='bg' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23FFE040'/%3E%3Cstop offset='100%25' stop-color='%23FFB300'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23bg)'/%3E%3Ccircle cx='32' cy='22' r='12' fill='%23111'/%3E%3Ccircle cx='32' cy='22' r='9' fill='%23FFE040'/%3E%3Ccircle cx='29' cy='20' r='2.5' fill='%23111'/%3E%3Ccircle cx='35' cy='20' r='2.5' fill='%23111'/%3E%3Cellipse cx='32' cy='25' rx='4' ry='2.5' fill='%23111'/%3E%3Crect x='18' y='36' width='28' height='18' rx='6' fill='%23111'/%3E%3Crect x='21' y='39' width='22' height='12' rx='4' fill='%23FFE040'/%3E%3Ccircle cx='32' cy='45' r='3' fill='%23111'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='bg' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23FFE040'/%3E%3Cstop offset='100%25' stop-color='%23FFB300'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23bg)'/%3E%3Ccircle cx='32' cy='22' r='12' fill='%23111'/%3E%3Ccircle cx='32' cy='22' r='9' fill='%23FFE040'/%3E%3Ccircle cx='29' cy='20' r='2.5' fill='%23111'/%3E%3Ccircle cx='35' cy='20' r='2.5' fill='%23111'/%3E%3Cellipse cx='32' cy='25' rx='4' ry='2.5' fill='%23111'/%3E%3Crect x='18' y='36' width='28' height='18' rx='6' fill='%23111'/%3E%3Crect x='21' y='39' width='22' height='12' rx='4' fill='%23FFE040'/%3E%3Ccircle cx='32' cy='45' r='3' fill='%23111'/%3E%3C/svg%3E">
+
 <link rel="dns-prefetch" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <link rel="dns-prefetch" href="https://api.dicebear.com">
@@ -284,21 +289,105 @@ button{
 .icon-btn svg{width:clamp(22px,6vw,28px);height:clamp(22px,6vw,28px);fill:#111;}
 .end-btn{background:#111;}.end-btn svg{fill:#fff;}
 
-/* ── SCREEN 5 ── */
-.result-box{padding:var(--pad-card);margin-top:var(--gap-md);text-align:center;}
-.word-result{
-  padding:14px;border-radius:clamp(14px,3vw,18px);
-  background:#fff4ba;font-size:clamp(15px,4.5vw,20px);font-weight:800;margin-bottom:16px;
+/* ── SCREEN 5 — RESULTS ── */
+.result-screen-inner{
+  padding-bottom: 20px;
 }
-.spy-list{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
-.spy-item{
-  padding:14px;border-radius:clamp(14px,3vw,18px);background:#fff;
-  font-size:clamp(14px,4vw,17px);font-weight:800;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  animation:slideIn .4s ease;
+
+/* Reveal Word Card */
+.word-reveal-card{
+  background:linear-gradient(135deg,#111 0%,#2a2a2a 100%);
+  border-radius:clamp(22px,5vw,30px);
+  padding:clamp(22px,5vw,32px) clamp(18px,4vw,28px);
+  text-align:center;
+  position:relative;overflow:hidden;
+  margin-bottom:var(--gap-md);
+  animation:revealCard .6s cubic-bezier(.34,1.3,.64,1) both;
 }
-.spy-item svg{width:18px;height:18px;fill:#111;}
-.end-buttons{display:flex;flex-direction:column;gap:12px;margin-top:22px;}
+@keyframes revealCard{
+  from{opacity:0;transform:scale(.85) translateY(30px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+.word-reveal-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 70% 30%,rgba(255,212,0,.15) 0%,transparent 65%);
+  pointer-events:none;
+}
+.word-reveal-label{
+  font-size:var(--fs-xs);font-weight:800;letter-spacing:1.5px;
+  color:rgba(255,255,255,.45);margin-bottom:10px;text-transform:uppercase;
+}
+.word-reveal-text{
+  font-size:clamp(28px,8vw,42px);font-weight:800;color:#ffd400;
+  text-shadow:0 0 30px rgba(255,212,0,.4);
+  animation:wordPop .5s .3s cubic-bezier(.34,1.5,.64,1) both;
+}
+@keyframes wordPop{
+  from{opacity:0;transform:scale(.6);}
+  to{opacity:1;transform:scale(1);}
+}
+.word-reveal-cat{
+  margin-top:8px;font-size:var(--fs-xs);
+  color:rgba(255,255,255,.4);font-weight:700;
+}
+
+/* Spies Section */
+.spies-section{
+  margin-bottom:var(--gap-md);
+}
+.spies-title{
+  font-size:var(--fs-sm);font-weight:800;
+  color:rgba(0,0,0,.45);margin-bottom:10px;
+  display:flex;align-items:center;gap:7px;
+}
+.spies-title svg{width:14px;height:14px;fill:rgba(0,0,0,.35);}
+
+.spy-card{
+  background:linear-gradient(135deg,#ff3b3b 0%,#c62828 100%);
+  border-radius:clamp(18px,4vw,24px);
+  padding:clamp(14px,3.5vw,20px);
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:10px;
+  animation:spyReveal .5s cubic-bezier(.34,1.3,.64,1) both;
+  position:relative;overflow:hidden;
+}
+.spy-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 50%,rgba(255,255,255,.12) 0%,transparent 60%);
+  pointer-events:none;
+}
+@keyframes spyReveal{
+  from{opacity:0;transform:translateX(40px);}
+  to{opacity:1;transform:translateX(0);}
+}
+.spy-avatar-wrap{
+  width:clamp(48px,12vw,60px);height:clamp(48px,12vw,60px);
+  border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,.3);
+  flex-shrink:0;background:rgba(255,255,255,.15);
+}
+.spy-avatar-wrap img{width:100%;height:100%;object-fit:cover;}
+.spy-card-info{flex:1;}
+.spy-card-name{font-size:clamp(16px,4.5vw,20px);font-weight:800;color:#fff;}
+.spy-card-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.2);color:#fff;
+  font-size:var(--fs-xs);font-weight:800;
+  padding:3px 10px;border-radius:100px;margin-top:4px;
+}
+.spy-card-tag svg{width:10px;height:10px;fill:#fff;}
+.spy-shield{
+  width:clamp(32px,8vw,40px);height:clamp(32px,8vw,40px);
+  flex-shrink:0;opacity:.6;
+}
+.spy-shield svg{width:100%;height:100%;fill:#fff;}
+
+.no-spies-badge{
+  background:rgba(255,255,255,.6);border-radius:clamp(14px,3vw,18px);
+  padding:14px 18px;text-align:center;
+  font-size:var(--fs-sm);font-weight:700;color:#555;
+}
+
+.end-buttons{display:flex;flex-direction:column;gap:12px;margin-top:var(--gap-md);}
 
 /* ── OVERLAYS ── */
 .pause-overlay{
@@ -443,10 +532,8 @@ button{
   box-shadow:0 12px 40px rgba(0,0,0,.14);overflow:hidden;
   animation:wnewIn .45s cubic-bezier(.34,1.2,.64,1) both;
 }
-/* shimmer top bar */
 .wnew-bar-wrap{position:relative;height:4px;background:#ffe066;overflow:hidden;}
 .wnew-bar-shimmer{position:absolute;inset:0;background:linear-gradient(90deg,#ffd400,#ffbc00,#fff7a0,#ffbc00,#ffd400);background-size:200% 100%;animation:shimmer 2s linear infinite;}
-/* countdown progress bar */
 .wnew-cd-track{position:absolute;inset:0;background:rgba(0,0,0,.13);}
 .wnew-cd-fill{position:absolute;inset:0;background:rgba(0,0,0,.0);transform-origin:right;}
 .wnew-cd-fill.running{background:rgba(0,0,0,.18);animation:cdProgress linear forwards;}
@@ -491,6 +578,14 @@ button{
 .modal-title{font-size:var(--fs-lg);font-weight:800;text-align:center;margin-bottom:7px;}
 .modal-msg{font-size:var(--fs-sm);text-align:center;color:#555;line-height:1.8;margin-bottom:18px;}
 .modal-ok{width:100%;height:52px;border:none;border-radius:16px;background:#111;color:#fff;font-size:var(--fs-md);font-weight:800;}
+
+/* ── FINISH CONFIRM MODAL (danger style) ── */
+.modal-danger .modal-icon{background:#ffe0e0;}
+.modal-danger .modal-icon svg{fill:#d60000;}
+.modal-danger-confirm{
+  background:linear-gradient(135deg,#ff3b3b,#c62828) !important;
+  color:#fff !important;
+}
 </style>
 </head>
 <body>
@@ -676,7 +771,7 @@ button{
       <button class="icon-btn" onclick="vib();togglePause()">
         <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
       </button>
-      <button class="icon-btn end-btn" onclick="vib('heavy');finishRound()">
+      <button class="icon-btn end-btn" onclick="vib('heavy');confirmFinishRound()">
         <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14"/></svg>
       </button>
       <button class="icon-btn" onclick="vib();restartTimer()">
@@ -686,7 +781,7 @@ button{
   </div>
 </section>
 
-<!-- SCREEN 5 -->
+<!-- SCREEN 5 — RESULTS -->
 <section class="screen hidden" id="screen5">
   <div class="screen-top-bar">
     <button class="back-btn" onclick="vib();goBack('screen1')">
@@ -695,9 +790,23 @@ button{
     </button>
     <div class="title">کۆتایی خول</div>
   </div>
-  <div class="glass result-box">
-    <div class="word-result" id="wordResult"></div>
-    <div class="spy-list" id="spyList"></div>
+  <div class="result-screen-inner">
+    <!-- Word Reveal -->
+    <div class="word-reveal-card">
+      <div class="word-reveal-label">وشەی ئەم خولە</div>
+      <div class="word-reveal-text" id="wordRevealText"></div>
+      <div class="word-reveal-cat" id="wordRevealCat"></div>
+    </div>
+
+    <!-- Spies Section -->
+    <div class="spies-section">
+      <div class="spies-title">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+        سیخورەکان
+      </div>
+      <div id="spyCards"></div>
+    </div>
+
     <div class="end-buttons">
       <button class="restart-btn" onclick="vib();playAgain()">دووبارە یاری بکەن</button>
       <button class="restart-btn dark-btn" onclick="vib();resetAll()">یاریزانە نوێکان تۆمار بکە</button>
@@ -730,7 +839,7 @@ button{
 
 <!-- CUSTOM MODAL -->
 <div class="modal-overlay" id="modalOverlay">
-  <div class="modal-sheet">
+  <div class="modal-sheet" id="modalSheet">
     <div class="modal-handle"></div>
     <div class="modal-icon" id="modalIcon">
       <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
@@ -784,14 +893,7 @@ button{
 /* ── VIBRATION ── */
 function vib(type='light'){
   if(!('vibrate' in navigator))return;
-  const patterns={
-    light:[8],
-    medium:[15],
-    heavy:[30],
-    double:[10,60,10],
-    success:[10,40,20],
-    error:[20,60,20,60,20]
-  };
+  const patterns={light:[8],medium:[15],heavy:[30],double:[10,60,10],success:[10,40,20],error:[20,60,20,60,20]};
   navigator.vibrate(patterns[type]||patterns.light);
 }
 
@@ -839,24 +941,33 @@ let suggBlurTimer=null;
 
 /* ── Custom Modal ── */
 let _modalResolve=null;
-function showModal({title,msg,icon="warn",confirm=false}){
+function showModal({title,msg,icon="warn",confirm=false,dangerConfirm=false}){
   return new Promise(res=>{
     _modalResolve=res;
     document.getElementById("modalTitle").innerText=title||"";
     document.getElementById("modalMsg").innerText=msg||"";
+    const sheet=document.getElementById("modalSheet");
     const ico=document.getElementById("modalIcon");
-    ico.style.background=icon==="warn"?"#fff3cd":icon==="err"?"#ffe0e0":"#e8f5e9";
-    ico.innerHTML=icon==="warn"
-      ?`<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>`
-      :icon==="err"
-      ?`<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`
-      :`<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/></svg>`;
-    ico.querySelector("svg").style.fill=icon==="warn"?"#e6a800":icon==="err"?"#d60000":"#2e7d32";
+    // reset danger class
+    sheet.classList.remove("modal-danger");
+    ico.style.background=icon==="warn"?"#fff3cd":icon==="err"?"#ffe0e0":icon==="danger"?"#ffe0e0":"#e8f5e9";
+    if(icon==="danger"){
+      sheet.classList.add("modal-danger");
+      ico.innerHTML=`<svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>`;
+      ico.querySelector("svg").style.fill="#d60000";
+    } else {
+      ico.innerHTML=icon==="warn"
+        ?`<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>`
+        :icon==="err"
+        ?`<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`
+        :`<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/></svg>`;
+      ico.querySelector("svg").style.fill=icon==="warn"?"#e6a800":icon==="err"?"#d60000":"#2e7d32";
+    }
     const btns=document.getElementById("modalBtns");
-    if(confirm){
+    if(confirm||dangerConfirm){
       btns.innerHTML=`
         <button class="modal-ok" style="background:#eee;color:#111;flex:1" onclick="vib();modalResolve(false)">نەخێر</button>
-        <button class="modal-ok" style="flex:1" onclick="vib();modalResolve(true)">بەڵێ</button>`;
+        <button class="modal-ok ${dangerConfirm?'modal-danger-confirm':''}" style="flex:1" onclick="vib();modalResolve(true)">بەڵێ</button>`;
     }else{
       btns.innerHTML=`<button class="modal-ok" onclick="vib();modalResolve(true)">باشە</button>`;
     }
@@ -876,6 +987,26 @@ async function confirmBack(screenId){
     document.getElementById("pauseOverlay").classList.remove("active");
     showScreen(screenId);
     if(screenId==="screen3"){showPlayer();}
+  }
+}
+
+/* ── FINISH CONFIRM — NEW ── */
+async function confirmFinishRound(){
+  // Pause the timer while confirming
+  const wasPaused=isPaused;
+  if(!wasPaused){isPaused=true;}
+  const yes=await showModal({
+    title:"کۆتایی هێنانی خول",
+    msg:"دڵنیای کە دەتەوێت یارییەکە کۆتایی بهێنیت؟ کاتەکە وەستاوە.",
+    icon:"danger",
+    dangerConfirm:true
+  });
+  if(yes){
+    isPaused=false;
+    finishRound();
+  } else {
+    // Resume only if it wasn't paused before
+    if(!wasPaused){isPaused=false;}
   }
 }
 
@@ -1082,26 +1213,56 @@ function togglePause(){
 function restartTimer(){clearInterval(timerInterval);timerStarted=false;startTimer();}
 function finishRound(){
   clearInterval(timerInterval);
+  isPaused=false;
+  document.getElementById("pauseOverlay").classList.remove("active");
   vib('double');
   document.getElementById("timer").innerText="END";
   document.getElementById("timer").style.color="#d60000";
-  showResults();
+  setTimeout(()=>showResults(),300);
 }
 function updateTimer(sec){
   const m=Math.floor(sec/60).toString().padStart(2,"0");
   const s=(sec%60).toString().padStart(2,"0");
   document.getElementById("timer").innerText=`${m}:${s}`;
 }
+
+/* ── RESULTS — REDESIGNED ── */
 function showResults(){
   showScreen("screen5");
-  document.getElementById("wordResult").innerText=`وشەکە: ${gameWord}`;
-  const list=document.getElementById("spyList");list.innerHTML="";
-  spyIndexes.forEach(i=>{
-    list.innerHTML+=`<div class="spy-item"><svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>${players[i]}</div>`;
-  });
+
+  // Word reveal
+  document.getElementById("wordRevealText").innerText=gameWord;
+  document.getElementById("wordRevealCat").innerText="کەتەگۆری: "+selectedCategory;
+
+  // Spy cards with delay stagger
+  const spyCardsEl=document.getElementById("spyCards");
+  spyCardsEl.innerHTML="";
+  if(spyIndexes.length===0){
+    spyCardsEl.innerHTML=`<div class="no-spies-badge">سیخور نەدۆزرایەوە</div>`;
+  } else {
+    spyIndexes.forEach((idx,i)=>{
+      const div=document.createElement("div");
+      div.className="spy-card";
+      div.style.animationDelay=(i*0.12)+"s";
+      div.innerHTML=`
+        <div class="spy-avatar-wrap">
+          <img src="${avatars[playerAvatarIndexes[idx]]}" width="60" height="60">
+        </div>
+        <div class="spy-card-info">
+          <div class="spy-card-name">${players[idx]}</div>
+          <div class="spy-card-tag">
+            <svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+            سیخور
+          </div>
+        </div>
+        <div class="spy-shield"><svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg></div>`;
+      spyCardsEl.appendChild(div);
+    });
+  }
 }
+
 function playAgain(){prepareGame();showScreen("screen3");showPlayer();}
-function resetAll(){spyIndexes=[];usedWords=[];document.getElementById("spyList").innerHTML="";showScreen("screen1");}
+function resetAll(){spyIndexes=[];usedWords=[];document.getElementById("spyCards").innerHTML="";showScreen("screen1");}
 const _screens=['screen1','screen2','screen3','screen4','screen5'];
 function showScreen(id){
   _screens.forEach(s=>{
@@ -1135,12 +1296,10 @@ function closeWnew(){
 setTimeout(()=>{
   const w=document.getElementById("wnewWrap");
   w.classList.add("active");
-  // start progress bar animation
   const fill=document.getElementById("wnewCdFill");
   const SECS=5;
   fill.style.animationDuration=SECS+"s";
   fill.classList.add("running");
-  // countdown number
   const cdEl=document.getElementById("wnewCd");
   let remaining=SECS;
   _wnewCdTimer=setInterval(()=>{
@@ -1148,7 +1307,6 @@ setTimeout(()=>{
     if(remaining>0){cdEl.textContent=remaining;}
     else{cdEl.textContent="";}
   },1000);
-  // auto close
   _wnewTimer=setTimeout(closeWnew, SECS*1000);
 },600);
 </script>
