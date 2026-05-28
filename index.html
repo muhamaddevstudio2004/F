@@ -3,10 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#ffd84d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>یاری وشە</title>
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="dns-prefetch" href="https://api.dicebear.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Arabic',sans-serif;-webkit-tap-highlight-color:transparent;}
 
@@ -76,7 +83,8 @@ body{
   overflow-y:auto;
   overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
-  animation:fade .35s ease;
+  animation:fade .3s ease;
+  contain:layout style;
 }
 @keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 
@@ -212,7 +220,8 @@ button{
 .word-card{
   width:clamp(220px,60vw,280px);
   height:clamp(300px,80vw,380px);
-  position:relative;transform-style:preserve-3d;transition:1s;
+  position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,0,.2,1);
+  will-change:transform;
 }
 @media(min-width:480px){.word-card{width:280px;height:370px;}}
 @media(min-width:768px){.word-card{width:300px;height:400px;}}
@@ -416,7 +425,9 @@ button{
 
 /* ── WHAT'S NEW ── */
 @keyframes wnewIn{from{opacity:0;transform:translateY(-24px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes wnewOut{from{opacity:1;transform:translateY(0) scale(1);}to{opacity:0;transform:translateY(-16px) scale(.97);}}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes cdProgress{from{width:100%;}to{width:0%;}}
 .wnew-wrap{
   position:fixed;top:16px;
   left:clamp(10px,3vw,22px);right:clamp(10px,3vw,22px);
@@ -425,17 +436,26 @@ button{
 }
 @media(min-width:600px){.wnew-wrap{left:50%;right:auto;transform:translateX(-50%);width:400px;}}
 .wnew-wrap.active{pointer-events:auto;opacity:1;}
+.wnew-wrap.closing .wnew-card{animation:wnewOut .3s cubic-bezier(.4,0,1,1) forwards;}
 .wnew-card{
   background:rgba(255,255,255,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1.5px solid rgba(255,188,0,.45);border-radius:24px;
   box-shadow:0 12px 40px rgba(0,0,0,.14);overflow:hidden;
   animation:wnewIn .45s cubic-bezier(.34,1.2,.64,1) both;
 }
-.wnew-bar{height:4px;background:linear-gradient(90deg,#ffd400,#ffbc00,#fff7a0,#ffbc00,#ffd400);background-size:200% 100%;animation:shimmer 2s linear infinite;}
+/* shimmer top bar */
+.wnew-bar-wrap{position:relative;height:4px;background:#ffe066;overflow:hidden;}
+.wnew-bar-shimmer{position:absolute;inset:0;background:linear-gradient(90deg,#ffd400,#ffbc00,#fff7a0,#ffbc00,#ffd400);background-size:200% 100%;animation:shimmer 2s linear infinite;}
+/* countdown progress bar */
+.wnew-cd-track{position:absolute;inset:0;background:rgba(0,0,0,.13);}
+.wnew-cd-fill{position:absolute;inset:0;background:rgba(0,0,0,.0);transform-origin:right;}
+.wnew-cd-fill.running{background:rgba(0,0,0,.18);animation:cdProgress linear forwards;}
 .wnew-body{padding:14px 16px 16px;}
 .wnew-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .wnew-label{display:inline-flex;align-items:center;gap:5px;background:#111;color:#ffd400;font-size:10px;font-weight:800;letter-spacing:.6px;padding:4px 9px;border-radius:100px;}
 .wnew-label svg{width:10px;height:10px;fill:#ffd400;}
+.wnew-dismiss-wrap{display:flex;align-items:center;gap:7px;}
+.wnew-countdown{font-size:11px;font-weight:800;color:#999;min-width:22px;text-align:center;}
 .wnew-dismiss{width:28px;height:28px;border:none;border-radius:9px;background:rgba(0,0,0,.07);color:#111;font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1;}
 .wnew-rows{display:flex;flex-direction:column;gap:8px;}
 .wnew-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:#fffbe8;border-radius:14px;}
@@ -726,14 +746,21 @@ button{
 <!-- WHAT'S NEW -->
 <div class="wnew-wrap" id="wnewWrap">
   <div class="wnew-card">
-    <div class="wnew-bar"></div>
+    <div class="wnew-bar-wrap">
+      <div class="wnew-bar-shimmer"></div>
+      <div class="wnew-cd-track"></div>
+      <div class="wnew-cd-fill" id="wnewCdFill"></div>
+    </div>
     <div class="wnew-body">
       <div class="wnew-head">
         <div class="wnew-label">
           <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
           نوێکارییەکان
         </div>
-        <button class="wnew-dismiss" onclick="vib();closeWnew()">&#x2715;</button>
+        <div class="wnew-dismiss-wrap">
+          <span class="wnew-countdown" id="wnewCd">5</span>
+          <button class="wnew-dismiss" onclick="vib();closeWnew()">&#x2715;</button>
+        </div>
       </div>
       <div class="wnew-rows">
         <div class="wnew-row">
@@ -936,15 +963,18 @@ function getRandomAvatar(){
 function removePlayer(index){vib('medium');players.splice(index,1);playerAvatarIndexes.splice(index,1);renderPlayers();}
 function renderPlayers(){
   const box=document.getElementById("playersBox");
-  box.innerHTML="";
+  const frag=document.createDocumentFragment();
   players.forEach((p,i)=>{
     const avatarUrl=avatars[playerAvatarIndexes[i]];
-    box.innerHTML+=`<div class="player-item">
-      <div class="avatar"><img src="${avatarUrl}"></div>
+    const div=document.createElement("div");
+    div.className="player-item";
+    div.innerHTML=`<div class="avatar"><img src="${avatarUrl}" loading="lazy" width="52" height="52"></div>
       <div class="player-name">${p}</div>
-      <button class="remove-player" onclick="removePlayer(${i})">&#x2715;</button>
-    </div>`;
+      <button class="remove-player" onclick="removePlayer(${i})">&#x2715;</button>`;
+    frag.appendChild(div);
   });
+  box.innerHTML="";
+  box.appendChild(frag);
 }
 
 function goCategory(){
@@ -1072,9 +1102,12 @@ function showResults(){
 }
 function playAgain(){prepareGame();showScreen("screen3");showPlayer();}
 function resetAll(){spyIndexes=[];usedWords=[];document.getElementById("spyList").innerHTML="";showScreen("screen1");}
+const _screens=['screen1','screen2','screen3','screen4','screen5'];
 function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
+  _screens.forEach(s=>{
+    const el=document.getElementById(s);
+    if(el) el.classList.toggle('hidden', s!==id);
+  });
 }
 
 /* ── Spring press ── */
@@ -1092,12 +1125,32 @@ const _pressObs=new MutationObserver(attachAllButtons);
 _pressObs.observe(document.body,{childList:true,subtree:true});
 
 /* ── What's New ── */
+let _wnewTimer=null,_wnewCdTimer=null;
 function closeWnew(){
+  clearInterval(_wnewTimer);clearInterval(_wnewCdTimer);
   const w=document.getElementById("wnewWrap");
-  w.style.transition="opacity .2s ease, transform .2s ease";w.style.opacity="0";w.style.transform="translateY(-12px)";
-  setTimeout(()=>{w.classList.remove("active");w.style.transform="";},220);
+  w.classList.add("closing");
+  setTimeout(()=>{w.classList.remove("active","closing");},300);
 }
-setTimeout(()=>{document.getElementById("wnewWrap").classList.add("active");},600);
+setTimeout(()=>{
+  const w=document.getElementById("wnewWrap");
+  w.classList.add("active");
+  // start progress bar animation
+  const fill=document.getElementById("wnewCdFill");
+  const SECS=5;
+  fill.style.animationDuration=SECS+"s";
+  fill.classList.add("running");
+  // countdown number
+  const cdEl=document.getElementById("wnewCd");
+  let remaining=SECS;
+  _wnewCdTimer=setInterval(()=>{
+    remaining--;
+    if(remaining>0){cdEl.textContent=remaining;}
+    else{cdEl.textContent="";}
+  },1000);
+  // auto close
+  _wnewTimer=setTimeout(closeWnew, SECS*1000);
+},600);
 </script>
 </body>
 </html>
