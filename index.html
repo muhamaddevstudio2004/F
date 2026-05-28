@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>sexur - سیخور</title>
+<title>یاری وشە</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -27,23 +27,26 @@ input:focus{box-shadow:0 0 0 3px rgba(255,188,0,.4);}
 .avatar img{width:100%;height:100%;object-fit:cover;}
 .player-name{font-size:17px;font-weight:700;}
 
-button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease,opacity .25s ease;will-change:transform;}
+/* ── Universal spring-press (applied via JS) ── */
+button{
+  -webkit-tap-highlight-color:transparent;
+  transition:
+    transform .25s cubic-bezier(.34,1.56,.64,1),
+    box-shadow .25s ease,
+    opacity .25s ease;
+  will-change:transform;
+}
 .add-btn{height:58px;padding:0 22px;border:none;border-radius:18px;background:#111;color:#fff;font-size:16px;font-weight:800;cursor:pointer;}
 .start-btn,.play-btn,.restart-btn{width:100%;height:66px;border:none;border-radius:24px;margin-top:22px;font-size:20px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#ffd400,#ffbc00);color:#111;box-shadow:0 6px 20px rgba(255,188,0,.35);}
 .dark-btn{background:#111;color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.18);}
-
-/* ── CATEGORY GRID ── */
-.category-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:16px;}
-.category{padding:16px;border-radius:24px;position:relative;overflow:hidden;min-height:130px;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),outline .15s,box-shadow .2s;}
+.category-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:20px;}
+.category{padding:20px;border-radius:28px;position:relative;overflow:hidden;min-height:170px;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1), outline .15s, box-shadow .2s;}
 .category:active{transform:scale(.96);}
 .category.active{outline:4px solid #111;transform:scale(1.03);box-shadow:0 10px 30px rgba(0,0,0,.12);}
-.category h2{font-size:19px;margin-bottom:5px;position:relative;z-index:1;}
-.category p{font-size:12px;line-height:1.6;opacity:.7;position:relative;z-index:1;}
-.category .cat-img{position:absolute;bottom:-6px;left:-6px;width:78px;opacity:.13;pointer-events:none;}
+.category h2{font-size:23px;margin-bottom:10px;}
+.category p{font-size:14px;line-height:1.8;opacity:.7;}
+.category img{position:absolute;bottom:-10px;left:-10px;width:95px;opacity:.12;}
 .cat1{background:#fff4ba;}.cat2{background:#fff0c7;}.cat3{background:#fff7dd;}.cat4{background:#fff2a2;}
-.cat5{background:#ffecd2;}.cat6{background:#e8f5e9;}.cat7{background:#e3f2fd;}.cat8{background:#fce4ec;}
-.cat9{background:#f3e5f5;}.cat10{background:#e0f7fa;}
-
 .top-status{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
 .badge{padding:10px 18px;border-radius:100px;background:#fff;font-size:14px;font-weight:700;}
 .player-turn{font-size:30px;font-weight:800;text-align:center;margin-bottom:25px;}
@@ -89,7 +92,18 @@ button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-b
 
 /* Screen 1 top bar */
 .screen1-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.info-btn{display:flex;align-items:center;gap:7px;height:44px;padding:0 14px;border:none;border-radius:22px;background:rgba(255,255,255,.85);border:2px solid rgba(0,0,0,.08);cursor:pointer;font-size:13px;font-weight:800;color:#111;box-shadow:0 3px 10px rgba(0,0,0,.07);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;white-space:nowrap;}
+.info-btn{
+  display:flex;align-items:center;gap:7px;
+  height:44px;padding:0 14px;
+  border:none;border-radius:22px;
+  background:rgba(255,255,255,.85);
+  border:2px solid rgba(0,0,0,.08);
+  cursor:pointer;
+  font-size:13px;font-weight:800;color:#111;
+  box-shadow:0 3px 10px rgba(0,0,0,.07);
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
+  white-space:nowrap;
+}
 .info-btn svg{width:18px;height:18px;fill:#111;flex-shrink:0;}
 .info-btn:active{transform:scale(.9);box-shadow:0 1px 4px rgba(0,0,0,.06);}
 
@@ -108,99 +122,90 @@ button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-b
 .info-spy-badge{display:inline-block;background:#ff4d4d;color:#fff;border-radius:10px;padding:2px 10px;font-size:13px;font-weight:800;}
 .info-word-badge{display:inline-block;background:#ffd400;color:#111;border-radius:10px;padding:2px 10px;font-size:13px;font-weight:800;}
 
-/* ── Input suggestion dropdown ── */
-.input-wrap{position:relative;flex:1;}
-.input-wrap input{width:100%;}
-.suggestion-drop{
-  position:absolute;top:calc(100% + 6px);right:0;left:0;z-index:500;
-  background:#fff;border-radius:18px;
-  box-shadow:0 8px 30px rgba(0,0,0,.13);
-  overflow:hidden;
-  max-height:0;opacity:0;
-  transition:max-height .28s ease, opacity .22s ease;
-  pointer-events:none;
+/* ── What's New splash ── */
+/* ── What's New: floating card ── */
+@keyframes wnewIn{
+  from{opacity:0;transform:translateY(-24px) scale(.96);}
+  to  {opacity:1;transform:translateY(0)     scale(1);}
 }
-.suggestion-drop.open{max-height:240px;opacity:1;pointer-events:auto;overflow-y:auto;}
-/* ── FIXED: suggestion uses neutral white/light bg, no yellow tint ── */
-.sugg-item{
-  display:flex;align-items:center;gap:12px;
-  padding:11px 16px;
-  cursor:pointer;
-  transition:background .15s;
-  font-size:15px;font-weight:700;
-  background:#fff;
-  color:#111;
-}
-.sugg-item:active,.sugg-item:hover{background:#f5f5f5;}
-.sugg-item .sugg-av{
-  width:36px;height:36px;border-radius:50%;overflow:hidden;
-  border:2px solid #eee;flex-shrink:0;background:#f9f9f9;
-}
-.sugg-item .sugg-av img{width:100%;height:100%;object-fit:cover;}
-.sugg-plus-hint{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 16px;
-  border-top:1px solid #f0f0f0;
-  font-size:13px;font-weight:700;color:#666;
-  cursor:pointer;
-  transition:background .15s;
-  background:#fff;
-}
-.sugg-plus-hint:hover{background:#f5f5f5;}
-.sugg-plus-hint svg{width:18px;height:18px;fill:#aaa;}
-
-/* min-players inline error */
-.minp-err{display:flex;align-items:center;gap:9px;background:#fff3cd;border:1.5px solid #ffc107;color:#7a5200;padding:12px 16px;border-radius:18px;font-size:14px;font-weight:700;margin-top:12px;opacity:0;max-height:0;overflow:hidden;transition:opacity .3s ease, max-height .3s ease, margin .3s ease;}
-.minp-err.show{opacity:1;max-height:80px;margin-top:12px;}
-.minp-err svg{width:20px;height:20px;fill:#e6a800;flex-shrink:0;}
-
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
-.input-shake{animation:shake .35s ease;}
-.input-error{border:2px solid #ff4d4d !important;box-shadow:0 0 0 3px rgba(255,77,77,.2) !important;}
-.input-err-msg{display:none;color:#ff4d4d;font-size:13px;font-weight:700;margin-top:8px;padding:8px 14px;background:rgba(255,77,77,.08);border-radius:12px;}
-.input-err-msg.show{display:block;}
-
-/* ── What's New ── */
-@keyframes wnewIn{from{opacity:0;transform:translateY(-24px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.wnew-wrap{position:fixed;top:18px;left:16px;right:16px;z-index:3000;pointer-events:none;opacity:0;transition:opacity .25s ease;}
+.wnew-wrap{
+  position:fixed;top:18px;left:16px;right:16px;z-index:3000;
+  pointer-events:none;opacity:0;
+  transition:opacity .25s ease;
+}
 .wnew-wrap.active{pointer-events:auto;opacity:1;}
-.wnew-card{background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border:1.5px solid rgba(255,188,0,.45);border-radius:26px;box-shadow:0 12px 40px rgba(0,0,0,.14);overflow:hidden;animation:wnewIn .45s cubic-bezier(.34,1.2,.64,1) both;}
-.wnew-bar{height:5px;background:linear-gradient(90deg,#ffd400,#ffbc00,#fff7a0,#ffbc00,#ffd400);background-size:200% 100%;animation:shimmer 2s linear infinite;}
+.wnew-card{
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,188,0,.45);
+  border-radius:26px;
+  box-shadow:0 12px 40px rgba(0,0,0,.14);
+  overflow:hidden;
+  animation:wnewIn .45s cubic-bezier(.34,1.2,.64,1) both;
+}
+.wnew-bar{
+  height:5px;
+  background:linear-gradient(90deg,#ffd400,#ffbc00,#fff7a0,#ffbc00,#ffd400);
+  background-size:200% 100%;
+  animation:shimmer 2s linear infinite;
+}
 .wnew-body{padding:16px 18px 18px;}
 .wnew-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.wnew-label{display:inline-flex;align-items:center;gap:5px;background:#111;color:#ffd400;font-size:11px;font-weight:800;letter-spacing:.6px;padding:4px 10px;border-radius:100px;}
+.wnew-label{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#111;color:#ffd400;
+  font-size:11px;font-weight:800;letter-spacing:.6px;
+  padding:4px 10px;border-radius:100px;
+}
 .wnew-label svg{width:11px;height:11px;fill:#ffd400;}
-.wnew-dismiss{width:30px;height:30px;border:none;border-radius:10px;background:rgba(0,0,0,.07);color:#111;font-size:16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.wnew-dismiss{
+  width:30px;height:30px;border:none;border-radius:10px;
+  background:rgba(0,0,0,.07);
+  color:#111;font-size:16px;font-weight:900;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  line-height:1;
+}
 .wnew-rows{display:flex;flex-direction:column;gap:9px;}
 .wnew-row{display:flex;align-items:center;gap:11px;padding:10px 12px;background:#fffbe8;border-radius:16px;}
-.wnew-ico{width:34px;height:34px;border-radius:11px;background:#ffd400;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wnew-ico{
+  width:34px;height:34px;border-radius:11px;
+  background:#ffd400;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
 .wnew-ico svg{width:17px;height:17px;fill:#111;}
 .wnew-rtitle{font-size:13px;font-weight:800;margin-bottom:1px;}
 .wnew-rdesc{font-size:12px;color:#555;line-height:1.5;}
 
-/* ── Footer credit ── */
-.footer-credit{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 4px 8px;
-  font-size:13px;font-weight:700;color:rgba(0,0,0,.45);
+/* min-players inline error */
+.minp-err{
+  display:flex;align-items:center;gap:9px;
+  background:#fff3cd;border:1.5px solid #ffc107;
+  color:#7a5200;
+  padding:12px 16px;border-radius:18px;
+  font-size:14px;font-weight:700;
+  margin-top:12px;
+  opacity:0;max-height:0;overflow:hidden;
+  transition:opacity .3s ease, max-height .3s ease, margin .3s ease;
 }
-.footer-name{
-  font-size:13px;font-weight:800;color:#111;
+.minp-err.show{opacity:1;max-height:80px;margin-top:12px;}
+.minp-err svg{width:20px;height:20px;fill:#e6a800;flex-shrink:0;}
+
+/* empty-input error */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.input-shake{ animation:shake .35s ease; }
+.input-error{
+  border:2px solid #ff4d4d !important;
+  box-shadow:0 0 0 3px rgba(255,77,77,.2) !important;
 }
-/* WhatsApp icon-only button */
-.footer-wa-icon{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:42px;height:42px;
-  background:#25D366;
-  border-radius:50%;
-  text-decoration:none;
-  box-shadow:0 3px 10px rgba(37,211,102,.35);
-  transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
-  flex-shrink:0;
+.input-err-msg{
+  display:none;
+  color:#ff4d4d;font-size:13px;font-weight:700;
+  margin-top:8px;padding:8px 14px;
+  background:rgba(255,77,77,.08);
+  border-radius:12px;
 }
-.footer-wa-icon:hover{transform:scale(1.1);box-shadow:0 5px 16px rgba(37,211,102,.45);}
-.footer-wa-icon svg{width:22px;height:22px;fill:#fff;}
+.input-err-msg.show{display:block;}
 </style>
 </head>
 <body>
@@ -209,32 +214,23 @@ button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-b
 <section class="screen" id="screen1">
   <div class="screen1-top">
     <div>
-      <div class="title">یاری سیخور</div>
-      <div class="sub">هاورێیان و خێزانی</div>
+      <div class="title">یاری وشە</div>
+      <div class="sub">یارییەکی مۆدێرن بۆ هاورێکانت</div>
     </div>
     <button class="info-btn" onclick="openInfo()">
       <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
       چۆن یاری بکەین؟
     </button>
   </div>
-
   <div class="glass input-card">
     <label>ناوی یاریزانەکان</label>
-    <div style="display:flex;gap:10px;align-items:flex-start;">
-      <div class="input-wrap">
-        <input type="text" id="playerInput" placeholder="ناو بنووسە" autocomplete="off"
-          oninput="onPlayerInput()"
-          onkeydown="if(event.key==='Enter'){addPlayerFromInput();}"
-          onfocus="onPlayerFocus()"
-          onblur="hideSuggestion()">
-        <div class="suggestion-drop" id="suggDrop"></div>
-      </div>
-      <button class="add-btn" id="addBtn" onclick="addPlayerFromInput()">زیادکردن</button>
+    <div style="display:flex;gap:10px;">
+      <input type="text" id="playerInput" placeholder="ناوی یاریزان" onkeydown="if(event.key==='Enter')addPlayer()">
+      <button class="add-btn" onclick="addPlayer()">زیادکردن</button>
     </div>
     <div class="input-err-msg" id="inputErrMsg">⚠ تکایە ناوی یاریزان بنووسە</div>
     <div class="players-box" id="playersBox"></div>
   </div>
-
   <div class="glass input-card">
     <label>ژمارەی سیخور</label>
     <select id="spyCount">
@@ -254,62 +250,30 @@ button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-b
   <button class="start-btn" onclick="goCategory()">دەستپێکردنی یاری</button>
   <div class="minp-err" id="minpErr">
     <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-    کەمترین یاریزان ٣ یاریزانە — تکایە یاریزان زیاد بکە
-  </div>
-
-  <!-- Footer: name left, WhatsApp icon right -->
-  <div class="footer-credit">
-    <span>دروستکراوە لەلاین <span class="footer-name">Muhamad Yousif</span></span>
-    <a class="footer-wa-icon" href="https://wa.me/9647509648683" target="_blank" title="WhatsApp: 0750 964 8683">
-      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    </a>
+    کەمترین ژمارە ٣ یاریزانە — تکایە یاریزانی زیاتر زیاد بکە
   </div>
 </section>
 
 <!-- SCREEN 2 -->
 <section class="screen hidden" id="screen2">
-  <div class="title">جۆری وشە</div>
-  <div class="sub">چەند وشەیەک هەڵبژێرە</div>
+  <div class="title">کەتەگۆری</div>
+  <div class="sub">چەند کەتەگۆرییەک هەڵبژێرە</div>
   <div class="category-grid">
     <div class="category cat1" onclick="selectCategory(this,'Movies')">
-      <h2>🎬 فیلم</h2><p>فیلم و دراما</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/2503/2503508.png">
+      <h2>فیلم</h2><p>فیلم و دراما</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/2503/2503508.png">
     </div>
     <div class="category cat2" onclick="selectCategory(this,'Countries')">
-      <h2>🌍 وڵات</h2><p>شار و وڵات</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/201/201623.png">
+      <h2>وڵات</h2><p>شار و وڵات</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/201/201623.png">
     </div>
     <div class="category cat3" onclick="selectCategory(this,'Food')">
-      <h2>🍔 خواردن</h2><p>خواردن و شیرینی</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/5787/5787016.png">
+      <h2>خواردن</h2><p>خواردن و شیرینی</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/5787/5787016.png">
     </div>
     <div class="category cat4" onclick="selectCategory(this,'Games')">
-      <h2>🎮 یاری</h2><p>ناوی یارییەکان</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/686/686589.png">
-    </div>
-    <div class="category cat5" onclick="selectCategory(this,'Sports')">
-      <h2>⚽ وەرزش</h2><p>یاری و وەرزش</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/53/53283.png">
-    </div>
-    <div class="category cat6" onclick="selectCategory(this,'Animals')">
-      <h2>🐘 ئاژەڵ</h2><p>ناوی ئاژەڵەکان</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/616/616408.png">
-    </div>
-    <div class="category cat7" onclick="selectCategory(this,'Jobs')">
-      <h2>💼 پیشە</h2><p>کار و پیشەکان</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/2092/2092058.png">
-    </div>
-    <div class="category cat8" onclick="selectCategory(this,'Brands')">
-      <h2>🏷️ براند</h2><p>براندە ناودارەکان</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png">
-    </div>
-    <div class="category cat9" onclick="selectCategory(this,'Places')">
-      <h2>🏛️ شوێن</h2><p>شوێنە سەرنجڕاکێشەکان</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/684/684908.png">
-    </div>
-    <div class="category cat10" onclick="selectCategory(this,'Music')">
-      <h2>🎵 موزیک</h2><p>گۆرانی و هونەر</p>
-      <img class="cat-img" src="https://cdn-icons-png.flaticon.com/512/3844/3844724.png">
+      <h2>یاری</h2><p>ناوی یارییەکان</p>
+      <img src="https://cdn-icons-png.flaticon.com/512/686/686589.png">
     </div>
   </div>
   <button class="start-btn" onclick="startCards()">بەردەوامبە</button>
@@ -330,7 +294,7 @@ button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-b
           <div class="avatar-big" id="avatarFront"></div>
         </div>
         <div class="secret-word">؟</div>
-        <div class="card-hint">پەنجە لەسەر کارتەکە راگرە</div>
+        <div class="card-hint">دەستت لەسەر کارتەکە راگرە</div>
       </div>
       <div class="card-face card-back">
         <div class="card-top">
@@ -338,7 +302,7 @@ button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-b
           <div class="avatar-big" id="avatarBack"></div>
         </div>
         <div class="secret-word" id="secretWord"></div>
-        <div class="card-hint">وشەکە لەبیر مەکە</div>
+        <div class="card-hint">وشەکە لەبیر بگرە</div>
       </div>
     </div>
   </div>
@@ -375,8 +339,8 @@ button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-b
     <div class="word-result" id="wordResult"></div>
     <div class="spy-list" id="spyList"></div>
     <div class="end-buttons">
-      <button class="restart-btn" onclick="playAgain()"> بەردەوام بوونی خول </button>
-      <button class="restart-btn dark-btn" onclick="resetAll()">گەرانەوە بۆ سەرەتا</button>
+      <button class="restart-btn" onclick="playAgain()">دووبارە یاری بکەن</button>
+      <button class="restart-btn dark-btn" onclick="resetAll()">یاریزانە نوێکان تۆمار بکە</button>
     </div>
   </div>
 </section>
@@ -385,7 +349,8 @@ button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-b
 <div class="pause-overlay" id="pauseOverlay">
   <div class="pause-box">
     <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-    <h2>وەستاوە</h2><p>کاتەکە وەستاوە</p>
+    <h2>وەستاوە</h2>
+    <p>کاتەکە وەستاوە</p>
     <button class="resume-btn" onclick="togglePause()">بەردەوامبە</button>
   </div>
 </div>
@@ -395,47 +360,34 @@ button{-webkit-tap-highlight-color:transparent;transition:transform .25s cubic-b
   <div class="info-sheet">
     <div class="info-handle"></div>
     <div class="info-title">⚡ چۆن یاری بکەین؟</div>
-    <div class="info-step"><div class="info-num">١</div><div class="info-text">ناوی هەموو یاریزانەکان بنووسە و ژمارەی <span class="info-spy-badge">سیخور</span> و کاتی یاریش دیاری بکە.</div></div>
-    <div class="info-step"><div class="info-num">٢</div><div class="info-text">کەتەگۆریی دڵخوازت هەڵبژێرە — فیلم، وڵات، خواردن یا یاری.</div></div>
-    <div class="info-step"><div class="info-num">٣</div><div class="info-text">هەر یاریزانێک مۆبایلەکەی دەستی بگرێت و دەستی لەسەر کارتەکە راگرێت تا <span class="info-word-badge">وشەکە</span> ببینێت — کەسی تر نەیبینێت!</div></div>
-    <div class="info-step"><div class="info-num">٤</div><div class="info-text"><span class="info-spy-badge">سیخور</span> وشەکەی نازانێت. یاریزانی ئاسایی دەبێت وشەکە وەسف بکات بەبێ ئەوەی ڕاستەوخۆ بیبێژێت.</div></div>
-    <div class="info-step"><div class="info-num">٥</div><div class="info-text">کاتەکە تەواو بوو، گروپەکە دەنگی دەدات بۆ ئەوەی سیخورەکە دیاری بکەن. ئەگەر سیخورەکە دیاری کرا — یاریزانی ئاسایی بردن! ئەگەر نەیانکرد — <span class="info-spy-badge">سیخور</span> برد!</div></div>
+
+    <div class="info-step">
+      <div class="info-num">١</div>
+      <div class="info-text">ناوی هەموو یاریزانەکان بنووسە و ژمارەی <span class="info-spy-badge">سیخور</span> و کاتی یاریش دیاری بکە.</div>
+    </div>
+    <div class="info-step">
+      <div class="info-num">٢</div>
+      <div class="info-text">کەتەگۆریی دڵخوازت هەڵبژێرە — فیلم، وڵات، خواردن یا یاری.</div>
+    </div>
+    <div class="info-step">
+      <div class="info-num">٣</div>
+      <div class="info-text">هەر یاریزانێک مۆبایلەکەی دەستی بگرێت و دەستی لەسەر کارتەکە راگرێت تا <span class="info-word-badge">وشەکە</span> ببینێت — کەسی تر نەیبینێت!</div>
+    </div>
+    <div class="info-step">
+      <div class="info-num">٤</div>
+      <div class="info-text"><span class="info-spy-badge">سیخور</span> وشەکەی نازانێت. یاریزانی ئاسایی دەبێت وشەکە وەسف بکات بەبێ ئەوەی ڕاستەوخۆ بیبێژێت.</div>
+    </div>
+    <div class="info-step">
+      <div class="info-num">٥</div>
+      <div class="info-text">کاتەکە تەواو بوو، گروپەکە دەنگی دەدات بۆ ئەوەی سیخورەکە دیاری بکەن. ئەگەر سیخورەکە دیاری کرا — یاریزانی ئاسایی بردن! ئەگەر نەیانکرد — <span class="info-spy-badge">سیخور</span> برد!</div>
+    </div>
+
     <button class="info-close" onclick="closeInfo()">تێگەیشتم ✓</button>
   </div>
 </div>
 
-<!-- WHAT'S NEW CARD -->
-<div class="wnew-wrap" id="wnewWrap">
-  <div class="wnew-card">
-    <div class="wnew-bar"></div>
-    <div class="wnew-body">
-      <div class="wnew-head">
-        <div class="wnew-label">
-          <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-          نوێکارییەکان
-        </div>
-        <button class="wnew-dismiss" onclick="closeWnew()">&#x2715;</button>
-      </div>
-      <div class="wnew-rows">
-        <div class="wnew-row">
-          <div class="wnew-ico"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
-          <div><div class="wnew-rtitle">پێشنیارکردنی ناو</div><div class="wnew-rdesc">کاتی نووسین ناوەکان پێشنیار دەکرێن</div></div>
-        </div>
-        <div class="wnew-row">
-          <div class="wnew-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm4 5h8v2H8zm3 5h2v2h-2z"/></svg></div>
-          <div><div class="wnew-rtitle">١٠ کەتەگۆری</div><div class="wnew-rdesc">وەرزش، ئاژەڵ، پیشە، براند و زیاتر</div></div>
-        </div>
-        <div class="wnew-row">
-          <div class="wnew-ico"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-          <div><div class="wnew-rtitle">دروستکراوی Muhamad Yousif</div><div class="wnew-rdesc">بۆ پەیوەندی: WhatsApp ٠٧٥٠ ٩٦٤ ٨٦٨٣</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
-const avatars=[
+const avatars = [
   "https://api.dicebear.com/7.x/adventurer/svg?seed=Zara",
   "https://api.dicebear.com/7.x/adventurer/svg?seed=Titan",
   "https://api.dicebear.com/7.x/adventurer/svg?seed=Blaze",
@@ -453,248 +405,378 @@ const avatars=[
   "https://api.dicebear.com/7.x/adventurer/svg?seed=Wren"
 ];
 
-const nameSuggestions=[
-  "ئەحمەد","موحەمەد","عەلی","سارا","ئایا","ئەمین","ڕێناس","شیلان","ئەرمان","ڕووناک",
-  "باخان","ژیار","هەژار","دیلان","شێرکۆ","نازدار","بینا","بەرزان","لانە","کاروان",
-  "هاوژین","ئارام","سروە","ڕاپەرین","گوڵالە","ئاکۆ","ئاسۆ","نالین","ئاوار","پیشتیوان"
-];
-
-const words={
-  Movies:   ["Interstellar","Avatar","Batman","Joker","Titanic","Venom","Spider-Man","Matrix","Inception","Avengers"],
-  Countries:["Iraq","Japan","Brazil","France","Italy","Egypt","Turkey","Germany","India","Mexico"],
-  Food:     ["Burger","Pizza","Kebab","Cake","Pasta","Shawarma","Sushi","Tacos","Dolma","Baklava"],
-  Games:    ["Minecraft","PUBG","Valorant","FIFA","Fortnite","Roblox","GTA","Among Us","Clash of Clans","Free Fire"],
-  Sports:   ["Football","Basketball","Tennis","Swimming","Boxing","Volleyball","Running","Cycling","Karate","Gymnastics"],
-  Animals:  ["Lion","Elephant","Penguin","Dolphin","Eagle","Tiger","Giraffe","Shark","Monkey","Wolf"],
-  Jobs:     ["Doctor","Teacher","Engineer","Pilot","Chef","Lawyer","Architect","Nurse","Programmer","Journalist"],
-  Brands:   ["Apple","Nike","Samsung","Adidas","McDonald's","Google","Amazon","Toyota","Coca-Cola","IKEA"],
-  Places:   ["Eiffel Tower","Pyramid","Big Ben","Colosseum","Niagara Falls","Grand Canyon","Machu Picchu","Stonehenge","Taj Mahal","Acropolis"],
-  Music:    ["Shakira","BTS","Adele","Eminem","Beyoncé","Ed Sheeran","Taylor Swift","Drake","Coldplay","Rihanna"]
+const words = {
+  Movies:["Interstellar","Avatar","Batman","Joker","Titanic","Venom"],
+  Countries:["Iraq","Japan","Brazil","France","Italy","Egypt"],
+  Food:["Burger","Pizza","Kebab","Cake","Pasta","Shawarma"],
+  Games:["Minecraft","PUBG","Valorant","FIFA","Fortnite","Roblox"]
 };
 
-let players=[],playerAvatarIndexes=[],selectedCategories=[],selectedCategory="";
-let currentIndex=0,spyIndexes=[],gameWord="",usedWords=[];
-let holdTimer,timerInterval,currentTime=0,timerStarted=false,isPaused=false,cardWasOpened=false;
-let suggBlurTimer=null;
+let players = [];
+// Track which avatar seed index each player uses (random, no repeats)
+let playerAvatarIndexes = [];
+let selectedCategories = [];
+let selectedCategory = "";
+let currentIndex = 0;
+let spyIndexes = [];
+let gameWord = "";
+let usedWords = [];
+let holdTimer;
+let timerInterval;
+let currentTime = 0;
+let timerStarted = false;
+let isPaused = false;
 
-/* ── Suggestion ── */
-function onPlayerInput(){
-  const val=document.getElementById("playerInput").value.trim();
-  document.getElementById("playerInput").classList.remove("input-error");
-  document.getElementById("inputErrMsg").classList.remove("show");
-  renderSuggestions(val);
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 }
-function onPlayerFocus(){
-  renderSuggestions(document.getElementById("playerInput").value.trim());
+
+/* Info modal */
+function openInfo(){
+  document.getElementById("infoOverlay").classList.add("active");
 }
-function hideSuggestion(){
-  suggBlurTimer=setTimeout(()=>{document.getElementById("suggDrop").classList.remove("open");},180);
+function closeInfo(){
+  document.getElementById("infoOverlay").classList.remove("active");
 }
-function renderSuggestions(val){
-  const drop=document.getElementById("suggDrop");
-  const lower=val.toLowerCase();
-  const filtered=nameSuggestions.filter(n=>!players.includes(n)&&(val===""||n.includes(val)||n.toLowerCase().includes(lower))).slice(0,5);
-  if(filtered.length===0&&val===""){drop.classList.remove("open");return;}
-  let html="";
-  filtered.forEach((name,i)=>{
-    const avIdx=i%avatars.length;
-    html+=`<div class="sugg-item" onmousedown="pickSuggestion('${name}')">
-      <div class="sugg-av"><img src="${avatars[avIdx]}"></div>${name}</div>`;
-  });
-  if(val&&!nameSuggestions.includes(val)&&!players.includes(val)){
-    html+=`<div class="sugg-plus-hint" onmousedown="addPlayerFromInput()">
-      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-      زیادکردنی "${val}"</div>`;
+function closeInfoOutside(e){
+  if(e.target === document.getElementById("infoOverlay")) closeInfo();
+}
+
+/* Random avatar that hasn't been used yet */
+function getRandomAvatar(){
+  const used = new Set(playerAvatarIndexes);
+  const available = avatars.map((_,i)=>i).filter(i=>!used.has(i));
+  if(available.length === 0){
+    // All used, just pick any random
+    return Math.floor(Math.random()*avatars.length);
   }
-  drop.innerHTML=html;
-  drop.classList.add("open");
-}
-function pickSuggestion(name){
-  clearTimeout(suggBlurTimer);
-  document.getElementById("playerInput").value=name;
-  document.getElementById("suggDrop").classList.remove("open");
-  addPlayer(name);
-  document.getElementById("playerInput").value="";
-  document.getElementById("playerInput").focus();
-}
-function addPlayerFromInput(){
-  document.getElementById("suggDrop").classList.remove("open");
-  addPlayer(document.getElementById("playerInput").value.trim());
-  if(players.length>0){document.getElementById("playerInput").value="";}
-  document.getElementById("playerInput").focus();
+  return available[Math.floor(Math.random()*available.length)];
 }
 
-/* ── Core add ── */
-function addPlayer(value){
+function addPlayer(){
+  const input = document.getElementById("playerInput");
+  const errMsg = document.getElementById("inputErrMsg");
+  const value = input.value.trim();
   if(!value){
-    const input=document.getElementById("playerInput");
-    const errMsg=document.getElementById("inputErrMsg");
+    // shake + red border + error message
     input.classList.remove("input-shake","input-error");
     errMsg.classList.remove("show");
-    void input.offsetWidth;
+    void input.offsetWidth; // reflow to restart animation
     input.classList.add("input-shake","input-error");
     errMsg.classList.add("show");
     input.focus();
-    input.addEventListener("input",()=>{input.classList.remove("input-error");errMsg.classList.remove("show");},{once:true});
+    // auto-clear error after user starts typing
+    input.addEventListener("input", ()=>{
+      input.classList.remove("input-error");
+      errMsg.classList.remove("show");
+    }, {once:true});
     return;
   }
-  document.getElementById("playerInput").classList.remove("input-error");
-  document.getElementById("inputErrMsg").classList.remove("show");
-  if(players.includes(value)){alert("ئەم یاریزانە هەیە");return;}
-  if(players.length>=10){alert("زیاتر لە 10 یاریزان نابێت");return;}
+  input.classList.remove("input-error");
+  errMsg.classList.remove("show");
+  if(players.includes(value)){ alert("ئەم یاریزانە هەیە"); return; }
+  if(players.length >= 10){ alert("زیاتر لە 10 یاریزان نابێت"); return; }
   players.push(value);
   playerAvatarIndexes.push(getRandomAvatar());
   renderPlayers();
-  const btn=document.getElementById("addBtn");
-  btn.style.transition="transform .1s ease";btn.style.transform="scale(0.85)";
-  setTimeout(()=>{btn.style.transition="transform .4s cubic-bezier(.34,1.7,.64,1)";btn.style.transform="scale(1)";},100);
+  input.value = "";
 }
 
-function openInfo(){document.getElementById("infoOverlay").classList.add("active");}
-function closeInfo(){document.getElementById("infoOverlay").classList.remove("active");}
-function closeInfoOutside(e){if(e.target===document.getElementById("infoOverlay"))closeInfo();}
-
-function getRandomAvatar(){
-  const used=new Set(playerAvatarIndexes);
-  const available=avatars.map((_,i)=>i).filter(i=>!used.has(i));
-  if(available.length===0)return Math.floor(Math.random()*avatars.length);
-  return available[Math.floor(Math.random()*available.length)];
+function removePlayer(index){
+  players.splice(index,1);
+  playerAvatarIndexes.splice(index,1);
+  renderPlayers();
 }
-function removePlayer(index){players.splice(index,1);playerAvatarIndexes.splice(index,1);renderPlayers();}
+
 function renderPlayers(){
-  const box=document.getElementById("playersBox");
-  box.innerHTML="";
+  const box = document.getElementById("playersBox");
+  box.innerHTML = "";
   players.forEach((p,i)=>{
-    const avatarUrl=avatars[playerAvatarIndexes[i]];
-    box.innerHTML+=`<div class="player-item">
-      <div class="avatar"><img src="${avatarUrl}"></div>
-      <div class="player-name">${p}</div>
-      <button class="remove-player" onclick="removePlayer(${i})">&#x2715;</button>
-    </div>`;
+    const avatarUrl = avatars[playerAvatarIndexes[i]];
+    box.innerHTML += `
+      <div class="player-item">
+        <div class="avatar"><img src="${avatarUrl}"></div>
+        <div class="player-name">${p}</div>
+        <button class="remove-player" onclick="removePlayer(${i})">&#x2715;</button>
+      </div>`;
   });
 }
 
 function goCategory(){
-  if(players.length<3){
-    const err=document.getElementById("minpErr");
-    err.classList.remove("show");void err.offsetWidth;err.classList.add("show");
-    const card=document.querySelector("#screen1 .input-card");
-    card.style.animation="none";void card.offsetWidth;card.style.animation="shake .35s ease";
-    setTimeout(()=>err.classList.remove("show"),3000);return;
+  if(players.length < 3){
+    const err = document.getElementById("minpErr");
+    err.classList.remove("show");
+    void err.offsetWidth;
+    err.classList.add("show");
+    // shake the players card
+    const card = document.querySelector("#screen1 .input-card");
+    card.style.animation = "none";
+    void card.offsetWidth;
+    card.style.animation = "shake .35s ease";
+    // auto-hide after 3s
+    setTimeout(()=> err.classList.remove("show"), 3000);
+    return;
   }
   document.getElementById("minpErr").classList.remove("show");
   showScreen("screen2");
 }
+
 function selectCategory(el,cat){
   el.classList.toggle("active");
-  if(selectedCategories.includes(cat)){selectedCategories=selectedCategories.filter(c=>c!==cat);}
-  else{selectedCategories.push(cat);}
-}
-function prepareGame(){
-  selectedCategory=selectedCategories[Math.floor(Math.random()*selectedCategories.length)];
-  let avail=words[selectedCategory].filter(w=>!usedWords.includes(w));
-  if(avail.length===0){usedWords=[];avail=words[selectedCategory];}
-  gameWord=avail[Math.floor(Math.random()*avail.length)];
-  usedWords.push(gameWord);
-  spyIndexes=[];
-  const spyCount=parseInt(document.getElementById("spyCount").value);
-  while(spyIndexes.length<spyCount){const rand=Math.floor(Math.random()*players.length);if(!spyIndexes.includes(rand))spyIndexes.push(rand);}
-  currentIndex=0;
-}
-function startCards(){
-  if(selectedCategories.length===0){alert("لانیکەم یەک کەتەگۆری هەڵبژێرە");return;}
-  prepareGame();showScreen("screen3");showPlayer();
-}
-function showPlayer(){
-  cardWasOpened=false;
-  document.getElementById("wordCard").classList.remove("flip");
-  document.getElementById("nextBtn").classList.remove("active");
-  document.getElementById("turnPlayer").innerText=players[currentIndex];
-  document.getElementById("playerCounter").innerText=`${currentIndex+1} / ${players.length}`;
-  document.getElementById("categoryBadge").innerText=selectedCategory;
-  const avatarUrl=avatars[playerAvatarIndexes[currentIndex]];
-  document.getElementById("avatarFront").innerHTML=`<img src="${avatarUrl}">`;
-  document.getElementById("avatarBack").innerHTML=`<img src="${avatarUrl}">`;
-  if(spyIndexes.includes(currentIndex)){
-    document.getElementById("roleText").innerText="سیخور";
-    document.getElementById("secretWord").innerText="تۆ سیخوریت";
-  }else{
-    document.getElementById("roleText").innerText="وشە";
-    document.getElementById("secretWord").innerText=gameWord;
+  if(selectedCategories.includes(cat)){
+    selectedCategories = selectedCategories.filter(c=>c!==cat);
+  } else {
+    selectedCategories.push(cat);
   }
 }
-function openCard(){cardWasOpened=true;document.getElementById("wordCard").classList.add("flip");}
+
+function prepareGame(){
+  selectedCategory = selectedCategories[Math.floor(Math.random()*selectedCategories.length)];
+  let availableWords = words[selectedCategory].filter(w=>!usedWords.includes(w));
+  if(availableWords.length === 0){ usedWords = []; availableWords = words[selectedCategory]; }
+  gameWord = availableWords[Math.floor(Math.random()*availableWords.length)];
+  usedWords.push(gameWord);
+
+  spyIndexes = [];
+  const spyCount = parseInt(document.getElementById("spyCount").value);
+  while(spyIndexes.length < spyCount){
+    const rand = Math.floor(Math.random()*players.length);
+    if(!spyIndexes.includes(rand)) spyIndexes.push(rand);
+  }
+  currentIndex = 0;
+}
+
+function startCards(){
+  if(selectedCategories.length === 0){ alert("لانیکەم یەک کەتەگۆری هەڵبژێرە"); return; }
+  prepareGame();
+  showScreen("screen3");
+  showPlayer();
+}
+
+function showPlayer(){
+  cardWasOpened = false;
+  document.getElementById("wordCard").classList.remove("flip");
+  document.getElementById("nextBtn").classList.remove("active");
+  document.getElementById("turnPlayer").innerText = players[currentIndex];
+  document.getElementById("playerCounter").innerText = `${currentIndex+1} / ${players.length}`;
+  document.getElementById("categoryBadge").innerText = selectedCategory;
+  const avatarUrl = avatars[playerAvatarIndexes[currentIndex]];
+  document.getElementById("avatarFront").innerHTML = `<img src="${avatarUrl}">`;
+  document.getElementById("avatarBack").innerHTML = `<img src="${avatarUrl}">`;
+  if(spyIndexes.includes(currentIndex)){
+    document.getElementById("roleText").innerText = "سیخور";
+    document.getElementById("secretWord").innerText = "تۆ سیخوریت";
+  } else {
+    document.getElementById("roleText").innerText = "وشە";
+    document.getElementById("secretWord").innerText = gameWord;
+  }
+}
+
+// Track whether card was actually held open
+let cardWasOpened = false;
+
+function openCard(){
+  cardWasOpened = true;
+  document.getElementById("wordCard").classList.add("flip");
+}
+
 function closeCard(){
   document.getElementById("wordCard").classList.remove("flip");
-  if(cardWasOpened)document.getElementById("nextBtn").classList.add("active");
-  cardWasOpened=false;
+  if(cardWasOpened){
+    document.getElementById("nextBtn").classList.add("active");
+  }
+  cardWasOpened = false;
 }
-const card=document.getElementById("wordCard");
-card.addEventListener("touchstart",e=>{e.preventDefault();cardWasOpened=false;holdTimer=setTimeout(openCard,400);},{passive:false});
-card.addEventListener("touchend",e=>{e.preventDefault();clearTimeout(holdTimer);if(cardWasOpened)closeCard();},{passive:false});
-card.addEventListener("mousedown",()=>{cardWasOpened=false;holdTimer=setTimeout(openCard,400);});
-card.addEventListener("mouseup",()=>{clearTimeout(holdTimer);if(cardWasOpened)closeCard();});
-card.addEventListener("mouseleave",()=>{clearTimeout(holdTimer);if(cardWasOpened)closeCard();});
 
-function nextPlayer(){currentIndex++;if(currentIndex>=players.length){showStarter();return;}showPlayer();}
+const card = document.getElementById("wordCard");
+card.addEventListener("touchstart", e=>{
+  e.preventDefault();
+  cardWasOpened = false;
+  holdTimer = setTimeout(openCard, 400);
+},{passive:false});
+card.addEventListener("touchend", e=>{
+  e.preventDefault();
+  clearTimeout(holdTimer);
+  if(cardWasOpened) closeCard();
+},{passive:false});
+card.addEventListener("mousedown", ()=>{
+  cardWasOpened = false;
+  holdTimer = setTimeout(openCard, 400);
+});
+card.addEventListener("mouseup", ()=>{
+  clearTimeout(holdTimer);
+  if(cardWasOpened) closeCard();
+});
+card.addEventListener("mouseleave", ()=>{
+  clearTimeout(holdTimer);
+  if(cardWasOpened) closeCard();
+});
+
+function nextPlayer(){
+  currentIndex++;
+  if(currentIndex >= players.length){ showStarter(); return; }
+  showPlayer();
+}
+
 function showStarter(){
   showScreen("screen4");
-  const starter=Math.floor(Math.random()*players.length);
-  document.getElementById("starterName").innerText=players[starter];
-  document.getElementById("starterAvatar").src=avatars[playerAvatarIndexes[starter]];
+  const starter = Math.floor(Math.random()*players.length);
+  document.getElementById("starterName").innerText = players[starter];
+  document.getElementById("starterAvatar").src = avatars[playerAvatarIndexes[starter]];
   resetTimerUI();
 }
+
 function resetTimerUI(){
-  clearInterval(timerInterval);timerStarted=false;isPaused=false;
+  clearInterval(timerInterval);
+  timerStarted = false;
+  isPaused = false;
   document.getElementById("pauseOverlay").classList.remove("active");
-  document.getElementById("timer").innerText="00:00";
-  document.getElementById("timer").style.color="#111";
+  document.getElementById("timer").innerText = "00:00";
+  document.getElementById("timer").style.color = "#111";
   document.getElementById("startRoundBtn").classList.remove("hidden");
   document.getElementById("timerControls").classList.add("hidden");
 }
+
 function startTimer(){
-  if(timerStarted)return;timerStarted=true;
+  if(timerStarted) return;
+  timerStarted = true;
   document.getElementById("startRoundBtn").classList.add("hidden");
   document.getElementById("timerControls").classList.remove("hidden");
-  currentTime=parseInt(document.getElementById("gameTime").value);
+  currentTime = parseInt(document.getElementById("gameTime").value);
   updateTimer(currentTime);
-  timerInterval=setInterval(()=>{if(isPaused)return;currentTime--;updateTimer(currentTime);if(currentTime<=0)finishRound();},1000);
+  timerInterval = setInterval(()=>{
+    if(isPaused) return;
+    currentTime--;
+    updateTimer(currentTime);
+    if(currentTime <= 0) finishRound();
+  },1000);
 }
-function togglePause(){isPaused=!isPaused;document.getElementById("pauseOverlay").classList.toggle("active",isPaused);}
-function restartTimer(){clearInterval(timerInterval);timerStarted=false;startTimer();}
-function finishRound(){clearInterval(timerInterval);document.getElementById("timer").innerText="END";document.getElementById("timer").style.color="#d60000";showResults();}
-function updateTimer(sec){const m=Math.floor(sec/60).toString().padStart(2,"0");const s=(sec%60).toString().padStart(2,"0");document.getElementById("timer").innerText=`${m}:${s}`;}
+
+function togglePause(){
+  isPaused = !isPaused;
+  document.getElementById("pauseOverlay").classList.toggle("active", isPaused);
+}
+
+function restartTimer(){
+  clearInterval(timerInterval);
+  timerStarted = false;
+  startTimer();
+}
+
+function finishRound(){
+  clearInterval(timerInterval);
+  document.getElementById("timer").innerText = "END";
+  document.getElementById("timer").style.color = "#d60000";
+  showResults();
+}
+
+function updateTimer(sec){
+  const m = Math.floor(sec/60).toString().padStart(2,"0");
+  const s = (sec%60).toString().padStart(2,"0");
+  document.getElementById("timer").innerText = `${m}:${s}`;
+}
+
 function showResults(){
   showScreen("screen5");
-  document.getElementById("wordResult").innerText=`وشەکە: ${gameWord}`;
-  const list=document.getElementById("spyList");list.innerHTML="";
-  spyIndexes.forEach(i=>{list.innerHTML+=`<div class="spy-item"><svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>${players[i]}</div>`;});
+  document.getElementById("wordResult").innerText = `وشەکە: ${gameWord}`;
+  const list = document.getElementById("spyList");
+  list.innerHTML = "";
+  spyIndexes.forEach(i=>{
+    list.innerHTML += `
+      <div class="spy-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+        ${players[i]}
+      </div>`;
+  });
 }
-function playAgain(){prepareGame();showScreen("screen3");showPlayer();}
-function resetAll(){spyIndexes=[];usedWords=[];document.getElementById("spyList").innerHTML="";showScreen("screen1");}
-function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");}
 
-/* Spring press */
+function playAgain(){
+  prepareGame();
+  showScreen("screen3");
+  showPlayer();
+}
+
+function resetAll(){
+  // Keep players, avatars and categories — just reset game state
+  spyIndexes = [];
+  usedWords = [];
+  document.getElementById("spyList").innerHTML = "";
+  showScreen("screen1");
+}
+
+/* ── Spring press on buttons (attach per-button to avoid card conflicts) ── */
 function attachPress(btn){
-  if(btn._pressAttached)return;btn._pressAttached=true;
-  const down=()=>{btn.style.transition="transform .09s ease";btn.style.transform="scale(0.85)";};
-  const up=()=>{setTimeout(()=>{btn.style.transition="transform .45s cubic-bezier(.34,1.7,.64,1)";btn.style.transform="scale(1)";},90);};
-  btn.addEventListener("touchstart",down,{passive:true});btn.addEventListener("touchend",up,{passive:true});
-  btn.addEventListener("touchcancel",up,{passive:true});btn.addEventListener("mousedown",down);
-  btn.addEventListener("mouseup",up);btn.addEventListener("mouseleave",up);
+  if(btn._pressAttached) return;
+  btn._pressAttached = true;
+  const down = ()=>{
+    btn.style.transition = "transform .09s ease";
+    btn.style.transform = "scale(0.85)";
+  };
+  const up = ()=>{
+    // wait 90ms so the squish is always visible before bouncing back
+    setTimeout(()=>{
+      btn.style.transition = "transform .45s cubic-bezier(.34,1.7,.64,1)";
+      btn.style.transform = "scale(1)";
+    }, 90);
+  };
+  btn.addEventListener("touchstart", down, {passive:true});
+  btn.addEventListener("touchend",   up,   {passive:true});
+  btn.addEventListener("touchcancel",up,   {passive:true});
+  btn.addEventListener("mousedown",  down);
+  btn.addEventListener("mouseup",    up);
+  btn.addEventListener("mouseleave", up);
 }
-function attachAllButtons(){document.querySelectorAll("button").forEach(attachPress);}
+// Attach to all current + future buttons via MutationObserver
+function attachAllButtons(){
+  document.querySelectorAll("button").forEach(attachPress);
+}
 attachAllButtons();
-const _pressObs=new MutationObserver(attachAllButtons);
-_pressObs.observe(document.body,{childList:true,subtree:true});
+const _pressObs = new MutationObserver(attachAllButtons);
+_pressObs.observe(document.body, {childList:true, subtree:true});
 
-/* What's New */
+/* ── What's New: show every time ── */
 function closeWnew(){
-  const w=document.getElementById("wnewWrap");
-  w.style.transition="opacity .2s ease, transform .2s ease";w.style.opacity="0";w.style.transform="translateY(-12px)";
-  setTimeout(()=>{w.classList.remove("active");w.style.transform="";},220);
+  const w = document.getElementById("wnewWrap");
+  w.style.transition = "opacity .2s ease, transform .2s ease";
+  w.style.opacity = "0";
+  w.style.transform = "translateY(-12px)";
+  setTimeout(()=>{ w.classList.remove("active"); w.style.transform=""; }, 220);
 }
-setTimeout(()=>{document.getElementById("wnewWrap").classList.add("active");},600);
+setTimeout(()=>{
+  document.getElementById("wnewWrap").classList.add("active");
+}, 600);
 </script>
+
+<!-- WHAT'S NEW CARD -->
+<div class="wnew-wrap" id="wnewWrap">
+  <div class="wnew-card">
+    <div class="wnew-bar"></div>
+    <div class="wnew-body">
+      <div class="wnew-head">
+        <div class="wnew-label">
+          <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+          نوێکارییەکان
+        </div>
+        <button class="wnew-dismiss" onclick="closeWnew()">&#x2715;</button>
+      </div>
+      <div class="wnew-rows">
+        <div class="wnew-row">
+          <div class="wnew-ico"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+          <div><div class="wnew-rtitle">ڕێنمایی یاری</div><div class="wnew-rdesc">دوگمەی "چۆن یاری بکەین؟" زیادکرا</div></div>
+        </div>
+        <div class="wnew-row">
+          <div class="wnew-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+          <div><div class="wnew-rtitle">ئاڤەتەری ڕاندۆم</div><div class="wnew-rdesc">هەر یاریزانێک ئاڤەتەری جیاوازی هەیە</div></div>
+        </div>
+        <div class="wnew-row">
+          <div class="wnew-ico"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          <div><div class="wnew-rtitle">کارتی هۆڵد</div><div class="wnew-rdesc">تەنها بە هۆڵد کردن کارتەکە دەسەلمێنرێت</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
