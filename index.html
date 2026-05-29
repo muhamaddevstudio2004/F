@@ -1100,11 +1100,23 @@ function positionPortal(){
   portal.style.maxHeight=Math.min(230,maxH)+'px';
 }
 function onPlayerInput(){
-  const val=document.getElementById("playerInput").value.trim();
-  document.getElementById("playerInput").classList.remove("input-error");
+  const input = document.getElementById("playerInput");
+  const val = input.value;
+  
+  // سڕینەوەی هەر کارەکتەرێک کە کوردی/عەرەبی نییە
+  const cleaned = val.replace(/[^\u0600-\u06FF\u200c\s]/g, '');
+  
+  if(cleaned !== val){
+    input.value = cleaned;
+    vib('error');
+  }
+  
+  // ئەوەی پێشتر هەبوو
+  input.classList.remove("input-error");
   document.getElementById("inputErrMsg").classList.remove("show");
-  renderSuggestions(val);
+  renderSuggestions(cleaned);
 }
+
 function onPlayerFocus(){renderSuggestions(document.getElementById("playerInput").value.trim());}
 function hideSuggestion(){
   suggBlurTimer=setTimeout(()=>{getPortal().classList.remove("open");},200);
