@@ -10,11 +10,11 @@
 <title>sexur</title>
 <meta property="og:title" content="sexur" />
 <meta property="og:description" content=" سیخور" />
-<meta property="og:image" content="https://devmuhamad1991.github.io/F/sexur.webp" />
+<meta property="og:image" content="https://devmuhamad1991.github.io/F/sexur.png" />
 <meta property="og:url" content="https://devmuhamad1991.github.io/F/" />
 <meta property="og:type" content="website" />
-<link rel="icon" type="image/png" href="https://devmuhamad1991.github.io/F/sexur.webp" />
-<link rel="apple-touch-icon" href="https://devmuhamad1991.github.io/F/sexur.webp" />
+<link rel="icon" type="image/png" href="https://devmuhamad1991.github.io/F/sexur.png" />
+<link rel="apple-touch-icon" href="https://devmuhamad1991.github.io/F/sexur.png" />
 <link rel="dns-prefetch" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <link rel="dns-prefetch" href="https://api.dicebear.com">
@@ -177,8 +177,6 @@ select {
   -webkit-text-fill-color: #1b1b1b !important;
   font-weight: 800 !important;
 }
-
-
 
 /* CATEGORY GRID */
 .category-grid{
@@ -374,11 +372,10 @@ select {
 .info-spy-badge{display:inline-block;background:#ff4d4d;color:#fff;border-radius:8px;padding:2px 9px;font-size:13px;font-weight:800;}
 .info-word-badge{display:inline-block;background:#ffd400;color:#111;border-radius:8px;padding:2px 9px;font-size:13px;font-weight:800;}
 
-/* INPUT + SUGGESTION — FIXED STACKING */
+/* INPUT + SUGGESTION */
 .input-wrap{position:relative;flex:1;}
 .input-wrap input{width:100%;}
 
-/* The suggestion dropdown is portalled to body to avoid clipping */
 .suggestion-portal{
   position:fixed;
   z-index:9999;
@@ -416,45 +413,145 @@ select {
 .input-err-msg{display:none;color:#ff4d4d;font-size:13px;font-weight:700;margin-top:8px;padding:8px 14px;background:rgba(255,77,77,.08);border-radius:12px;}
 .input-err-msg.show{display:block;}
 
-/* --- SETTINGS CARD (spy count + time — moved below players, better layout) --- */
+/* SETTINGS CARD */
 .settings-card{padding:var(--pad-card);margin-bottom:var(--gap-md);}
 .settings-row{display:flex;flex-direction:column;gap:var(--gap-md);}
 
-/* WHAT'S NEW — FIXED ANIMATION */
+/* ══════════════════════════════════════
+   AD BANNER — full-card image slider
+══════════════════════════════════════ */
+.ad-banner{
+  margin:var(--gap-md) 0 8px;
+  border-radius:var(--radius-card);
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 8px 28px rgba(0,0,0,.13);
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+/* slides wrapper */
+.ad-track{
+  display:flex;
+  transition:transform .55s cubic-bezier(.4,0,.2,1);
+  will-change:transform;
+}
+
+/* each slide = full-width card image */
+.ad-slide{
+  min-width:100%;
+  display:block;
+  position:relative;
+  cursor:pointer;
+  text-decoration:none;
+  color:inherit;
+  aspect-ratio:16/7;
+  background:#ffe066;
+  overflow:hidden;
+}
+.ad-slide:active{opacity:.9;}
+
+/* full-cover image */
+.ad-slide-img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* SVG icon placeholder (when no image) */
+.ad-slide-icon{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:10px;
+  padding:clamp(16px,4vw,28px);
+  text-align:center;
+}
+.ad-slide-icon svg{
+  width:clamp(36px,10vw,54px);
+  height:clamp(36px,10vw,54px);
+  opacity:.85;
+}
+.ad-slide-icon-title{
+  font-size:clamp(15px,4.2vw,20px);
+  font-weight:800;
+  line-height:1.35;
+}
+.ad-slide-icon-desc{
+  font-size:clamp(11px,2.8vw,13px);
+  opacity:.65;
+  font-weight:700;
+  line-height:1.5;
+}
+
+/* overlay gradient at bottom for text on images */
+.ad-slide-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 55%);
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:clamp(12px,3vw,18px);
+  pointer-events:none;
+}
+.ad-slide-overlay-title{
+  color:#fff;font-size:clamp(14px,3.8vw,18px);font-weight:800;
+  text-shadow:0 1px 6px rgba(0,0,0,.4);
+  margin-bottom:2px;
+}
+.ad-slide-overlay-desc{
+  color:rgba(255,255,255,.75);
+  font-size:clamp(11px,2.8vw,13px);font-weight:700;
+}
+
+/* progress bar at very top */
+.ad-progress{
+  position:absolute;top:0;left:0;right:0;
+  height:3px;background:rgba(255,255,255,.25);
+  z-index:5;
+}
+.ad-progress-fill{
+  position:absolute;top:0;right:0;bottom:0;
+  background:rgba(255,255,255,.8);
+  transition:width .1s linear;
+}
+
+/* dots — centered below the card */
+.ad-footer{
+  display:flex;align-items:center;justify-content:center;
+  padding:10px 0 4px;
+}
+.ad-dots{display:flex;gap:6px;align-items:center;}
+.ad-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(0,0,0,.2);
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  cursor:pointer;
+}
+.ad-dot.active{
+  width:20px;border-radius:4px;
+  background:linear-gradient(90deg,#ffd400,#ffbc00);
+}
+
+
+/* WHAT'S NEW */
 @keyframes wnewIn{from{opacity:0;transform:translateY(-30px) scale(.95);}to{opacity:1;transform:translateY(0) scale(1);}}
 @keyframes wnewOut{from{opacity:1;transform:translateY(0) scale(1);}to{opacity:0;transform:translateY(-20px) scale(.96);}}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @keyframes cdProgress{from{width:100%;}to{width:0%;}}
 
 .wnew-wrap{
-  position:fixed;
-  top:16px;
-  left:clamp(10px,3vw,22px);
-  right:clamp(10px,3vw,22px);
-  z-index:3000;
-  pointer-events:none;
-  opacity:0;
-  /* NO transition on opacity — we control it entirely via animation classes */
-  max-width:480px;
-  margin:0 auto;
+  position:fixed;top:16px;
+  left:clamp(10px,3vw,22px);right:clamp(10px,3vw,22px);
+  z-index:3000;pointer-events:none;opacity:0;
+  max-width:480px;margin:0 auto;
 }
-@media(min-width:600px){
-  .wnew-wrap{left:50%;right:auto;transform:translateX(-50%);width:400px;}
-}
-
-/* visible = pointer-events on, card animates in */
+@media(min-width:600px){.wnew-wrap{left:50%;right:auto;transform:translateX(-50%);width:400px;}}
 .wnew-wrap.visible{pointer-events:auto;opacity:1;}
-/* closing = card animates out, then we set opacity:0 again via JS */
 .wnew-wrap.closing .wnew-card{animation:wnewOut .35s cubic-bezier(.4,0,1,1) forwards;}
-
 .wnew-card{
-  background:rgba(255,255,255,.97);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:1.5px solid rgba(255,188,0,.45);
-  border-radius:24px;
-  box-shadow:0 12px 40px rgba(0,0,0,.14);
-  overflow:hidden;
-  /* entry animation fires when card is first rendered (wrap gets .visible) */
+  background:rgba(255,255,255,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,188,0,.45);border-radius:24px;
+  box-shadow:0 12px 40px rgba(0,0,0,.14);overflow:hidden;
   animation:wnewIn .45s cubic-bezier(.34,1.2,.64,1) both;
 }
 .wnew-bar-wrap{position:relative;height:4px;background:#ffe066;overflow:hidden;}
@@ -475,7 +572,6 @@ select {
 .wnew-ico svg{width:17px;height:17px;fill:#111;}
 .wnew-rtitle{font-size:13px;font-weight:800;margin-bottom:1px;}
 .wnew-rdesc{font-size:11px;color:#555;line-height:1.5;}
-
 
 /* CUSTOM MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;z-index:2000;opacity:0;pointer-events:none;transition:.25s;}
@@ -525,7 +621,6 @@ select {
     <div class="players-box" id="playersBox"></div>
   </div>
 
-  <!-- Settings card moved below players list -->
   <div class="glass settings-card">
     <div class="settings-row">
       <div>
@@ -549,12 +644,22 @@ select {
   </div>
 
   <button class="start-btn" onclick="vib();goCategory()">دەستپێکردنی یاری</button>
+
   <div class="minp-err" id="minpErr">
     <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
     کەمترین یاریزان ٣ یاریزانە — تکایە یاریزان زیاد بکە
   </div>
 
-  <!-- Footer: only WhatsApp contact, no dev credit -->
+  <!-- ══ AD BANNER ══ -->
+  <div class="ad-banner" id="adBanner">
+    <div class="ad-progress"><div class="ad-progress-fill" id="adProgressFill"></div></div>
+    <div class="ad-track" id="adTrack"></div>
+    <div class="ad-footer">
+      <div class="ad-dots" id="adDots"></div>
+    </div>
+  </div>
+  <!-- ══ END AD BANNER ══ -->
+
 </section>
 
 <!-- SCREEN 2 -->
@@ -605,7 +710,7 @@ select {
     </div>
     <div class="category cat8" onclick="vib();selectCategory(this,'Hast')">
       <h2><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>هەست</h2>
-      <p>هەست و سۆز </p>
+      <p>هەست و سۆز</p>
       <div class="cat-bg-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg></div>
     </div>
     <div class="category cat9" onclick="vib();selectCategory(this,'شوێن')">
@@ -752,7 +857,7 @@ select {
   </div>
 </div>
 
-<!-- WHAT'S NEW — portal suggestion dropdown goes here too -->
+<!-- WHAT'S NEW -->
 <div class="wnew-wrap" id="wnewWrap">
   <div class="wnew-card">
     <div class="wnew-bar-wrap">
@@ -778,13 +883,13 @@ select {
         </div>
         <div class="wnew-row">
           <div class="wnew-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm4 5h8v2H8zm3 5h2v2h-2z"/></svg></div>
-          <div><div class="wnew-rtitle"> سەروو 100 جۆر وشە</div><div class="wnew-rdesc">وەرزش، ئاژەڵ، پیشە، هەست و زیاتر</div></div>
+          <div><div class="wnew-rtitle">سەروو 100 جۆر وشە</div><div class="wnew-rdesc">وەرزش، ئاژەڵ، پیشە، هەست و زیاتر</div></div>
         </div>
         <div class="wnew-row">
           <div class="wnew-ico"><svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></div>
           <div>
             <div class="wnew-rtitle">پەیوەندی</div>
-            <div class="wnew-rdesc"> <strong>Muhamad Yousif</strong> — <a href="https://wa.me/9647830674844" target="_blank" style="color:#1a9e50;font-weight:800;text-decoration:none;">WhatsApp</a></div>
+            <div class="wnew-rdesc"><strong>Muhamad Yousif</strong> — <a href="https://wa.me/9647830674844" target="_blank" style="color:#1a9e50;font-weight:800;text-decoration:none;">WhatsApp</a></div>
           </div>
         </div>
       </div>
@@ -792,10 +897,11 @@ select {
   </div>
 </div>
 
-<!-- PORTAL for suggestion dropdown (above everything) -->
+<!-- PORTAL for suggestion dropdown -->
 <div class="suggestion-portal" id="suggPortal"></div>
 
 </div><!-- end app-wrap -->
+
 <script>
 /* ── VIBRATION ── */
 function vib(type='light'){
@@ -829,16 +935,16 @@ const nameSuggestions=[
 ];
 
 const words={
-  کەسایەتی:   ["فەرهاد پیرباڵ","شێرکۆ بێکەس","ئومێد خۆشناو ","شێخ لایلۆن","هەڵکەوت زاهیر","فاخیر هەریری","کەیفی","خدر بێگڵاسی","رەجەب","شرێک ","موراد حەلەمدار ","ترەمپ"],
+  کەسایەتی:["فەرهاد پیرباڵ","شێرکۆ بێکەس","ئومێد خۆشناو","شێخ لایلۆن","هەڵکەوت زاهیر","فاخیر هەریری","کەیفی","خدر بێگڵاسی","رەجەب","شرێک","موراد حەلەمدار","ترەمپ"],
   وڵات:["عیراق","فەرەنسا","ئەرجەنتین","دوبەی","کوردستان","تورکیا","سوریا","ئێران","ئەمریکا","صین"],
-  خواردن:     ["سەروپێ","کفتە","تەشریب","برنج","پیزا","دۆڵمە","چایە","بریانی","مەقلوبە","شفتە","مریشک"],
-  یاری:    ["رۆبلۆکس","PUBG","ئەتاری پلەی دوو","تۆپانێ","درایڤەر","کۆنکان","یاری سیخور","ماینکرافت","لاپتۆپ ","XBOX "],
-  وەرزش:   ["تۆپی پێ","تایرە","تێنس","مەلەوانی","کاراتی","شەبەکە","ڕاکردن","پاسکیل","هۆڵی لەشجوانی","بۆکسێن"],
-  گیانەوەر:  ["شێر","فیل","پەنگوین","دۆلفین","باز","پڵینگ","زەرافە","شرێک","مەیمون","سەگ"],
-  ئیش:     ["دکتۆر","مامۆستا","بێ ئیش","فرۆکەوان","شێف","پارێزەر","موهەندیس","پەرستار","سایەق بالیف","مدیر"],
-  Hast:   ["Apple","Nike","Samsung","Adidas","McDonald's","Google","Amazon","Toyota","Coca-Cola","IKEA"],
-  شوێن:   ["بازار","مارکێت","قەڵای هەولێر","مەلەوانگە","سلێمانی","هەولێر خەبات","دارەتوو","هەورامان","بارزان","خەلیفان"],
-  هونەری:    ["فەرهاد زیرەک","ئاوات بۆکانی","هەڵکەوت زاهیر","هەوراز گوڵپی","زەکاریا عەبدوڵا"," کاروان خەباتی","رۆستەم سابیر","عەتا قەرەداخی","حەمە زیرەک","کامگار"]
+  خواردن:["سەروپێ","کفتە","تەشریب","برنج","پیزا","دۆڵمە","چایە","بریانی","مەقلوبە","شفتە","مریشک"],
+  یاری:["رۆبلۆکس","PUBG","ئەتاری پلەی دوو","تۆپانێ","درایڤەر","کۆنکان","یاری سیخور","ماینکرافت","لاپتۆپ","XBOX"],
+  وەرزش:["تۆپی پێ","تایرە","تێنس","مەلەوانی","کاراتی","شەبەکە","ڕاکردن","پاسکیل","هۆڵی لەشجوانی","بۆکسێن"],
+  گیانەوەر:["شێر","فیل","پەنگوین","دۆلفین","باز","پڵینگ","زەرافە","شرێک","مەیمون","سەگ"],
+  ئیش:["دکتۆر","مامۆستا","بێ ئیش","فرۆکەوان","شێف","پارێزەر","موهەندیس","پەرستار","سایەق بالیف","مدیر"],
+  Hast:["Apple","Nike","Samsung","Adidas","McDonald's","Google","Amazon","Toyota","Coca-Cola","IKEA"],
+  شوێن:["بازار","مارکێت","قەڵای هەولێر","مەلەوانگە","سلێمانی","هەولێر خەبات","دارەتوو","هەورامان","بارزان","خەلیفان"],
+  هونەری:["فەرهاد زیرەک","ئاوات بۆکانی","هەڵکەوت زاهیر","هەوراز گوڵپی","زەکاریا عەبدوڵا","کاروان خەباتی","رۆستەم سابیر","عەتا قەرەداخی","حەمە زیرەک","کامگار"]
 };
 
 let players=[],playerAvatarIndexes=[],selectedCategories=[],selectedCategory="";
@@ -846,9 +952,155 @@ let currentIndex=0,spyIndexes=[],gameWord="",usedWords=[];
 let holdTimer,timerInterval,currentTime=0,timerStarted=false,isPaused=false,cardWasOpened=false;
 let suggBlurTimer=null;
 
-/* ── PORTAL SUGGESTION ── */
-function getPortal(){return document.getElementById('suggPortal');}
+/* ══════════════════════════════════════
+   AD BANNER SYSTEM
+══════════════════════════════════════ */
 
+// ← اێرەوە ریکلامەکانت دابنێ
+const adSlides = [
+  {
+    // وێنە: img: "https://..." — ئەگەر نەبوو ئایکۆن دەردەکەوێت
+    icon: `<svg viewBox="0 0 24 24" fill="#111"><path d="M15 7.5V2H9v5.5l3 3 3-3zM7.5 9H2v6h5.5l3-3-3-3zM9 16.5V22h6v-5.5l-3-3-3 3zM16.5 9l-3 3 3 3H22V9h-5.5z"/></svg>`,
+    img: "ad.webp",
+    iconFill: "#111",
+    title: "یاری سیخور پرو",
+    desc: "ژمارەی وشە نامحدود و کەتەگۆری تایبەتی",
+    link: "https://wa.me/9647830674844"
+  },
+  {
+    icon: `<svg viewBox="0 0 24 24" fill="#1565c0"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>`,
+    bg: "linear-gradient(135deg,#e3f2fd,#90caf9)",
+    iconFill: "#1565c0",
+    title: "ئاپی سیخور",
+    desc: "دابگرە بۆ ئایفۆن و ئەندرۆید بەبێ ئینتەرنێت",
+    link: "https://wa.me/9647830674844"
+  },
+  {
+    icon: `<svg viewBox="0 0 24 24" fill="#1a7740"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`,
+    bg: "linear-gradient(135deg,#e8f5e9,#a5d6a7)",
+    iconFill: "#1a7740",
+    title: "پەیوەندیمان پێوەبکە",
+    desc: "ئەگەر ریکلامت دەوێت یان پرسیارت هەیە",
+    link: "https://wa.me/9647830674844"
+  }
+];
+// ← کۆتایی ریکلامەکان
+
+let adCurrent = 0;
+let adAutoTimer = null;
+const AD_INTERVAL = 4000; // ms between auto-slides
+let adProgress = 0;
+let adProgressTimer = null;
+
+function buildAdBanner() {
+  const track = document.getElementById('adTrack');
+  const dots = document.getElementById('adDots');
+  track.innerHTML = '';
+  dots.innerHTML = '';
+
+  adSlides.forEach((ad, i) => {
+    const a = document.createElement('a');
+    a.className = 'ad-slide';
+    a.href = ad.link || '#';
+    a.target = '_blank';
+    a.rel = 'noopener';
+
+    if (ad.img) {
+      // real image — full cover + overlay text
+      a.style.background = '#111';
+      a.innerHTML = `
+        <img class="ad-slide-img" src="${ad.img}" alt="${ad.title}" loading="lazy">
+        <div class="ad-slide-overlay">
+          <div class="ad-slide-overlay-title">${ad.title}</div>
+          <div class="ad-slide-overlay-desc">${ad.desc}</div>
+        </div>`;
+    } else {
+      // SVG icon card
+      a.style.background = ad.bg || 'linear-gradient(135deg,#ffe066,#ffd84d)';
+      a.innerHTML = `
+        <div class="ad-slide-icon">
+          ${ad.icon || ''}
+          <div class="ad-slide-icon-title">${ad.title}</div>
+          <div class="ad-slide-icon-desc">${ad.desc}</div>
+        </div>`;
+    }
+
+    track.appendChild(a);
+
+    // dot
+    const dot = document.createElement('div');
+    dot.className = 'ad-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => { vib(); adGoTo(i); };
+    dots.appendChild(dot);
+  });
+
+  adUpdateUI();
+  adStartAuto();
+}
+
+function adUpdateUI() {
+  document.getElementById('adTrack').style.transform = `translateX(${adCurrent * 100}%)`;
+  document.querySelectorAll('.ad-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === adCurrent);
+  });
+}
+
+function adGoTo(idx) {
+  adCurrent = (idx + adSlides.length) % adSlides.length;
+  adUpdateUI();
+  adResetProgress();
+}
+function adNext() { adGoTo(adCurrent + 1); }
+function adPrev() { adGoTo(adCurrent - 1); }
+
+function adStartAuto() {
+  adStopAuto();
+  adResetProgress();
+  adAutoTimer = setInterval(() => {
+    adGoTo(adCurrent + 1);
+  }, AD_INTERVAL);
+}
+function adStopAuto() {
+  clearInterval(adAutoTimer);
+  clearInterval(adProgressTimer);
+}
+function adResetProgress() {
+  clearInterval(adProgressTimer);
+  adProgress = 100;
+  const fill = document.getElementById('adProgressFill');
+  if (!fill) return;
+  fill.style.width = '100%';
+  const step = 100 / (AD_INTERVAL / 100);
+  adProgressTimer = setInterval(() => {
+    adProgress = Math.max(0, adProgress - step);
+    fill.style.width = adProgress + '%';
+  }, 100);
+}
+
+// touch/swipe on ad banner
+(function(){
+  const banner = document.getElementById('adBanner');
+  let tx = 0, dragging = false;
+  banner.addEventListener('touchstart', e => {
+    tx = e.touches[0].clientX;
+    dragging = true;
+    adStopAuto();
+  }, {passive:true});
+  banner.addEventListener('touchend', e => {
+    if (!dragging) return;
+    dragging = false;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) { dx > 0 ? adPrev() : adNext(); }
+    adStartAuto();
+  }, {passive:true});
+})();
+
+buildAdBanner();
+
+/* ══════════════════════════════════════
+   PORTAL SUGGESTION
+══════════════════════════════════════ */
+function getPortal(){return document.getElementById('suggPortal');}
 function positionPortal(){
   const input=document.getElementById('playerInput');
   const rect=input.getBoundingClientRect();
@@ -856,11 +1108,9 @@ function positionPortal(){
   portal.style.top=(rect.bottom+window.scrollY+6)+'px';
   portal.style.left=rect.left+'px';
   portal.style.width=rect.width+'px';
-  // Prevent going off bottom of screen
   const maxH=window.innerHeight-rect.bottom-16;
   portal.style.maxHeight=Math.min(230,maxH)+'px';
 }
-
 function onPlayerInput(){
   const val=document.getElementById("playerInput").value.trim();
   document.getElementById("playerInput").classList.remove("input-error");
@@ -869,11 +1119,8 @@ function onPlayerInput(){
 }
 function onPlayerFocus(){renderSuggestions(document.getElementById("playerInput").value.trim());}
 function hideSuggestion(){
-  suggBlurTimer=setTimeout(()=>{
-    getPortal().classList.remove("open");
-  },200);
+  suggBlurTimer=setTimeout(()=>{getPortal().classList.remove("open");},200);
 }
-
 function renderSuggestions(val){
   const portal=getPortal();
   const lower=val.toLowerCase();
@@ -894,7 +1141,6 @@ function renderSuggestions(val){
   positionPortal();
   portal.classList.add("open");
 }
-
 function pickSuggestion(name){
   clearTimeout(suggBlurTimer);
   getPortal().classList.remove("open");
@@ -909,8 +1155,6 @@ function addPlayerFromInput(){
   if(players.length>0){document.getElementById("playerInput").value="";}
   document.getElementById("playerInput").focus();
 }
-
-// Reposition portal on scroll/resize
 window.addEventListener('scroll',()=>{if(getPortal().classList.contains('open'))positionPortal();},{passive:true});
 window.addEventListener('resize',()=>{if(getPortal().classList.contains('open'))positionPortal();},{passive:true});
 
@@ -1191,45 +1435,25 @@ attachAllButtons();
 const _pressObs=new MutationObserver(attachAllButtons);
 _pressObs.observe(document.body,{childList:true,subtree:true});
 
-/* ── What's New — clean animation ── */
+/* ── What's New ── */
 let _wnewAutoClose=null,_wnewCdTick=null;
-
 function closeWnew(){
-  clearTimeout(_wnewAutoClose);
-  clearInterval(_wnewCdTick);
+  clearTimeout(_wnewAutoClose);clearInterval(_wnewCdTick);
   const w=document.getElementById("wnewWrap");
-  // Add closing class to trigger exit animation on the card
   w.classList.add("closing");
-  // After animation finishes, hide everything cleanly
-  setTimeout(()=>{
-    w.classList.remove("visible","closing");
-    w.style.opacity="0";
-    w.style.pointerEvents="none";
-  }, 360);
+  setTimeout(()=>{w.classList.remove("visible","closing");w.style.opacity="0";w.style.pointerEvents="none";},360);
 }
-
 setTimeout(()=>{
   const w=document.getElementById("wnewWrap");
-  // Show: remove any leftover inline styles, add visible class
-  w.style.opacity="";
-  w.style.pointerEvents="";
-  w.classList.add("visible");
-
+  w.style.opacity="";w.style.pointerEvents="";w.classList.add("visible");
   const fill=document.getElementById("wnewCdFill");
   const SECS=6;
-  fill.style.animationDuration=SECS+"s";
-  fill.classList.add("running");
-
+  fill.style.animationDuration=SECS+"s";fill.classList.add("running");
   const cdEl=document.getElementById("wnewCd");
   let remaining=SECS;
-  _wnewCdTick=setInterval(()=>{
-    remaining--;
-    cdEl.textContent=remaining>0?remaining:"";
-  },1000);
-
+  _wnewCdTick=setInterval(()=>{remaining--;cdEl.textContent=remaining>0?remaining:"";},1000);
   _wnewAutoClose=setTimeout(closeWnew,SECS*1000);
 },700);
-
 </script>
 </body>
 </html>
