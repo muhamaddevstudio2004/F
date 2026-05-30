@@ -65,10 +65,17 @@ body{
     box-shadow:0 24px 80px rgba(0,0,0,.14);
     overflow:hidden;
   }
+  #loadingScreen{
+    max-width:540px;
+    margin:24px auto;
+    border-radius:36px;
+    min-height:calc(100vh - 48px);
+  }
 }
 @media(min-width:900px){
   body{align-items:center;padding:40px 20px;}
   .app-wrap{max-width:580px;min-height:auto;}
+  #loadingScreen{max-width:580px;}
 }
 @media(min-width:1200px){
   body{padding:48px 24px;}
