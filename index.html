@@ -178,6 +178,80 @@ select {
   font-weight: 800 !important;
 }
 
+/* ══ SKELETON LOADING ══ */
+#loadingScreen{
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(135deg,#fff7cf 0%,#ffd84d 100%);
+  padding:clamp(18px,4.5vw,32px);
+  overflow:hidden;
+  transition:opacity .45s ease, visibility .45s ease;
+}
+#loadingScreen.hide{opacity:0;visibility:hidden;pointer-events:none;}
+
+@keyframes skshimmer{
+  0%  {background-position:-500px 0}
+  100%{background-position: 500px 0}
+}
+.sk{
+  border-radius:14px;
+  background:linear-gradient(90deg,
+    rgba(255,255,255,.38) 20%,
+    rgba(255,255,255,.82) 50%,
+    rgba(255,255,255,.38) 80%
+  );
+  background-size:500px 100%;
+  animation:skshimmer 1.5s ease-in-out infinite;
+}
+
+.sk-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:clamp(14px,3.5vw,22px);}
+.sk-title-group{display:flex;flex-direction:column;gap:9px;}
+.sk-title{width:clamp(130px,38vw,175px);height:clamp(28px,7vw,38px);border-radius:12px;}
+.sk-sub  {width:clamp(90px,27vw,120px);height:clamp(14px,3.8vw,18px);border-radius:8px;}
+.sk-ibtn {width:clamp(120px,34vw,155px);height:46px;border-radius:23px;background:rgba(255,255,255,.55);}
+
+.sk-card{
+  background:rgba(255,255,255,.55);
+  border-radius:clamp(22px,4.5vw,32px);
+  padding:clamp(16px,4vw,26px);
+  margin-bottom:clamp(14px,3.5vw,22px);
+  backdrop-filter:blur(12px);
+}
+.sk-lbl{width:clamp(90px,26vw,130px);height:15px;margin-bottom:14px;border-radius:8px;}
+.sk-input-row{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
+.sk-input {flex:1;height:clamp(52px,13vw,62px);border-radius:20px;}
+.sk-addbtn{width:clamp(88px,24vw,110px);height:clamp(52px,13vw,62px);border-radius:20px;flex-shrink:0;}
+
+.sk-player{display:flex;align-items:center;gap:14px;padding:12px 14px;background:rgba(255,255,255,.65);border-radius:22px;margin-bottom:10px;}
+.sk-av{width:clamp(44px,11vw,56px);height:clamp(44px,11vw,56px);border-radius:50%;flex-shrink:0;}
+.sk-nm{flex:1;height:18px;border-radius:8px;}
+.sk-rm{width:42px;height:42px;border-radius:14px;flex-shrink:0;}
+
+.sk-settings{
+  background:rgba(255,255,255,.55);
+  border-radius:clamp(22px,4.5vw,32px);
+  padding:clamp(16px,4vw,26px);
+  margin-bottom:clamp(14px,3.5vw,22px);
+  backdrop-filter:blur(12px);
+  display:flex;flex-direction:column;gap:18px;
+}
+.sk-sellbl{width:80px;height:14px;margin-bottom:10px;border-radius:7px;}
+.sk-sel   {width:100%;height:clamp(52px,13vw,62px);border-radius:20px;}
+.sk-startbtn{width:100%;height:clamp(56px,15vw,70px);border-radius:clamp(18px,4vw,26px);}
+
+/* stagger delays */
+.sk-title   {animation-delay:.00s}
+.sk-sub     {animation-delay:.05s}
+.sk-lbl     {animation-delay:.12s}
+.sk-input   {animation-delay:.16s}
+.sk-addbtn  {animation-delay:.20s}
+.sk-p1 .sk-av{animation-delay:.24s}.sk-p1 .sk-nm{animation-delay:.26s}.sk-p1 .sk-rm{animation-delay:.28s}
+.sk-p2 .sk-av{animation-delay:.30s}.sk-p2 .sk-nm{animation-delay:.32s}.sk-p2 .sk-rm{animation-delay:.34s}
+.sk-p3 .sk-av{animation-delay:.36s}.sk-p3 .sk-nm{animation-delay:.38s}.sk-p3 .sk-rm{animation-delay:.40s}
+.sk-sellbl  {animation-delay:.42s}
+.sk-sel     {animation-delay:.46s}
+.sk-startbtn{animation-delay:.50s}
+
+
 /* CATEGORY GRID */
 .category-grid{
   display:grid;
@@ -590,6 +664,50 @@ select {
 </style>
 </head>
 <body>
+  <div id="loadingScreen">
+  <div class="sk-topbar">
+    <div class="sk-title-group">
+      <div class="sk sk-title"></div>
+      <div class="sk sk-sub"></div>
+    </div>
+    <div class="sk sk-ibtn"></div>
+  </div>
+  <div class="sk-card">
+    <div class="sk sk-lbl"></div>
+    <div class="sk-input-row">
+      <div class="sk sk-input"></div>
+      <div class="sk sk-addbtn"></div>
+    </div>
+    <div class="sk-player sk-p1">
+      <div class="sk sk-av"></div>
+      <div class="sk sk-nm"></div>
+      <div class="sk sk-rm"></div>
+    </div>
+    <div class="sk-player sk-p2">
+      <div class="sk sk-av"></div>
+      <div class="sk sk-nm" style="width:58%"></div>
+      <div class="sk sk-rm"></div>
+    </div>
+    <div class="sk-player sk-p3">
+      <div class="sk sk-av"></div>
+      <div class="sk sk-nm" style="width:72%"></div>
+      <div class="sk sk-rm"></div>
+    </div>
+  </div>
+  <div class="sk-settings">
+    <div>
+      <div class="sk sk-sellbl"></div>
+      <div class="sk sk-sel"></div>
+    </div>
+    <div>
+      <div class="sk sk-sellbl" style="animation-delay:.44s"></div>
+      <div class="sk sk-sel"    style="animation-delay:.48s"></div>
+    </div>
+  </div>
+  <div class="sk sk-startbtn"></div>
+</div>
+
+  
 <div class="app-wrap">
 
 <!-- SCREEN 1 -->
@@ -1084,6 +1202,20 @@ function adResetProgress() {
 })();
 
 buildAdBanner();
+
+// Skeleton loader
+function hideLoader(){
+  const l=document.getElementById('loadingScreen');
+  l.classList.add('hide');
+  setTimeout(()=>l.remove(),500);
+}
+const _ldStart=Date.now();
+window.addEventListener('load',()=>{
+  const elapsed=Date.now()-_ldStart;
+  setTimeout(hideLoader,Math.max(0,900-elapsed));
+});
+setTimeout(hideLoader,6000); // fallback
+
 
 /* ══════════════════════════════════════
    PORTAL SUGGESTION
