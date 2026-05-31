@@ -302,6 +302,13 @@ select {
 }
 .player-turn span{color:#b88600;}
 
+
+#customWordPanel {
+  transition: all .3s cubic-bezier(.34,1.1,.64,1);
+  overflow: hidden;
+}
+
+
 /* WORD CARD */
 .card-area{display:flex;justify-content:center;perspective:1200px;}
 .word-card{
@@ -797,7 +804,7 @@ select {
     </button>
     <div class="title">وشە</div>
   </div>
-  <div class="sub">لیستی وشە هەڵبژێرە</div>
+  <div class="sub">جۆری وشە هەڵبژێرە</div>
   <div class="category-grid">
     <div class="category cat1" onclick="vib();selectCategory(this,'کەسایەتی')">
       <h2><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>کەسایەتی</h2>
@@ -849,7 +856,55 @@ select {
       <p>گۆرانی و هونەر</p>
       <div class="cat-bg-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></div>
     </div>
-  </div>
+  
+
+
+    <!-- وشەی تایبەت — ناو grid -->
+    <div class="category"  id="customCat" style="grid-column:span 2;background:linear-gradient(135deg,#fff7dd,#fff0a0);min-height:clamp(100px,22vw,140px);" 
+      onclick="vib();toggleCustomWordPanel()">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+        </svg>
+        وشەی تایبەت
+      </h2>
+      <p>وشەی دڵخوازت بنووسە — سوپرایزتر دەبێت!</p>
+      <div class="cat-bg-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- پانێل — ناو grid -->
+    <div id="customWordPanel" class="hidden" style="grid-column:span 2;">
+      <div class="glass input-card" style="margin-top:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <label style="margin-bottom:0;">وشەی تایبەت</label>
+          <button onclick="vib();toggleCustomWordPanel()" 
+            style="width:34px;height:34px;border-radius:10px;background:#ff4d4d;border:none;color:#fff;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">✕</button>
+        </div>
+        <div style="background:#fffbe8;border-radius:14px;padding:10px 14px;margin-bottom:14px;font-size:13px;font-weight:700;color:#7a5200;display:flex;gap:8px;align-items:flex-start;">
+          <span style="width:28px;height:28px;background:#ffd400;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="#111">
+              <path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/>
+            </svg>
+          </span>
+          <span>مۆبایلەکە بدە بە مێوانێک — وشەکە بنووسێت بەبێ ئەوەی کەسی تر بیبینێت، سوپرایز دەبێت!</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div style="position:relative;flex:1;">
+            <input type="text" id="customWordInput" placeholder="وشەیەک بنووسە..." autocomplete="off"
+              onkeydown="if(event.key==='Enter'){vib();addCustomWord();}">
+          </div>
+          <button class="add-btn" onclick="vib();addCustomWord()">زیادکردن</button>
+        </div>
+        <div id="customWordTags" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>
+      </div>
+    </div>
+
+  </div><!-- کۆتایی category-grid -->
+
   <button class="start-btn" onclick="vib();startCards()">بەردەوامبە</button>
 </section>
 
@@ -1029,6 +1084,8 @@ select {
 </div><!-- end app-wrap -->
 
 <script>
+
+
 /* ── VIBRATION ── */
 function vib(type='light'){
   if(!('vibrate' in navigator))return;
@@ -1078,6 +1135,9 @@ let currentIndex=0,spyIndexes=[],gameWord="",usedWords=[];
 let holdTimer,timerInterval,currentTime=0,timerStarted=false,isPaused=false,cardWasOpened=false;
 let suggBlurTimer=null;
 
+let customWords = [];
+
+
 /* ══════════════════════════════════════
    AD BANNER SYSTEM
 ══════════════════════════════════════ */
@@ -1105,6 +1165,7 @@ let adAutoTimer = null;
 const AD_INTERVAL = 4000; // ms between auto-slides
 let adProgress = 0;
 let adProgressTimer = null;
+
 
 function buildAdBanner() {
   const track = document.getElementById('adTrack');
@@ -1224,6 +1285,35 @@ window.addEventListener('load',()=>{
 });
 setTimeout(hideLoader,6000); // fallback
 
+function toggleCustomWordPanel(){
+  const panel = document.getElementById('customWordPanel');
+  const cat = document.getElementById('customCat');
+  const isHidden = panel.classList.contains('hidden');
+  
+  if(isHidden){
+    panel.classList.remove('hidden');
+    panel.style.opacity = '0';
+    panel.style.transform = 'translateY(-10px)';
+    setTimeout(()=>{
+      panel.style.opacity = '1';
+      panel.style.transform = 'translateY(0)';
+    }, 10);
+    setTimeout(()=> document.getElementById('customWordInput').focus(), 300);
+  } else {
+    panel.style.opacity = '0';
+    panel.style.transform = 'translateY(-10px)';
+    setTimeout(()=>{
+      panel.classList.add('hidden');
+      panel.style.opacity = '';
+      panel.style.transform = '';
+      if(customWords.length === 0) cat.classList.remove('active');
+    }, 280);
+  }
+}
+
+
+
+
 
 /* ══════════════════════════════════════
    PORTAL SUGGESTION
@@ -1256,6 +1346,39 @@ function onPlayerInput(){
   document.getElementById("inputErrMsg").classList.remove("show");
   renderSuggestions(cleaned);
 }
+
+function addCustomWord(){
+  const input = document.getElementById('customWordInput');
+  const val = input.value.trim();
+  if(!val) return;
+  if(customWords.includes(val)){
+    showModal({title:"هەڵەیە", msg:"ئەم وشەیە هەیە.", icon:"err"});
+    return;
+  }
+  customWords.push(val);
+  input.value = '';
+  renderCustomWordTags();
+}
+
+function removeCustomWord(word){
+  customWords = customWords.filter(w => w !== word);
+  renderCustomWordTags();
+}
+
+function renderCustomWordTags(){
+  const box = document.getElementById('customWordTags');
+  const cat = document.getElementById('customCat');
+  box.innerHTML = '';
+  customWords.forEach(w => {
+    const tag = document.createElement('div');
+    tag.style.cssText = 'display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid #ffd400;border-radius:100px;padding:6px 14px;font-size:14px;font-weight:700;';
+    tag.innerHTML = `${w} <button onclick="vib();removeCustomWord('${w}')" style="background:none;border:none;color:#ff4d4d;font-size:16px;font-weight:900;cursor:pointer;padding:0;line-height:1;">✕</button>`;
+    box.appendChild(tag);
+  });
+  if(cat) cat.classList.toggle('active', customWords.length > 0);
+}
+
+
 
 function onPlayerFocus(){renderSuggestions(document.getElementById("playerInput").value.trim());}
 function hideSuggestion(){
@@ -1429,31 +1552,50 @@ function selectCategory(el,cat){
   else{selectedCategories.push(cat);}
 }
 function prepareGame(){
-  selectedCategory=selectedCategories[Math.floor(Math.random()*selectedCategories.length)];
-  let avail=words[selectedCategory].filter(w=>!usedWords.includes(w));
-  if(avail.length===0){usedWords=[];avail=words[selectedCategory];}
-  gameWord=avail[Math.floor(Math.random()*avail.length)];
-  usedWords.push(gameWord);
-  spyIndexes=[];
-const rawVal = document.getElementById("spyCount").value;
-const spyCount = rawVal === "random"
-  ? Math.floor(Math.random() * 3) + 1
-  : parseInt(rawVal);
+ let avail = [];
+ selectedCategories.forEach(c => {
+   avail.push(...(words[c] || []).filter(w => !usedWords.includes(w)));
+ });
+ const availCustom = customWords.filter(w => !usedWords.includes(w));
+ avail.push(...availCustom);
 
-  while(spyIndexes.length<spyCount){const rand=Math.floor(Math.random()*players.length);if(!spyIndexes.includes(rand))spyIndexes.push(rand);}
-  currentIndex=0;
+ if(avail.length === 0){
+   usedWords = [];
+   selectedCategories.forEach(c => avail.push(...(words[c] || [])));
+   avail.push(...customWords);
+ }
+
+ gameWord = avail[Math.floor(Math.random() * avail.length)];
+ usedWords.push(gameWord);
+
+ if(selectedCategories.length > 0){
+   selectedCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
+ } else {
+   selectedCategory = "تایبەت";
+ }
+
+ spyIndexes = [];
+ const rawVal = document.getElementById("spyCount").value;
+ const spyCount = rawVal === "random"
+   ? Math.floor(Math.random() * 3) + 1
+   : parseInt(rawVal);
+ while(spyIndexes.length < spyCount){
+   const rand = Math.floor(Math.random() * players.length);
+   if(!spyIndexes.includes(rand)) spyIndexes.push(rand);
+ }
+ currentIndex = 0;
 }
+
 function startCards(){
   if(selectedCategories.length === 0 && customWords.length === 0){
     vib('error');
-    showModal({title:"لیستی وشە هەڵبژێرە",msg:"تکایە لانیکەم یەک لیست هەڵبژێرە پێش دەستپێکردن.",icon:"warn"});
+    showModal({title:"لیستی وشە هەڵبژێرە",msg:"تکایە لانیکەم یەک وشە هەڵبژێرە پێش دەستپێکردن.",icon:"warn"});
     return;
   }
   prepareGame();
   showScreen("screen3");
   showPlayer();
 }
-
 
 function showPlayer(){
   cardWasOpened=false;
@@ -1542,7 +1684,7 @@ function updateTimer(sec){
 function showResults(){
   showScreen("screen5");
   document.getElementById("wordRevealText").innerText=gameWord;
-  document.getElementById("wordRevealCat").innerText="لیستی وشەکە: "+selectedCategory;
+  document.getElementById("wordRevealCat").innerText="جۆری وشەکە: "+selectedCategory;
   const spyCardsEl=document.getElementById("spyCards");
   spyCardsEl.innerHTML="";
   if(spyIndexes.length===0){
@@ -1564,7 +1706,14 @@ function showResults(){
   }
 }
 function playAgain(){prepareGame();showScreen("screen3");showPlayer();}
-function resetAll(){spyIndexes=[];usedWords=[];document.getElementById("spyCards").innerHTML="";showScreen("screen1");}
+function resetAll(){
+  spyIndexes=[];
+  usedWords=[];
+  document.getElementById("spyCards").innerHTML="";
+  showScreen("screen1");
+}
+
+
 const _screens=['screen1','screen2','screen3','screen4','screen5'];
 function showScreen(id){
   _screens.forEach(s=>{
