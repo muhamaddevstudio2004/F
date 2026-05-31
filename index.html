@@ -797,7 +797,7 @@ select {
     </button>
     <div class="title">وشە</div>
   </div>
-  <div class="sub">جۆری وشە هەڵبژێرە</div>
+  <div class="sub">لیستی وشە هەڵبژێرە</div>
   <div class="category-grid">
     <div class="category cat1" onclick="vib();selectCategory(this,'کەسایەتی')">
       <h2><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>کەسایەتی</h2>
@@ -1446,7 +1446,7 @@ const spyCount = rawVal === "random"
 function startCards(){
   if(selectedCategories.length === 0 && customWords.length === 0){
     vib('error');
-    showModal({title:"جۆری وشە هەڵبژێرە",msg:"تکایە لانیکەم یەک جۆر هەڵبژێرە پێش دەستپێکردن.",icon:"warn"});
+    showModal({title:"لیستی وشە هەڵبژێرە",msg:"تکایە لانیکەم یەک لیست هەڵبژێرە پێش دەستپێکردن.",icon:"warn"});
     return;
   }
   prepareGame();
@@ -1542,7 +1542,7 @@ function updateTimer(sec){
 function showResults(){
   showScreen("screen5");
   document.getElementById("wordRevealText").innerText=gameWord;
-  document.getElementById("wordRevealCat").innerText="جۆری وشەکە: "+selectedCategory;
+  document.getElementById("wordRevealCat").innerText="لیستی وشەکە: "+selectedCategory;
   const spyCardsEl=document.getElementById("spyCards");
   spyCardsEl.innerHTML="";
   if(spyIndexes.length===0){
