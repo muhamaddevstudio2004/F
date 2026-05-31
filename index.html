@@ -1444,9 +1444,17 @@ const spyCount = rawVal === "random"
   currentIndex=0;
 }
 function startCards(){
-  if(selectedCategories.length===0){vib('error');showModal({title:"جۆری وشە هەڵبژێرە",msg:"تکایە لانیکەم یەک وشە هەڵبژێرە پێش دەستپێکردن.",icon:"warn"});return;}
-  prepareGame();showScreen("screen3");showPlayer();
+  if(selectedCategories.length === 0 && customWords.length === 0){
+    vib('error');
+    showModal({title:"جۆری وشە هەڵبژێرە",msg:"تکایە لانیکەم یەک جۆر هەڵبژێرە پێش دەستپێکردن.",icon:"warn"});
+    return;
+  }
+  prepareGame();
+  showScreen("screen3");
+  showPlayer();
 }
+
+
 function showPlayer(){
   cardWasOpened=false;
   document.getElementById("wordCard").classList.remove("flip");
