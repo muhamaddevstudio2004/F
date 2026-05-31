@@ -1552,27 +1552,28 @@ function selectCategory(el,cat){
   else{selectedCategories.push(cat);}
 }
 function prepareGame(){
- let avail = [];
- selectedCategories.forEach(c => {
-   avail.push(...(words[c] || []).filter(w => !usedWords.includes(w)));
- });
- const availCustom = customWords.filter(w => !usedWords.includes(w));
- avail.push(...availCustom);
+const allPools = [];
+  selectedCategories.forEach(c => {
+    const pool = (words[c] || []).filter(w => !usedWords.includes(w));
+    if(pool.length > 0) allPools.push({ cat: c, pool });
+  });
+  const customPool = customWords.filter(w => !usedWords.includes(w));
+  if(customPool.length > 0) allPools.push({ cat: "تایبەت", pool: customPool });
 
- if(avail.length === 0){
-   usedWords = [];
-   selectedCategories.forEach(c => avail.push(...(words[c] || [])));
-   avail.push(...customWords);
- }
+  if(allPools.length === 0){
+    usedWords = [];
+    selectedCategories.forEach(c => {
+      const pool = words[c] || [];
+      if(pool.length > 0) allPools.push({ cat: c, pool });
+    });
+    if(customWords.length > 0) allPools.push({ cat: "تایبەت", pool: customWords });
+  }
 
- gameWord = avail[Math.floor(Math.random() * avail.length)];
- usedWords.push(gameWord);
+  const chosen = allPools[Math.floor(Math.random() * allPools.length)];
+  gameWord = chosen.pool[Math.floor(Math.random() * chosen.pool.length)];
+  selectedCategory = chosen.cat;
+  usedWords.push(gameWord);
 
- if(selectedCategories.length > 0){
-   selectedCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
- } else {
-   selectedCategory = "تایبەت";
- }
 
  spyIndexes = [];
  const rawVal = document.getElementById("spyCount").value;
