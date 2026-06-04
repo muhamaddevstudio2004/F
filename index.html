@@ -21,6 +21,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+<script>
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/F/sw.js');
+  }
+</script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Arabic',sans-serif;-webkit-tap-highlight-color:transparent;}
 
