@@ -2194,7 +2194,7 @@ select {
 <!-- BOTTOM NAV — دەرەوەی app-wrap -->
 <nav class="bottom-nav" id="bottomNav">
  <button class="nav-item active" id="nav-home" style="--lw:54px" onclick="navClick('home')">
-   <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+   <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
    <span class="nav-label">سەرەکی</span>
  </button>
  <button class="nav-item" id="nav-stats" style="--lw:40px" onclick="navClick('stats')">
@@ -2206,7 +2206,9 @@ select {
    <span class="nav-label">پێداچوونەوە/span>
  </button>
 <button class="nav-item" id="nav-creator" style="--lw:62px" onclick="navClick('creator')">
-  <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+  <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+</svg>
   <span class="nav-label">پەیوەندی</span>
 </button>
 
@@ -2281,6 +2283,12 @@ const adSlides = [
     img: "bsexur.webp",
     title: "  ",
     desc: "  "
+  },
+  {
+    img: "fsexur.webp",
+    title: "  ",
+    desc: "  ",
+    link: "https://wa.me/9647830674844"
   },
   {
     img: "ads.webp",
@@ -2673,9 +2681,11 @@ function goCategory(){
     card.style.animation="none";void card.offsetWidth;card.style.animation="shake .35s ease";
     setTimeout(()=>err.classList.remove("show"),3000);return;
   }
+  document.getElementById('bottomNav').classList.add('hidden');
   document.getElementById("minpErr").classList.remove("show");
   showScreen("screen2");
 }
+
 function selectCategory(el,cat){
   el.classList.toggle("active");
   vib(el.classList.contains("active")?'medium':'light');
@@ -2841,6 +2851,9 @@ function showResults(){
 }
 function playAgain(){prepareGame();showScreen("screen3");showPlayer();}
 function resetAll(){
+  document.getElementById('bottomNav').classList.remove('hidden');
+navClick('home'); // active state بگەڕێنەوە
+
   spyIndexes=[];
   usedWords=[];
   document.getElementById("spyCards").innerHTML="";
@@ -2858,7 +2871,11 @@ function showScreen(id){
     const el=document.getElementById(s);
     if(el) el.classList.toggle('hidden',s!==id);
   });
+  const gameScreens = ['screen3','screen4','screen5'];
+  document.getElementById('bottomNav')
+    .classList.toggle('hidden', gameScreens.includes(id));
 }
+
 
 /* ── Spring press ── */
 function attachPress(btn){
