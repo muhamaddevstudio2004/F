@@ -8,12 +8,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "sexur.webp",
+      "src": "sexur.png",
       "sizes": "192x192",
       "type": "image/webp"
     },
     {
-      "src": "sexurb.webp",
+      "src": "sexurb.png",
       "sizes": "512x512",
       "type": "image/webp"
     }
