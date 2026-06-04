@@ -86,6 +86,56 @@ body{
   .app-wrap{max-width:600px;}
 }
 
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: #6b6b6b;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
+  flex-shrink: 0;
+  will-change: transform;
+  transition: background 0.2s ease, color 0.2s ease, padding 0.2s ease;
+}
+.nav-item.active {
+  background: #FFD400;
+  color: #111;
+  padding: 9px 16px 9px 12px;
+  font-weight: 700;
+}
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  fill: currentColor;
+  transition: transform 0.2s ease;
+}
+.nav-item.active svg {
+  transform: scale(1.1);
+}
+.nav-label {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  opacity: 0;
+  margin-right: 0;
+  transition: width 0.2s ease, opacity 0.15s ease, margin-right 0.2s ease;
+}
+.nav-item.active .nav-label {
+  width: var(--lw, 48px);
+  opacity: 1;
+  margin-right: 6px;
+}
+
+
+
 .screen{
   position:absolute;inset:0;
   padding:var(--gap-lg);
@@ -124,6 +174,33 @@ select{
   background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23333' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left 16px center;
   cursor:pointer;
 }
+
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;bottom:clamp(12px,4vw,24px);
+  left:50%;transform:translateX(-50%);
+  z-index:100;
+  display:flex;gap:clamp(8px,2.5vw,14px);
+  background:rgba(255,255,255,0.25);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,255,255,0.55);
+  border-radius:999px;
+  padding:10px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.12),
+             inset 0 1px 0 rgba(255,255,255,0.6);
+}
+@media(min-width:600px){
+  .bottom-nav{bottom:32px;}
+}
+
+/* ناڤبار نیشان مەدە لە screen3,4,5 */
+.nav-hidden .bottom-nav{display:none;}
+
+/* space لەخوار بۆ ناڤبار */
+.screen{padding-bottom:100px;}
+
 
 /* PLAYERS */
 .players-box{display:flex;flex-direction:column;gap:var(--gap-sm);margin-top:var(--gap-md);}
@@ -257,6 +334,200 @@ select {
 .sk-sellbl  {animation-delay:.42s}
 .sk-sel     {animation-delay:.46s}
 .sk-startbtn{animation-delay:.50s}
+
+/* ══ STATS ══ */
+.stat-hero {
+  margin-bottom: var(--gap-md);
+}
+.stat-hero-inner {
+  background: linear-gradient(135deg, #111, #2a2a2a);
+  border-radius: var(--radius-card);
+  padding: clamp(28px, 6vw, 40px) 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.stat-hero-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 70% 30%, rgba(255,212,0,.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+.stat-hero-inner svg {
+  width: 36px; height: 36px;
+  fill: #ffd400;
+  margin-bottom: 10px;
+}
+.stat-hero-num {
+  font-size: clamp(52px, 14vw, 72px);
+  font-weight: 800;
+  color: #ffd400;
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(255,212,0,.4);
+}
+.stat-hero-label {
+  font-size: var(--fs-sm);
+  color: rgba(255,255,255,.5);
+  font-weight: 700;
+  margin-top: 6px;
+}
+.stat-section {
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,.6);
+  border-radius: var(--radius-card);
+  padding: var(--pad-card);
+  margin-bottom: var(--gap-md);
+  box-shadow: 0 10px 35px rgba(0,0,0,.08);
+}
+.stat-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-base);
+  font-weight: 800;
+  margin-bottom: 14px;
+  color: #111;
+}
+.stat-section-title svg {
+  width: 18px; height: 18px;
+  fill: #111;
+  flex-shrink: 0;
+}
+.stat-empty {
+  text-align: center;
+  color: #aaa;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  padding: 16px 0;
+}
+
+/* وشە باوەکان */
+.stat-word-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  animation: slideIn .3s ease both;
+}
+.stat-word-rank {
+  width: 28px; height: 28px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+  flex-shrink: 0;
+}
+.rank-1 { background: #ffd400; color: #111; }
+.rank-2 { background: #e0e0e0; color: #111; }
+.rank-3 { background: #ffb347; color: #111; }
+.stat-word-name {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  min-width: 70px;
+  flex-shrink: 0;
+}
+.stat-word-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: rgba(0,0,0,.07);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.stat-word-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd400, #ffbc00);
+  border-radius: 999px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.stat-word-count {
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  color: #888;
+  flex-shrink: 0;
+  min-width: 24px;
+  text-align: left;
+}
+
+/* یاریزانەکان */
+.stat-player-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  border-radius: clamp(16px, 3.5vw, 20px);
+  margin-bottom: 8px;
+  animation: slideIn .3s ease both;
+}
+.stat-rank-num {
+  width: 24px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #aaa;
+  text-align: center;
+  flex-shrink: 0;
+}
+.stat-player-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ffe066;
+  flex-shrink: 0;
+  background: #fff;
+}
+.stat-player-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.stat-player-name {
+  flex: 1;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.stat-player-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.stat-player-badge svg {
+  width: 13px; height: 13px;
+}
+.spy-badge {
+  background: rgba(255,59,59,.12);
+  color: #c62828;
+}
+.spy-badge svg { fill: #c62828; }
+.game-badge {
+  background: rgba(255,212,0,.2);
+  color: #7a5200;
+}
+.game-badge svg { fill: #b88600; }
+.stat-reset-btn {
+  width: 100%;
+  height: var(--btn-h);
+  border-radius: var(--radius-btn);
+  background: rgba(255,59,59,.1);
+  color: #c62828;
+  font-size: var(--fs-base);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: var(--gap-lg);
+  border: none;
+}
+.stat-reset-btn svg {
+  width: 18px; height: 18px;
+  fill: #c62828;
+}
 
 
 /* CATEGORY GRID */
@@ -675,6 +946,661 @@ select {
 .modal-danger .modal-icon{background:#ffe0e0;}
 .modal-danger .modal-icon svg{fill:#d60000;}
 .modal-danger-confirm{background:linear-gradient(135deg,#ff3b3b,#c62828) !important;color:#fff !important;}
+/* ══ REVIEW ══ */
+.review-screen { padding-bottom: 100px; }
+
+.review-hero {
+  background: linear-gradient(135deg, #111, #2a2a2a);
+  border-radius: var(--radius-card);
+  padding: clamp(24px, 5.5vw, 34px) clamp(20px, 4.5vw, 28px);
+  margin-bottom: var(--gap-md);
+  position: relative;
+  overflow: hidden;
+}
+.review-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(255,212,0,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.review-hero-title {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.review-hero-sub {
+  font-size: var(--fs-sm);
+  color: rgba(255,255,255,.45);
+  font-weight: 700;
+}
+
+.review-form-card {
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,.6);
+  border-radius: var(--radius-card);
+  padding: var(--pad-card);
+  margin-bottom: var(--gap-md);
+  box-shadow: 0 10px 35px rgba(0,0,0,.08);
+}
+.review-form-label {
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  margin-bottom: 10px;
+  display: block;
+}
+.review-input {
+  width: 100%;
+  height: var(--btn-h);
+  border: none;
+  outline: none;
+  border-radius: clamp(16px, 3.5vw, 20px);
+  padding: 0 18px;
+  font-size: var(--fs-md);
+  background: #fff;
+  font-family: 'Noto Sans Arabic', sans-serif;
+  transition: box-shadow .2s;
+  margin-bottom: var(--gap-sm);
+}
+.review-input:focus { box-shadow: 0 0 0 3px rgba(255,188,0,.4); }
+.review-textarea {
+  width: 100%;
+  min-height: 110px;
+  border: none;
+  outline: none;
+  border-radius: clamp(16px, 3.5vw, 20px);
+  padding: 14px 18px;
+  font-size: var(--fs-base);
+  background: #fff;
+  font-family: 'Noto Sans Arabic', sans-serif;
+  resize: none;
+  transition: box-shadow .2s;
+  line-height: 1.8;
+}
+.review-textarea:focus { box-shadow: 0 0 0 3px rgba(255,188,0,.4); }
+
+.star-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: var(--gap-sm);
+  justify-content: center;
+}
+.star-btn {
+  width: clamp(40px, 10vw, 50px);
+  height: clamp(40px, 10vw, 50px);
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .15s, transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+.star-btn svg {
+  width: clamp(20px, 5.5vw, 26px);
+  height: clamp(20px, 5.5vw, 26px);
+  fill: rgba(0,0,0,.2);
+  transition: fill .15s;
+}
+.star-btn.active {
+  background: rgba(255,212,0,.2);
+}
+.star-btn.active svg { fill: #ffd400; }
+
+.review-submit-btn {
+  width: 100%;
+  height: var(--btn-h-lg);
+  border-radius: var(--radius-btn);
+  background: linear-gradient(135deg, #ffd400, #ffbc00);
+  color: #111;
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  border: none;
+  box-shadow: 0 6px 20px rgba(255,188,0,.35);
+  margin-top: var(--gap-sm);
+}
+.review-submit-btn:disabled {
+  opacity: .4;
+  pointer-events: none;
+}
+
+.reviews-list { display: flex; flex-direction: column; gap: var(--gap-sm); }
+
+.review-card {
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,.6);
+  border-radius: var(--radius-card);
+  padding: clamp(14px, 3.5vw, 20px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+  animation: slideIn .3s ease both;
+}
+.review-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.review-card-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ffe066;
+  flex-shrink: 0;
+  background: #fff;
+}
+.review-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.review-card-meta { flex: 1; }
+.review-card-name {
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: #111;
+}
+.review-card-date {
+  font-size: 11px;
+  color: #aaa;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.review-card-stars {
+  display: flex;
+  gap: 3px;
+}
+.review-card-stars svg {
+  width: 14px; height: 14px;
+}
+.review-card-text {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: #333;
+  line-height: 1.8;
+}
+.review-card-delete {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: rgba(255,59,59,.1);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.review-card-delete svg { width: 16px; height: 16px; fill: #c62828; }
+
+.reviews-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-base);
+  font-weight: 800;
+  margin-bottom: 14px;
+  color: #111;
+}
+.reviews-section-title svg { width: 18px; height: 18px; fill: #111; }
+
+.review-loading {
+  text-align: center;
+  padding: 30px 0;
+  color: #aaa;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.review-empty {
+  text-align: center;
+  padding: 30px 0;
+  color: #aaa;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+/* پۆپ-ئەپ */
+.review-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+.review-popup-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.review-popup-sheet {
+  background: #fff;
+  border-radius: 30px 30px 0 0;
+  padding: 24px 22px 36px;
+  width: 100%;
+  max-width: 520px;
+  transform: translateY(100%);
+  transition: transform .32s cubic-bezier(.34,1.1,.64,1);
+}
+.review-popup-overlay.active .review-popup-sheet {
+  transform: translateY(0);
+}
+.review-popup-handle {
+  width: 38px; height: 5px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  margin: 0 auto 16px;
+}
+.review-popup-title {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.review-popup-sub {
+  font-size: var(--fs-sm);
+  text-align: center;
+  color: #888;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.review-popup-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.review-popup-yes {
+  width: 100%;
+  height: var(--btn-h);
+  border-radius: var(--radius-btn);
+  background: linear-gradient(135deg, #ffd400, #ffbc00);
+  color: #111;
+  font-size: var(--fs-md);
+  font-weight: 800;
+  border: none;
+}
+.review-popup-no {
+  width: 100%;
+  height: var(--btn-h);
+  border-radius: var(--radius-btn);
+  background: rgba(0,0,0,.06);
+  color: #555;
+  font-size: var(--fs-md);
+  font-weight: 800;
+  border: none;
+}
+
+/* ══ CREATOR ══ */
+.creator-wrap { padding-bottom: 100px; }
+
+.creator-profile-card {
+  border-radius: 32px;
+  overflow: hidden;
+  margin-bottom: var(--gap-sm);
+  position: relative;
+  background: #111;
+  box-shadow: 0 16px 40px rgba(0,0,0,.18);
+}
+.creator-profile-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80') center/cover no-repeat;
+  opacity: .18;
+}
+.creator-profile-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(255,212,0,.15) 0%, rgba(0,0,0,.7) 100%);
+}
+.creator-profile-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px,3.5vw,20px);
+  padding: clamp(22px,5.5vw,32px);
+}
+.creator-av-wrap { position: relative; flex-shrink: 0; }
+.creator-av-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: conic-gradient(#ffd400 0%, #ffbc00 40%, rgba(255,255,255,.2) 60%, #ffd400 100%);
+  animation: spinRing 4s linear infinite;
+}
+@keyframes spinRing { to { transform: rotate(360deg); } }
+.creator-av-img {
+  position: relative;
+  z-index: 1;
+  width: clamp(72px,18vw,90px);
+  height: clamp(72px,18vw,90px);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #111;
+  background: #222;
+}
+.creator-av-img img { width: 100%; height: 100%; object-fit: cover; }
+.creator-av-status {
+  position: absolute;
+  bottom: 4px; left: 4px;
+  z-index: 2;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 2.5px solid #111;
+  animation: statusPulse 2s ease infinite;
+}
+@keyframes statusPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.6); }
+  50% { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+}
+.creator-profile-info { flex: 1; min-width: 0; }
+.creator-profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,212,0,.18);
+  border: 1px solid rgba(255,212,0,.3);
+  color: #ffd400;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.creator-profile-badge svg { width: 10px; height: 10px; fill: #ffd400; }
+.creator-profile-name {
+  font-size: clamp(20px,5.5vw,27px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.creator-profile-role {
+  font-size: var(--fs-xs);
+  color: rgba(255,255,255,.45);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.creator-profile-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #25d366;
+  color: #fff;
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(37,211,102,.35);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.creator-profile-wa:active { transform: scale(.95); }
+.creator-profile-wa svg { width: 16px; height: 16px; fill: #fff; }
+.creator-profile-chips {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 7px;
+  padding: 0 clamp(22px,5.5vw,32px) clamp(20px,5vw,26px);
+  flex-wrap: wrap;
+}
+.creator-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.55);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+.creator-chip svg { width: 11px; height: 11px; fill: rgba(255,255,255,.45); }
+
+/* ── کارتی دۆنەیت ── */
+.creator-donate-card {
+  border-radius: 32px;
+  overflow: hidden;
+  margin-bottom: var(--gap-sm);
+  position: relative;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(0,0,0,.08);
+}
+.creator-donate-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80') center/cover no-repeat;
+  opacity: .06;
+}
+
+/* تاپ بەشی سەرەوە — دوگمەی دەستپێکردن */
+.creator-donate-trigger {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: clamp(20px,5vw,26px);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s;
+}
+.creator-donate-trigger:active { opacity: .8; }
+.creator-donate-icon {
+  width: clamp(54px,13vw,66px);
+  height: clamp(54px,13vw,66px);
+  border-radius: 999px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(0,0,0,.15);
+  background: #f0f0f0;
+}
+.creator-donate-icon img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.creator-donate-body { flex: 1; }
+.creator-donate-title { font-size: var(--fs-md); font-weight: 800; color: #111; margin-bottom: 3px; }
+.creator-donate-sub { font-size: var(--fs-xs); color: #888; font-weight: 700; line-height: 1.5; }
+.creator-donate-arrow {
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  background: #f5f5f5;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: transform .35s cubic-bezier(.34,1.3,.64,1), background .2s;
+}
+.creator-donate-arrow svg {
+  width: 18px; height: 18px; fill: #aaa;
+  transition: transform .35s cubic-bezier(.34,1.3,.64,1);
+}
+.creator-donate-card.open .creator-donate-arrow {
+  background: #111;
+}
+.creator-donate-card.open .creator-donate-arrow svg {
+  fill: #ffd400;
+  transform: rotate(180deg);
+}
+
+/* بەشی ژمارە — پەنهانە بەدەستپێک */
+.creator-donate-detail {
+  position: relative; z-index: 1;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s ease, padding .35s ease;
+  padding: 0 clamp(20px,5vw,26px);
+}
+.creator-donate-card.open .creator-donate-detail {
+  max-height: 200px;
+  opacity: 1;
+  padding: 0 clamp(20px,5vw,26px) clamp(20px,5vw,26px);
+}
+.creator-donate-divider {
+  height: 1px;
+  background: rgba(0,0,0,.07);
+  margin-bottom: clamp(16px,4vw,20px);
+}
+.creator-donate-num-label {
+  font-size: 10px; font-weight: 800;
+  color: #bbb; letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.creator-donate-num-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.creator-donate-num {
+  flex: 1;
+  font-size: clamp(20px,5.5vw,26px);
+  font-weight: 800; color: #111;
+  letter-spacing: 2px;
+  direction: ltr;
+  font-variant-numeric: tabular-nums;
+}
+.creator-donate-copy-btn {
+  height: clamp(44px,11vw,52px);
+  padding: 0 clamp(16px,4vw,22px);
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #fff;
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(22,163,74,.3);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), background .2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-family: 'Noto Sans Arabic', sans-serif;
+}
+.creator-donate-copy-btn svg { width: 16px; height: 16px; fill: #fff; }
+.creator-donate-copy-btn.copied {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  box-shadow: 0 4px 14px rgba(14,165,233,.3);
+}
+
+/* ── کارتی شەریکردن ── */
+.creator-share-card {
+  border-radius: 32px;
+  overflow: hidden;
+  margin-bottom: var(--gap-sm);
+  position: relative;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(0,0,0,.08);
+  padding: clamp(20px,5vw,26px);
+}
+.creator-share-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80') center/cover no-repeat;
+  opacity: .05;
+}
+.creator-share-top {
+  position: relative; z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.creator-share-icon {
+  width: clamp(54px,13vw,66px);
+  height: clamp(54px,13vw,66px);
+  border-radius: 999px;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(99,102,241,.3);
+  background: #f0f0f0;
+}
+.creator-share-icon img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.creator-share-body { flex: 1; }
+.creator-share-title { font-size: var(--fs-md); font-weight: 800; color: #111; margin-bottom: 3px; }
+.creator-share-sub { font-size: var(--fs-xs); color: #888; font-weight: 700; line-height: 1.5; }
+.creator-share-url-box {
+  position: relative; z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f5f5f5;
+  border: 1.5px solid #eee;
+  border-radius: 999px;
+  padding: 10px 18px;
+  margin-bottom: 12px;
+}
+.creator-share-url-text {
+  flex: 1;
+  font-size: 12px; font-weight: 700; color: #666;
+  direction: ltr; text-align: left;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.creator-copy-btn {
+  position: relative; z-index: 1;
+  height: clamp(44px,11vw,52px);
+  width: 100%;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+  font-size: var(--fs-md);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(99,102,241,.3);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), background .2s;
+  font-family: 'Noto Sans Arabic', sans-serif;
+}
+.creator-copy-btn svg { width: 18px; height: 18px; fill: #fff; }
+.creator-copy-btn.copied {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 4px 14px rgba(34,197,94,.3);
+}
+
+.creator-version-bar {
+  text-align: center;
+  padding: 20px 0 8px;
+  font-size: 11px; font-weight: 700;
+  color: rgba(0,0,0,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.creator-version-bar span {
+  width: 24px; height: 1px;
+  background: rgba(0,0,0,.1);
+  display: inline-block;
+}
+
+
 </style>
 </head>
 <body>
@@ -794,6 +1720,115 @@ select {
   <!-- ══ END AD BANNER ══ -->
 
 </section>
+
+<!-- SCREEN CREATOR -->
+<section class="screen hidden" id="creatorScreen">
+  <div class="creator-wrap">
+
+    <!-- کارتی پرۆفایل -->
+    <div class="creator-profile-card">
+      <div class="creator-profile-inner">
+        <div class="creator-av-wrap">
+          <div class="creator-av-ring"></div>
+          <div class="creator-av-img">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Muhamad1991" alt="Muhamad">
+          </div>
+          <div class="creator-av-status"></div>
+        </div>
+        <div class="creator-profile-info">
+          <div class="creator-profile-badge">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            دروستکەر
+          </div>
+          <div class="creator-profile-name">Muhamad Yousif</div>
+          <div class="creator-profile-role">Kurdish Developer & Designer</div>
+          <a class="creator-profile-wa" href="https://wa.me/9647830674844" target="_blank" onclick="vib()">
+            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.528 5.858L.057 23.5l5.797-1.517A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.367l-.36-.214-3.713.973.99-3.618-.234-.372A9.818 9.818 0 1 1 12 21.818z"/></svg>
+            پەیوەندی
+          </a>
+        </div>
+      </div>
+      <div class="creator-profile-chips">
+        <div class="creator-chip">
+          <svg viewBox="0 0 24 24"><path d="M15 7.5V2H9v5.5l3 3 3-3zM7.5 9H2v6h5.5l3-3-3-3zM9 16.5V22h6v-5.5l-3-3-3 3zM16.5 9l-3 3 3 3H22V9h-5.5z"/></svg>
+          یاری سیخور
+        </div>
+        <div class="creator-chip">
+          <svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+          v2.0
+        </div>
+        <div class="creator-chip">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+          کوردستان
+        </div>
+      </div>
+    </div>
+
+    <!-- کارتی دۆنەیت — کلیک بکە ژمارە دەکەوێتەوە -->
+    <div class="creator-donate-card" id="donateCard">
+
+      <!-- بەشی سەرەوە — دوگمەی کلیک -->
+      <div class="creator-donate-trigger" onclick="vib('medium');toggleDonateCard()">
+        <div class="creator-donate-icon">
+          <img src="https://crystalpng.com/wp-content/uploads/2025/12/First-Iraqi-Bank-Logo.png" alt="FIB"
+               onerror="this.parentElement.innerHTML='<svg viewBox=\'0 0 24 24\' style=\'width:32px;height:32px;fill:#fff\'><path d=\'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z\'/></svg>';this.parentElement.style.background='linear-gradient(135deg,#16a34a,#15803d)'">
+        </div>
+        <div class="creator-donate-body">
+          <div class="creator-donate-title">پشتگیری یاریەکە</div>
+          <div class="creator-donate-sub">ئەگەر یاریەکەت بەدڵ بوو<br>پشتگیریم بکە بە FIB</div>
+        </div>
+        <div class="creator-donate-arrow">
+          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+      </div>
+
+      <!-- بەشی ژمارە — پەنهانە بەدەستپێک -->
+      <div class="creator-donate-detail" id="donateDetail">
+        <div class="creator-donate-divider"></div>
+        <div class="creator-donate-num-label">FIB Number</div>
+        <div class="creator-donate-num-row">
+          <div class="creator-donate-num">0750 962 8683</div>
+          <button class="creator-donate-copy-btn" id="donateCopyBtn" onclick="copyFIB()">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            کۆپی بکە
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- کارتی شەریکردن -->
+    <div class="creator-share-card">
+      <div class="creator-share-top">
+        <div class="creator-share-icon">
+          <img src="https://cdn-icons-png.flaticon.com/512/10016/10016975.png" alt="سیخور"
+               onerror="this.parentElement.innerHTML='<svg viewBox=\'0 0 24 24\' style=\'width:32px;height:32px;fill:#fff\'><path d=\'M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z\'/></svg>';this.parentElement.style.background='linear-gradient(135deg,#6366f1,#4f46e5)'">
+        </div>
+        <div class="creator-share-body">
+          <div class="creator-share-title">شەریکردنی یاریەکە</div>
+          <div class="creator-share-sub">لینکەکە کۆپی بکە و<br>بۆ هاوڕێیەکانت بنێرە</div>
+        </div>
+      </div>
+      <div class="creator-share-url-box">
+        <div class="creator-share-url-text">devmuhamad1991.github.io/F/</div>
+        <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#bbb;flex-shrink:0"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+      </div>
+      <button class="creator-copy-btn" id="shareCopyBtn" onclick="vib();copyLink()">
+        <img src="sexur.webp" style="width:22px;height:22px;border-radius:6px;object-fit:cover;flex-shrink:0;"
+             onerror="this.outerHTML='<svg viewBox=\'0 0 24 24\' style=\'width:18px;height:18px;fill:#fff\'><path d=\'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z\'/></svg>'">
+        لینکەکە کۆپی بکە
+      </button>
+    </div>
+
+    <div class="creator-version-bar">
+      <span></span>
+      یاری سیخور — v2.0
+      <span></span>
+    </div>
+
+  </div>
+</section>
+
 
 <!-- SCREEN 2 -->
 <section class="screen hidden" id="screen2">
@@ -1077,11 +2112,107 @@ select {
     </div>
   </div>
 </div>
+<!-- SCREEN STATS -->
+<section class="screen hidden" id="statsScreen">
+  <div class="screen-top-bar">
+    <div class="title">ئامار</div>
+  </div>
+  <div id="statsContent"></div>
+</section>
 
-<!-- PORTAL for suggestion dropdown -->
-<div class="suggestion-portal" id="suggPortal"></div>
+<!-- SCREEN REVIEW -->
+<section class="screen hidden" id="reviewScreen">
+  <div class="screen-top-bar">
+    <div class="title">پێداچوونەوە</div>
+  </div>
+
+  <div class="review-hero">
+    <div class="review-hero-title">بیرۆکە و پێشنیارەکانت</div>
+    <div class="review-hero-sub">یاریەکە باشتر بکە — بۆچوونت گرنگە</div>
+  </div>
+
+  <div class="review-form-card">
+    <span class="review-form-label">ناوت</span>
+    <input class="review-input" id="reviewName" type="text" placeholder="ناوت بنووسە..." autocomplete="off">
+
+    <span class="review-form-label">ئەستێرە</span>
+    <div class="star-row" id="starRow">
+      <button class="star-btn" data-star="1" onclick="setStar(1)">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </button>
+      <button class="star-btn" data-star="2" onclick="setStar(2)">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </button>
+      <button class="star-btn" data-star="3" onclick="setStar(3)">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </button>
+      <button class="star-btn" data-star="4" onclick="setStar(4)">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </button>
+      <button class="star-btn" data-star="5" onclick="setStar(5)">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </button>
+    </div>
+
+    <span class="review-form-label">پێداچوونەوەت</span>
+    <textarea class="review-textarea" id="reviewText" placeholder="بۆچوون، پێشنیار یان رەخنەت بنووسە..."></textarea>
+
+    <button class="review-submit-btn" id="reviewSubmitBtn" onclick="submitReview()">
+      ناردنی پێداچوونەوە
+    </button>
+  </div>
+
+  <div class="reviews-section-title">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    پێداچوونەوەکانی تر
+  </div>
+  <div id="reviewsList" class="reviews-list">
+    <div class="review-loading">چاوەڕوانبە...</div>
+  </div>
+</section>
+
+<!-- REVIEW POPUP -->
+<div class="review-popup-overlay" id="reviewPopupOverlay">
+  <div class="review-popup-sheet">
+    <div class="review-popup-handle"></div>
+    <div class="review-popup-title">پێداچوونەوەت چیە؟</div>
+    <div class="review-popup-sub">بۆچوونت یاریەکە باشتر دەکات</div>
+    <div class="review-popup-btns">
+      <button class="review-popup-yes" onclick="vib();closeReviewPopup(true)">
+        بەڵێ، دەینووسم
+      </button>
+      <button class="review-popup-no" onclick="vib();closeReviewPopup(false)">
+        نەخێر، سوپاس
+      </button>
+    </div>
+  </div>
+</div>
+
 
 </div><!-- end app-wrap -->
+
+<!-- BOTTOM NAV — دەرەوەی app-wrap -->
+<nav class="bottom-nav" id="bottomNav">
+ <button class="nav-item active" id="nav-home" style="--lw:48px" onclick="navClick('home')">
+   <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+   <span class="nav-label">سەرەتا</span>
+ </button>
+ <button class="nav-item" id="nav-stats" style="--lw:40px" onclick="navClick('stats')">
+   <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+   <span class="nav-label">ئامار</span>
+ </button>
+ <button class="nav-item" id="nav-review" style="--lw:68px" onclick="navClick('review')">
+   <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+   <span class="nav-label">پێداچوونەوە/span>
+ </button>
+<button class="nav-item" id="nav-creator" style="--lw:62px" onclick="navClick('creator')">
+  <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+  <span class="nav-label">دروستکەر</span>
+</button>
+
+</nav>
+
+<div class="suggestion-portal" id="suggPortal"></div>
 
 <script>
 
@@ -1148,6 +2279,10 @@ const adSlides = [
     // وێنە: img: "https://..." — ئەگەر نەبوو ئایکۆن دەردەکەوێت
 
     img: "bsexur.webp",
+    title: "  ",
+    desc: "  "
+  },
+  img: "fsexur.webp",
     title: "  ",
     desc: "  "
   },
@@ -1683,6 +2818,8 @@ function updateTimer(sec){
   document.getElementById("timer").innerText=`${m}:${s}`;
 }
 function showResults(){
+  saveGameStats();
+  checkReviewPopup();
   showScreen("screen5");
   document.getElementById("wordRevealText").innerText=gameWord;
   document.getElementById("wordRevealCat").innerText="جۆری وشەکە: "+selectedCategory;
@@ -1712,10 +2849,14 @@ function resetAll(){
   usedWords=[];
   document.getElementById("spyCards").innerHTML="";
   showScreen("screen1");
+  gameCountForReview = parseInt(localStorage.getItem('sexur_game_count') || '0');
+
 }
 
 
-const _screens=['screen1','screen2','screen3','screen4','screen5'];
+const _screens = ['screen1','screen2','screen3','screen4','screen5','statsScreen','reviewScreen','creatorScreen'
+];
+
 function showScreen(id){
   _screens.forEach(s=>{
     const el=document.getElementById(s);
@@ -1756,6 +2897,342 @@ setTimeout(()=>{
   _wnewCdTick=setInterval(()=>{remaining--;cdEl.textContent=remaining>0?remaining:"";},1000);
   _wnewAutoClose=setTimeout(closeWnew,SECS*1000);
 },700);
+
+/* ══ NAVBAR ══ */
+/* ── BOTTOM NAV ── */
+function navClick(tab) {
+  if (document.getElementById('nav-' + tab)?.classList.contains('active')) return;
+  vib('medium');
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav-' + tab).classList.add('active');
+  if (tab === 'home') showScreen('screen1');
+  if (tab === 'stats') { showScreen('statsScreen'); renderStats(); }
+  if (tab === 'review') { showScreen('reviewScreen'); loadReviews(); }
+if (tab === 'creator') showScreen('creatorScreen');
+
+}
+
+/* ══════════════════════════════════════
+   STATS SYSTEM
+══════════════════════════════════════ */
+function saveGameStats() {
+  const stats = JSON.parse(localStorage.getItem('sexur_stats') || '{}');
+  
+  // ژمارەی یارییەکان
+  stats.totalGames = (stats.totalGames || 0) + 1;
+  
+  // وشەی باو
+  stats.words = stats.words || {};
+  stats.words[gameWord] = (stats.words[gameWord] || 0) + 1;
+  
+  // سیخورەکان
+  stats.spies = stats.spies || {};
+  spyIndexes.forEach(idx => {
+    const name = players[idx];
+    stats.spies[name] = (stats.spies[name] || 0) + 1;
+  });
+  
+  // چالاکترین یاریزانەکان
+  stats.players = stats.players || {};
+  players.forEach(name => {
+    stats.players[name] = (stats.players[name] || 0) + 1;
+  });
+  
+  localStorage.setItem('sexur_stats', JSON.stringify(stats));
+}
+
+function loadStats() {
+  return JSON.parse(localStorage.getItem('sexur_stats') || '{}');
+}
+
+function renderStats() {
+  const stats = loadStats();
+  const container = document.getElementById('statsContent');
+  if (!container) return;
+
+  // ژمارەی کۆی یاری
+  const totalGames = stats.totalGames || 0;
+
+  // وشە زۆر باوەکان — تۆپ 3
+  const topWords = Object.entries(stats.words || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  // سیخورە باوەکان
+  const topSpies = Object.entries(stats.spies || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  // چالاکترین یاریزانەکان
+  const topPlayers = Object.entries(stats.players || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  const wordMedals = ['', '', ''];
+
+  container.innerHTML = `
+    <!-- کۆی یاری -->
+    <div class="stat-hero">
+      <div class="stat-hero-inner">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 7.5V2H9v5.5l3 3 3-3zM7.5 9H2v6h5.5l3-3-3-3zM9 16.5V22h6v-5.5l-3-3-3 3zM16.5 9l-3 3 3 3H22V9h-5.5z"/></svg>
+        <div class="stat-hero-num">${totalGames}</div>
+        <div class="stat-hero-label">کۆی یارییەکان</div>
+      </div>
+    </div>
+
+    <!-- وشە زۆر باوەکان -->
+    <div class="stat-section">
+      <div class="stat-section-title">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm4 5h8v2H8zm3 5h2v2h-2z"/></svg>
+        وشە زۆر باوەکان
+      </div>
+      ${topWords.length === 0
+        ? `<div class="stat-empty">هێشتا یاری نەکراوە</div>`
+        : topWords.map(([word, count], i) => `
+          <div class="stat-word-row" style="animation-delay:${i * 0.08}s">
+            <div class="stat-word-rank rank-${i + 1}">${i + 1}</div>
+            <div class="stat-word-name">${word}</div>
+            <div class="stat-word-bar-wrap">
+              <div class="stat-word-bar" style="width:${Math.min(100, (count / (topWords[0]?.[1] || 1)) * 100)}%"></div>
+            </div>
+            <div class="stat-word-count">${count}×</div>
+          </div>`).join('')
+      }
+    </div>
+
+    <!-- سیخورە باوەکان -->
+    <div class="stat-section">
+      <div class="stat-section-title">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+        زۆرترین سیخور
+      </div>
+      ${topSpies.length === 0
+        ? `<div class="stat-empty">هێشتا داتا نییە</div>`
+        : topSpies.map(([name, count], i) => `
+          <div class="stat-player-row" style="animation-delay:${i * 0.06}s">
+            <div class="stat-player-avatar">
+              <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(name)}" loading="lazy">
+            </div>
+            <div class="stat-player-name">${name}</div>
+            <div class="stat-player-badge spy-badge">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+              ${count}
+            </div>
+          </div>`).join('')
+      }
+    </div>
+
+    <!-- چالاکترین یاریزانەکان -->
+    <div class="stat-section">
+      <div class="stat-section-title">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        چالاکترین یاریزانەکان
+      </div>
+      ${topPlayers.length === 0
+        ? `<div class="stat-empty">هێشتا داتا نییە</div>`
+        : topPlayers.map(([name, count], i) => `
+          <div class="stat-player-row" style="animation-delay:${i * 0.06}s">
+            <div class="stat-rank-num">${i + 1}</div>
+            <div class="stat-player-avatar">
+              <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(name)}" loading="lazy">
+            </div>
+            <div class="stat-player-name">${name}</div>
+            <div class="stat-player-badge game-badge">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 7.5V2H9v5.5l3 3 3-3zM7.5 9H2v6h5.5l3-3-3-3zM9 16.5V22h6v-5.5l-3-3-3 3zM16.5 9l-3 3 3 3H22V9h-5.5z"/></svg>
+              ${count}
+            </div>
+          </div>`).join('')
+      }
+    </div>
+
+    <!-- ڕەشکردنەوەی داتا -->
+    <button class="stat-reset-btn" onclick="vib('heavy');confirmResetStats()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+      ڕەشکردنەوەی ئامار
+    </button>
+  `;
+}
+
+async function confirmResetStats() {
+  const yes = await showModal({
+    title: "ڕەشکردنەوەی ئامار",
+    msg: "دڵنیایت؟ هەموو ئامارەکان دەسڕێتەوە.",
+    icon: "danger",
+    dangerConfirm: true
+  });
+  if (yes) {
+    localStorage.removeItem('sexur_stats');
+    renderStats();
+    vib('success');
+  }
+}
+
+/* ══════════════════════════════════════
+   REVIEW SYSTEM
+══════════════════════════════════════ */
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz3faSklt0Wc9X0RZYSBIyPiqgSWPYj9r3CJyaMHILQgy1u4nB-v89EFrS5c4mrcsl-5g/exec';
+const ADMIN_KEY = 'sexur2024'; // کۆدی تایبەتی بۆ سڕینەوە — بگۆڕە
+let selectedStars = 0;
+let gameCountForReview = parseInt(localStorage.getItem('sexur_game_count') || '0');
+
+function setStar(n) {
+  selectedStars = n;
+  vib('light');
+  document.querySelectorAll('.star-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i < n);
+  });
+}
+
+async function submitReview() {
+  const name = document.getElementById('reviewName').value.trim();
+  const text = document.getElementById('reviewText').value.trim();
+  if (!name) { vib('error'); showModal({title:"ناو پێویستە", msg:"تکایە ناوت بنووسە.", icon:"warn"}); return; }
+  if (!selectedStars) { vib('error'); showModal({title:"ئەستێرە هەڵبژێرە", msg:"تکایە ئەستێرەیەک هەڵبژێرە.", icon:"warn"}); return; }
+  if (!text) { vib('error'); showModal({title:"پێداچوونەوە پێویستە", msg:"تکایە بۆچوونت بنووسە.", icon:"warn"}); return; }
+
+  const btn = document.getElementById('reviewSubmitBtn');
+  btn.disabled = true;
+  btn.innerText = 'دەنێردرێت...';
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, stars: selectedStars, review: text })
+    });
+    vib('success');
+    document.getElementById('reviewName').value = '';
+    document.getElementById('reviewText').value = '';
+    setStar(0);
+    selectedStars = 0;
+    showModal({title:"سوپاس!", msg:"پێداچوونەوەکەت نێردرا. زۆر سوپاس!", icon:"ok"});
+    loadReviews();
+  } catch(e) {
+    showModal({title:"هەڵە", msg:"کێشەیەک روویدا، دووبارە هەوڵبدەرەوە.", icon:"err"});
+  }
+
+  btn.disabled = false;
+  btn.innerText = 'ناردنی پێداچوونەوە';
+}
+
+async function loadReviews() {
+  const box = document.getElementById('reviewsList');
+  if (!box) return;
+  box.innerHTML = '<div class="review-loading">چاوەڕوانبە...</div>';
+  try {
+    const res = await fetch(SHEET_URL + '?t=' + Date.now());
+    const data = await res.json();
+    if (!data.length) {
+      box.innerHTML = '<div class="review-empty">هێشتا پێداچوونەوە نییە — یەکەمین بە!</div>';
+      return;
+    }
+    box.innerHTML = '';
+    data.reverse().forEach((r, i) => {
+      const div = document.createElement('div');
+      div.className = 'review-card';
+      div.style.animationDelay = (i * 0.05) + 's';
+      const stars = Array.from({length:5}, (_,j) => `
+        <svg viewBox="0 0 24 24" fill="${j < r.stars ? '#ffd400' : '#e0e0e0'}">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>`).join('');
+      const date = r.date ? new Date(r.date).toLocaleDateString('ku', {year:'numeric',month:'short',day:'numeric'}) : '';
+      div.innerHTML = `
+        <div class="review-card-top">
+          <div class="review-card-avatar">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(r.name)}" loading="lazy">
+          </div>
+          <div class="review-card-meta">
+            <div class="review-card-name">${r.name}</div>
+            <div class="review-card-stars">${stars}</div>
+            <div class="review-card-date">${date}</div>
+          </div>
+          <button class="review-card-delete" onclick="deleteReview(${i}, '${r.name}')">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </button>
+        </div>
+        <div class="review-card-text">${r.review}</div>`;
+      box.appendChild(div);
+    });
+  } catch(e) {
+    box.innerHTML = '<div class="review-empty">کێشەیەک روویدا لە بارکردنی پێداچوونەوەکان.</div>';
+  }
+}
+
+async function deleteReview(index, name) {
+  const key = prompt('کۆدی تایبەتی بنووسە:');
+  if (key !== ADMIN_KEY) { showModal({title:"هەڵە", msg:"کۆدەکە هەڵەیە.", icon:"err"}); return; }
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', index: index + 1 })
+    });
+    vib('success');
+    loadReviews();
+  } catch(e) {
+    showModal({title:"هەڵە", msg:"نەتوانرا بسرێتەوە.", icon:"err"});
+  }
+}
+
+/* پۆپ-ئەپ دوای ٣ یاری */
+function checkReviewPopup() {
+  gameCountForReview++;
+  localStorage.setItem('sexur_game_count', gameCountForReview);
+  if (gameCountForReview % 3 === 0) {
+    setTimeout(() => {
+      document.getElementById('reviewPopupOverlay').classList.add('active');
+    }, 1500);
+  }
+}
+
+function closeReviewPopup(goToReview) {
+  document.getElementById('reviewPopupOverlay').classList.remove('active');
+  if (goToReview) {
+    setTimeout(() => {
+      navClick('review');
+    }, 300);
+  }
+}
+
+/* ══ CREATOR ══ */
+function toggleDonateCard() {
+  const card = document.getElementById('donateCard');
+  card.classList.toggle('open');
+}
+
+function copyFIB() {
+  vib('medium');
+  const btn = document.getElementById('donateCopyBtn');
+  navigator.clipboard?.writeText('07509628683').then(() => {
+    vib('success');
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>کۆپی کرا ✓`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>کۆپی بکە`;
+    }, 2500);
+  }).catch(() => {
+    showModal({title:"کۆپی نەکرا", msg:"ژمارەکە دەستی کۆپی بکە: 0750 962 8683", icon:"warn"});
+  });
+}
+
+function copyLink() {
+  const btn = document.getElementById('shareCopyBtn');
+  navigator.clipboard?.writeText('https://devmuhamad1991.github.io/F/').then(() => {
+    vib('success');
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>کۆپی کرا ✓`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<img src="sexur.webp" style="width:22px;height:22px;border-radius:6px;object-fit:cover;flex-shrink:0;"> لینکەکە کۆپی بکە`;
+    }, 2500);
+  }).catch(() => {
+    showModal({title:"کۆپی نەکرا", msg:"لینکەکە دەستی کۆپی بکە: devmuhamad1991.github.io/F/", icon:"warn"});
+  });
+}
+
 </script>
 </body>
 </html>
