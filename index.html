@@ -1607,6 +1607,360 @@ select {
   display: inline-block;
 }
 
+/* ══ DADGA SYSTEM ══ */
+#dadgaScreen {
+  background: linear-gradient(160deg, #ffffff 0%, #fafafa 40%, #fff9f0 100%);
+  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+}
+
+.dadga-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 3000;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.dadga-overlay.active { opacity: 1; pointer-events: auto; }
+
+.dadga-sheet {
+background: linear-gradient(160deg, #ffffff 0%, #fafafa 40%, #fff9f0 100%);
+  width: 100%;
+  min-height: 100vh;
+  padding-bottom: 36px;
+  overflow-y: auto;
+}
+
+.dadga-overlay.active .dadga-sheet { transform: translateY(0); }
+
+.dadga-handle {
+  width: 40px; height: 5px;
+  background: #e0e0e0; border-radius: 10px;
+  margin: 14px auto 0;
+}
+
+/* هێڵی پێشکەوتن */
+.dadga-progress-wrap {
+  padding: 20px 22px 0;
+}
+.dadga-steps {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 6px;
+}
+.dadga-step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+  flex-shrink: 0;
+  transition: background .3s, color .3s;
+  background: #f0f0f0; color: #aaa;
+  position: relative; z-index: 1;
+}
+.dadga-step-dot.done { background: #22c55e; color: #fff; }
+.dadga-step-dot.active { background: #111; color: #ffd400; }
+.dadga-step-line {
+  flex: 1; height: 3px;
+  background: #f0f0f0; border-radius: 2px;
+  overflow: hidden;
+}
+.dadga-step-line-fill {
+  height: 100%; width: 0%;
+  background: #22c55e;
+  transition: width .5s ease;
+}
+.dadga-step-labels {
+  display: flex; justify-content: space-between;
+  font-size: 10px; font-weight: 800; color: #bbb;
+  margin-bottom: 20px;
+}
+
+/* هێدەر */
+.dadga-header {
+  padding: 0 22px 18px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.dadga-phase-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #111; color: #ffd400;
+  font-size: 11px; font-weight: 800; letter-spacing: .8px;
+  padding: 5px 12px; border-radius: 999px;
+  margin-bottom: 10px;
+}
+.dadga-phase-badge svg { width: 12px; height: 12px; fill: #ffd400; }
+.dadga-phase-title {
+  font-size: clamp(20px,5.5vw,26px);
+  font-weight: 800; color: #111;
+  margin-bottom: 4px;
+}
+.dadga-phase-sub {
+  font-size: var(--fs-sm); color: #888; font-weight: 700;
+}
+
+/* فەیز ١ — دەنگدان */
+.dadga-vote-wrap { padding: 18px 22px; }
+.dadga-vote-question {
+  background: linear-gradient(135deg,#fff7cf,#fff0a0);
+  border-radius: 20px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.dadga-vote-question svg { width: 22px; height: 22px; fill: #b88600; flex-shrink: 0; }
+.dadga-vote-question-text { font-size: var(--fs-sm); font-weight: 800; color: #7a5200; }
+
+.dadga-current-voter {
+  text-align: center;
+  padding: 14px 0 18px;
+}
+.dadga-voter-avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  overflow: hidden; border: 3px solid #ffd400;
+  margin: 0 auto 10px; background: #fff;
+}
+.dadga-voter-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dadga-voter-name {
+  font-size: var(--fs-md); font-weight: 800; color: #111;
+  margin-bottom: 3px;
+}
+.dadga-voter-sub { font-size: var(--fs-xs); color: #aaa; font-weight: 700; }
+
+.dadga-suspect-list {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 18px;
+}
+.dadga-suspect-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: #f9f9f9; border-radius: 18px;
+  cursor: pointer;
+  border: 2.5px solid transparent;
+  transition: border-color .2s, background .2s, transform .18s cubic-bezier(.34,1.56,.64,1);
+  -webkit-tap-highlight-color: transparent;
+}
+.dadga-suspect-item:active { transform: scale(.97); }
+.dadga-suspect-item.selected {
+  border-color: #ffd400;
+  background: #fffbe8;
+}
+.dadga-suspect-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  overflow: hidden; border: 2px solid #eee;
+  flex-shrink: 0; background: #fff;
+}
+.dadga-suspect-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dadga-suspect-name { flex: 1; font-size: var(--fs-sm); font-weight: 700; }
+.dadga-suspect-check {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 2.5px solid #ddd;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: border-color .2s, background .2s;
+}
+.dadga-suspect-item.selected .dadga-suspect-check {
+  border-color: #ffd400; background: #ffd400;
+}
+.dadga-suspect-check svg { width: 14px; height: 14px; fill: #111; opacity: 0; transition: opacity .2s; }
+.dadga-suspect-item.selected .dadga-suspect-check svg { opacity: 1; }
+
+.dadga-vote-btn {
+  width: 100%; height: var(--btn-h-lg);
+  border-radius: var(--radius-btn);
+  background: linear-gradient(135deg,#ffd400,#ffbc00);
+  color: #111; font-size: var(--fs-lg); font-weight: 800;
+  border: none; box-shadow: 0 6px 20px rgba(255,188,0,.3);
+  opacity: .4; pointer-events: none;
+  transition: opacity .25s, transform .22s cubic-bezier(.34,1.56,.64,1);
+}
+.dadga-vote-btn.ready { opacity: 1; pointer-events: auto; }
+
+/* فەیز ٢ — ئەنجامی دەنگدان */
+.dadga-result-wrap { padding: 18px 22px; }
+
+.dadga-verdict-card {
+  border-radius: 24px; padding: 24px 20px;
+  text-align: center; margin-bottom: 16px;
+  position: relative; overflow: hidden;
+}
+.dadga-verdict-card.guilty {
+  background: linear-gradient(135deg,#ff3b3b,#c62828);
+}
+.dadga-verdict-card.innocent {
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+}
+.dadga-verdict-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(255,255,255,.12), transparent 65%);
+  pointer-events: none;
+}
+.dadga-verdict-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+.dadga-verdict-icon svg { width: 28px; height: 28px; fill: #fff; }
+.dadga-verdict-title {
+  font-size: clamp(22px,6vw,30px); font-weight: 800; color: #fff;
+  margin-bottom: 4px;
+}
+.dadga-verdict-sub { font-size: var(--fs-sm); color: rgba(255,255,255,.7); font-weight: 700; }
+
+.dadga-vote-tally {
+  background: #f9f9f9; border-radius: 20px;
+  padding: 16px 18px; margin-bottom: 16px;
+}
+.dadga-tally-title {
+  font-size: var(--fs-xs); font-weight: 800; color: #aaa;
+  margin-bottom: 12px; letter-spacing: .5px;
+}
+.dadga-tally-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.dadga-tally-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  overflow: hidden; border: 2px solid #eee; flex-shrink: 0;
+}
+.dadga-tally-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dadga-tally-name { flex: 1; font-size: 13px; font-weight: 700; }
+.dadga-tally-bar-wrap {
+  width: 80px; height: 6px;
+  background: #e8e8e8; border-radius: 999px; overflow: hidden;
+}
+.dadga-tally-bar {
+  height: 100%;
+  background: linear-gradient(90deg,#ffd400,#ffbc00);
+  border-radius: 999px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.dadga-tally-count {
+  font-size: 13px; font-weight: 800; color: #888;
+  min-width: 20px; text-align: left;
+}
+
+/* فەیز ٣ — شانسی ئاخری سیخور */
+.dadga-lastchance-wrap { padding: 18px 22px; }
+
+.dadga-spy-reveal {
+  background: linear-gradient(135deg,#111,#2a2a2a);
+  border-radius: 24px; padding: 24px 20px;
+  text-align: center; margin-bottom: 18px;
+  position: relative; overflow: hidden;
+}
+.dadga-spy-reveal::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 70% 30%, rgba(255,212,0,.12), transparent 60%);
+  pointer-events: none;
+}
+.dadga-spy-reveal-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  overflow: hidden; border: 3px solid #ffd400;
+  margin: 0 auto 12px; background: #222;
+}
+.dadga-spy-reveal-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dadga-spy-reveal-name {
+  font-size: clamp(20px,5.5vw,26px); font-weight: 800; color: #ffd400;
+  margin-bottom: 4px;
+}
+.dadga-spy-reveal-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.1); color: rgba(255,255,255,.6);
+  font-size: 12px; font-weight: 800;
+  padding: 4px 12px; border-radius: 999px;
+}
+.dadga-spy-reveal-tag svg { width: 11px; height: 11px; fill: rgba(255,255,255,.6); }
+
+.dadga-guess-label {
+  font-size: var(--fs-sm); font-weight: 800; color: #111;
+  margin-bottom: 10px;
+}
+.dadga-guess-input {
+  width: 100%; height: var(--btn-h);
+  border: 2.5px solid #eee; outline: none;
+  border-radius: 18px; padding: 0 18px;
+  font-size: var(--fs-md); font-family: 'Noto Sans Arabic', sans-serif;
+  background: #fff; margin-bottom: 14px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.dadga-guess-input:focus {
+  border-color: #ffd400;
+  box-shadow: 0 0 0 3px rgba(255,188,0,.2);
+}
+
+.dadga-guess-btns { display: flex; flex-direction: column; gap: 10px; }
+.dadga-guess-correct {
+  width: 100%; height: var(--btn-h-lg);
+  border-radius: var(--radius-btn); border: none;
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  color: #fff; font-size: var(--fs-lg); font-weight: 800;
+  box-shadow: 0 6px 20px rgba(34,197,94,.3);
+}
+.dadga-guess-wrong {
+  width: 100%; height: var(--btn-h);
+  border-radius: var(--radius-btn); border: none;
+  background: rgba(255,59,59,.1);
+  color: #c62828; font-size: var(--fs-base); font-weight: 800;
+}
+
+/* فەیز ٤ — ئەنجامی کۆتایی */
+.dadga-final-wrap { padding: 18px 22px; }
+
+.dadga-final-hero {
+  border-radius: 28px; padding: 30px 22px;
+  text-align: center; margin-bottom: 18px;
+  position: relative; overflow: hidden;
+}
+.dadga-final-hero.spy-wins {
+  background: linear-gradient(135deg,#ff3b3b,#c62828);
+}
+.dadga-final-hero.citizens-win {
+  background: linear-gradient(135deg,#111,#2a2a2a);
+}
+.dadga-final-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 20%, rgba(255,255,255,.1), transparent 60%);
+  pointer-events: none;
+}
+@keyframes trophyBounce {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.08); }
+}
+.dadga-final-trophy {
+  width: 70px; height: 70px; border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+  animation: trophyBounce 2s ease infinite;
+}
+.dadga-final-trophy svg { width: 34px; height: 34px; fill: #ffd400; }
+.dadga-final-title {
+  font-size: clamp(24px,6.5vw,32px); font-weight: 800; color: #fff;
+  margin-bottom: 6px;
+}
+.dadga-final-sub { font-size: var(--fs-sm); color: rgba(255,255,255,.6); font-weight: 700; }
+
+.dadga-final-btns { display: flex; flex-direction: column; gap: 10px; }
+.dadga-final-again {
+  width: 100%; height: var(--btn-h-lg);
+  border-radius: var(--radius-btn); border: none;
+  background: linear-gradient(135deg,#ffd400,#ffbc00);
+  color: #111; font-size: var(--fs-lg); font-weight: 800;
+  box-shadow: 0 6px 20px rgba(255,188,0,.3);
+}
+.dadga-final-home {
+  width: 100%; height: var(--btn-h);
+  border-radius: var(--radius-btn); border: none;
+  background: rgba(0,0,0,.07);
+  color: #555; font-size: var(--fs-base); font-weight: 800;
+}
+
 
 </style>
 </head>
@@ -2003,9 +2357,10 @@ select {
       <button class="icon-btn" onclick="vib();togglePause()">
         <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
       </button>
-      <button class="icon-btn end-btn" onclick="vib('heavy');confirmFinishRound()">
-        <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14"/></svg>
-      </button>
+      <button class="icon-btn end-btn" onclick="vib('heavy');confirmFinishRound()" style="width:auto;padding:0 16px;gap:7px;display:flex;align-items:center;">
+  <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#fff;flex-shrink:0"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+  <span style="color:#fff;font-size:var(--fs-sm);font-weight:800;white-space:nowrap;">چوونە دادگا</span>
+</button>
       <button class="icon-btn" onclick="vib();restartTimer()">
         <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/></svg>
       </button>
@@ -2041,6 +2396,111 @@ select {
     </div>
   </div>
 </section>
+
+<!-- DADGA SYSTEM -->
+<section class="screen hidden" id="dadgaScreen">
+  <div class="dadga-sheet" style="border-radius:0;max-height:none;transform:none;">
+
+    <div class="dadga-handle"></div>
+
+    <!-- هێڵی پێشکەوتن -->
+    <div class="dadga-progress-wrap">
+      <div class="dadga-steps">
+        <div class="dadga-step-dot active" id="dstep1">١</div>
+        <div class="dadga-step-line"><div class="dadga-step-line-fill" id="dline1"></div></div>
+        <div class="dadga-step-dot" id="dstep2">٢</div>
+        <div class="dadga-step-line"><div class="dadga-step-line-fill" id="dline2"></div></div>
+        <div class="dadga-step-dot" id="dstep3">٣</div>
+        <div class="dadga-step-line"><div class="dadga-step-line-fill" id="dline3"></div></div>
+        <div class="dadga-step-dot" id="dstep4">٤</div>
+      </div>
+      <div class="dadga-step-labels">
+        <span>دەنگدان</span>
+        <span>ئەنجام</span>
+        <span>شانس</span>
+        <span>کۆتایی</span>
+      </div>
+    </div>
+
+    <!-- پەنێلی دەنگدان -->
+    <div id="dadgaPhase1">
+      <div class="dadga-vote-wrap">
+        <div class="dadga-vote-question">
+          <svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+          <div class="dadga-vote-question-text">کێ سیخورە؟</div>
+        </div>
+        <div class="dadga-current-voter">
+          <div class="dadga-voter-avatar"><img id="dadgaVoterAvatar" src=""></div>
+          <div class="dadga-voter-name" id="dadgaVoterName"></div>
+          <div class="dadga-voter-sub">دەنگی خۆی دەدات</div>
+        </div>
+        <div class="dadga-suspect-list" id="dadgaSuspectList"></div>
+        <button class="dadga-vote-btn" id="dadgaVoteBtn" onclick="vib();submitVote()">دەنگدان</button>
+      </div>
+    </div>
+
+    <!-- پەنێلی ئەنجامی دەنگدان -->
+    <div id="dadgaPhase2" class="hidden">
+      <div class="dadga-result-wrap">
+        <div class="dadga-verdict-card" id="dadgaVerdictCard">
+          <div class="dadga-verdict-icon" id="dadgaVerdictIcon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+          </div>
+          <div class="dadga-verdict-title" id="dadgaVerdictName"></div>
+          <div class="dadga-verdict-sub" id="dadgaVerdictDesc"></div>
+        </div>
+        <div class="dadga-vote-tally">
+          <div class="dadga-tally-title">ئەنجامی دەنگەکان</div>
+          <div id="dadgaTallyList"></div>
+        </div>
+        <button class="dadga-final-again" onclick="vib();showDadgaNextStep()">بریاری دادگا</button>
+      </div>
+    </div>
+
+    <!-- پەنێلی شانسی ئاخری سیخور -->
+    <div id="dadgaPhase3" class="hidden">
+      <div class="dadga-lastchance-wrap">
+        <div class="dadga-spy-reveal">
+          <div class="dadga-spy-reveal-avatar"><img id="dadgaSpyAvatar" src=""></div>
+          <div class="dadga-spy-reveal-name" id="dadgaSpyRevealName"></div>
+          <div class="dadga-spy-reveal-tag">
+            <svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>
+            سیخور
+          </div>
+        </div>
+        <div class="dadga-guess-label">وشەکە چییە؟</div>
+<input class="dadga-guess-input" id="dadgaGuessInput" type="text" placeholder="وشەکە بنووسە...">
+<div class="dadga-guess-btns">
+  <button class="dadga-guess-correct" onclick="vib('medium');checkSpyGuess()">
+    <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff;vertical-align:middle;margin-left:6px">
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+    </svg>
+    پشتراستکردنەوەی وشەکە
+  </button>
+</div>
+
+      </div>
+    </div>
+
+    <!-- پەنێلی کۆتایی -->
+    <div id="dadgaPhase4" class="hidden">
+      <div class="dadga-final-wrap">
+        <div class="dadga-final-hero" id="dadgaFinalHero">
+          <div class="dadga-final-trophy">
+            <svg viewBox="0 0 24 24" id="dadgaFinalTrophyIcon"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+          </div>
+          <div class="dadga-final-title" id="dadgaFinalTitle"></div>
+          <div class="dadga-final-sub" id="dadgaFinalSub"></div>
+        </div>
+        <div class="dadga-final-btns">
+          <button class="dadga-final-again" onclick="vib();showScreen('screen5')">کۆتایی</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 
 <!-- PAUSE -->
 <div class="pause-overlay" id="pauseOverlay">
@@ -2210,7 +2670,8 @@ select {
  </button>
  <button class="nav-item" id="nav-review" style="--lw:76px" onclick="navClick('review')">
    <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-   <span class="nav-label">پێداچوونەوە/span>
+   <span class="nav-label">پێداچوونەوە</span>
+
  </button>
 <button class="nav-item" id="nav-creator" style="--lw:62px" onclick="navClick('creator')">
   <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
@@ -2619,10 +3080,11 @@ async function confirmBack(screenId){
 async function confirmFinishRound(){
   const wasPaused=isPaused;
   if(!wasPaused){isPaused=true;}
-  const yes=await showModal({title:"کۆتایی هێنانی خول",msg:"دڵنیای کە دەتەوێت یارییەکە کۆتایی پێ بهێنیت؟",icon:"danger",dangerConfirm:true});
+  const yes=await showModal({title:"چوونە دادگا",msg:"دڵنیای؟ دەرۆیت بۆ دادگا.",icon:"danger",dangerConfirm:true});
   if(yes){isPaused=false;finishRound();}
   else{if(!wasPaused){isPaused=false;}}
 }
+
 
 /* ── Core add ── */
 function addPlayer(value){
@@ -2823,8 +3285,9 @@ function finishRound(){
   vib('double');
   document.getElementById("timer").innerText="END";
   document.getElementById("timer").style.color="#d60000";
-  setTimeout(()=>showResults(),300);
+setTimeout(()=>openDadga(), 300);
 }
+
 function updateTimer(sec){
   const m=Math.floor(sec/60).toString().padStart(2,"0");
   const s=(sec%60).toString().padStart(2,"0");
@@ -2870,7 +3333,8 @@ navClick('home'); // active state بگەڕێنەوە
 }
 
 
-const _screens = ['screen1','screen2','screen3','screen4','screen5','statsScreen','reviewScreen','creatorScreen'
+const _screens = ['screen1','screen2','screen3','screen4','screen5','statsScreen','reviewScreen','creatorScreen','dadgaScreen'
+
 ];
 
 function showScreen(id){
@@ -3252,6 +3716,410 @@ function copyLink() {
     showModal({title:"کۆپی نەکرا", msg:"لینکەکە دەستی کۆپی بکە: devmuhamad1991.github.io/F/", icon:"warn"});
   });
 }
+
+/* ══════════════════════════════════════
+   DADGA SYSTEM
+══════════════════════════════════════ */
+let dadgaTieNames = [];
+let dadgaAccusedList = [];
+let dadgaPhase3Queue = [];
+let dadgaVotes = {};       // { voterName: suspectName }
+let dadgaCurrentVoterIdx = 0;
+let dadgaAccused = '';     // کەی زیاتر دەنگی وەرگرت
+
+function openDadga() {
+  saveGameStats();
+checkReviewPopup();
+  dadgaVotes = {};
+  dadgaCurrentVoterIdx = 0;
+  dadgaAccused = '';
+
+  // داتای screen5 پڕ بکەوە بەبێ نیشاندان
+  document.getElementById('wordRevealText').innerText = gameWord;
+  document.getElementById('wordRevealCat').innerText = 'جۆری وشەکە: ' + selectedCategory;
+
+  const spyCardsEl = document.getElementById('spyCards');
+  spyCardsEl.innerHTML = '';
+  if (spyIndexes.length === 0) {
+    spyCardsEl.innerHTML = `<div class="no-spies-badge">سیخور نەدۆزرایەوە</div>`;
+  } else {
+    spyIndexes.forEach((idx, i) => {
+      const div = document.createElement('div');
+      div.className = 'spy-card';
+      div.style.animationDelay = (i * 0.12) + 's';
+      div.innerHTML = `
+        <div class="spy-avatar-wrap"><img src="${avatars[playerAvatarIndexes[idx]]}" width="60" height="60"></div>
+        <div class="spy-card-info">
+          <div class="spy-card-name">${players[idx]}</div>
+          <div class="spy-card-tag"><svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>سیخور</div>
+        </div>
+        <div class="spy-shield"><svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg></div>`;
+      spyCardsEl.appendChild(div);
+    });
+  }
+
+  document.getElementById('dadgaPhase1').classList.remove('hidden');
+  document.getElementById('dadgaPhase2').classList.add('hidden');
+  document.getElementById('dadgaPhase3').classList.add('hidden');
+  document.getElementById('dadgaPhase4').classList.add('hidden');
+
+  updateDadgaStep(1);
+  renderDadgaVoter();
+  showScreen('dadgaScreen');
+  
+  document.getElementById('dadgaVoteBtn').onclick = function() {
+  vib();
+  if (dadgaTieNames.length > 0) {
+    submitTieVote();
+  } else {
+    submitVote();
+  }
+};
+
+}
+
+
+
+function closeDadga() {
+  document.getElementById('dadgaOverlay').classList.remove('active');
+}
+
+function updateDadgaStep(active) {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('dstep' + i);
+    dot.classList.remove('active', 'done');
+    if (i < active) dot.classList.add('done');
+    else if (i === active) dot.classList.add('active');
+  }
+  for (let i = 1; i <= 3; i++) {
+    const fill = document.getElementById('dline' + i);
+    fill.style.width = i < active ? '100%' : '0%';
+  }
+}
+
+function renderDadgaVoter() {
+  const voter = players[dadgaCurrentVoterIdx];
+  const avIdx = playerAvatarIndexes[dadgaCurrentVoterIdx];
+  document.getElementById('dadgaVoterAvatar').src = avatars[avIdx];
+  document.getElementById('dadgaVoterName').innerText = voter;
+
+  // لیستی بەرکەوتەکان — خۆی ناتوانێت بە خۆی دەنگ بدات
+  const list = document.getElementById('dadgaSuspectList');
+  list.innerHTML = '';
+  players.forEach((p, i) => {
+    if (i === dadgaCurrentVoterIdx) return;
+    const div = document.createElement('div');
+    div.className = 'dadga-suspect-item';
+    div.id = 'dsusp_' + i;
+    div.onclick = () => { vib('light'); selectSuspect(i); };
+    div.innerHTML = `
+      <div class="dadga-suspect-avatar">
+        <img src="${avatars[playerAvatarIndexes[i]]}" loading="lazy">
+      </div>
+      <div class="dadga-suspect-name">${p}</div>
+      <div class="dadga-suspect-check">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </div>`;
+    list.appendChild(div);
+  });
+
+  document.getElementById('dadgaVoteBtn').classList.remove('ready');
+  document.getElementById('dadgaVoteBtn').dataset.selected = '';
+}
+
+let dadgaSelectedIdx = -1;
+function selectSuspect(idx) {
+  dadgaSelectedIdx = idx;
+  document.querySelectorAll('.dadga-suspect-item').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('dsusp_' + idx);
+  if (el) el.classList.add('selected');
+  document.getElementById('dadgaVoteBtn').classList.add('ready');
+}
+
+function submitVote() {
+  if (dadgaSelectedIdx < 0) return;
+  const voter = players[dadgaCurrentVoterIdx];
+  const suspect = players[dadgaSelectedIdx];
+  dadgaVotes[voter] = suspect;
+  dadgaSelectedIdx = -1;
+
+  dadgaCurrentVoterIdx++;
+  if (dadgaCurrentVoterIdx < players.length) {
+    renderDadgaVoter();
+  } else {
+    showDadgaResult();
+  }
+}
+
+function showDadgaResult() {
+  updateDadgaStep(2);
+  document.getElementById('dadgaPhase1').classList.add('hidden');
+  document.getElementById('dadgaPhase2').classList.remove('hidden');
+
+  const tally = {};
+  players.forEach(p => { tally[p] = 0; });
+  Object.values(dadgaVotes).forEach(suspect => {
+    tally[suspect] = (tally[suspect] || 0) + 1;
+  });
+
+  const sorted = Object.entries(tally).sort((a, b) => b[1] - a[1]);
+  const maxVotes = sorted[0][1];
+
+  // کەسانی هەمان دەنگی زیاتر
+  const topCandidates = sorted.filter(([_, v]) => v === maxVotes);
+
+  // ئایا هەردووکیان سیخورن؟
+  const topSpies = topCandidates.filter(([name]) => spyIndexes.includes(players.indexOf(name)));
+  const topCivs = topCandidates.filter(([name]) => !spyIndexes.includes(players.indexOf(name)));
+
+  if (topCandidates.length > 1 && topSpies.length !== topCandidates.length) {
+    // دەنگ یەکسانە و هەردووکیان سیخور نین → دووبارە دەنگدان
+    dadgaAccused = '';
+    dadgaTieNames = topCandidates.map(([name]) => name);
+
+    const card = document.getElementById('dadgaVerdictCard');
+    card.className = 'dadga-verdict-card';
+    card.style.background = 'linear-gradient(135deg,#111,#2a2a2a)';
+    document.getElementById('dadgaVerdictName').innerText = 'دەنگ یەکسانە';
+    document.getElementById('dadgaVerdictDesc').innerText = dadgaTieNames.join(' — ') + ' هەرکامیان ' + maxVotes + ' دەنگیان وەرگرت';
+    const ico = document.getElementById('dadgaVerdictIcon');
+    ico.innerHTML = `<svg viewBox="0 0 24 24"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>`;
+
+    document.getElementById('dadgaTallyList').innerHTML = '';
+    const maxV = sorted[0][1] || 1;
+    sorted.forEach(([name, count]) => {
+      const idx = players.indexOf(name);
+      const div = document.createElement('div');
+      div.className = 'dadga-tally-row';
+      div.innerHTML = `
+        <div class="dadga-tally-avatar"><img src="${avatars[playerAvatarIndexes[idx]]}" loading="lazy"></div>
+        <div class="dadga-tally-name">${name}</div>
+        <div class="dadga-tally-bar-wrap"><div class="dadga-tally-bar" style="width:${(count/maxV)*100}%"></div></div>
+        <div class="dadga-tally-count">${count}</div>`;
+      document.getElementById('dadgaTallyList').appendChild(div);
+    });
+
+    // دوگمە بگۆڕە بۆ دووبارە دەنگدان
+    document.querySelector('#dadgaPhase2 .dadga-final-again').innerText = 'دووبارە دەنگدان';
+    document.querySelector('#dadgaPhase2 .dadga-final-again').onclick = () => { vib(); startTieVote(); };
+    return;
+  }
+
+  // ئەگەر هەردووکیان سیخورن و دەنگ یەکسانە → هەردووکیان دەستگیر
+  if (topSpies.length > 1) {
+    dadgaAccusedList = topSpies.map(([name]) => name);
+  } else {
+    dadgaAccusedList = [sorted[0][0]];
+  }
+  dadgaAccused = dadgaAccusedList[0];
+
+  const card = document.getElementById('dadgaVerdictCard');
+  card.className = 'dadga-verdict-card';
+  card.style.background = 'linear-gradient(135deg,#111,#2a2a2a)';
+  document.getElementById('dadgaVerdictName').innerText = dadgaAccusedList.join(' — ');
+  document.getElementById('dadgaVerdictDesc').innerText = maxVotes + ' دەنگی وەرگرت';
+  const ico = document.getElementById('dadgaVerdictIcon');
+  ico.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
+
+  const tallyList = document.getElementById('dadgaTallyList');
+  tallyList.innerHTML = '';
+  const maxV = sorted[0][1] || 1;
+  sorted.forEach(([name, count]) => {
+    const idx = players.indexOf(name);
+    const div = document.createElement('div');
+    div.className = 'dadga-tally-row';
+    div.innerHTML = `
+      <div class="dadga-tally-avatar"><img src="${avatars[playerAvatarIndexes[idx]]}" loading="lazy"></div>
+      <div class="dadga-tally-name">${name}</div>
+      <div class="dadga-tally-bar-wrap"><div class="dadga-tally-bar" style="width:${(count/maxV)*100}%"></div></div>
+      <div class="dadga-tally-count">${count}</div>`;
+    tallyList.appendChild(div);
+  });
+
+  document.querySelector('#dadgaPhase2 .dadga-final-again').innerText = 'بریاری دادگا';
+  document.querySelector('#dadgaPhase2 .dadga-final-again').onclick = () => { vib(); showDadgaNextStep(); };
+}
+
+
+
+function goToPhase3() {
+  const accusedIdx = players.indexOf(dadgaAccused);
+  const isSpy = spyIndexes.includes(accusedIdx);
+
+  if (!isSpy) {
+    // بێتاوانە دەستگیرکرا — سیخور براوە بەبێ شانس
+    showDadgaFinal(false);
+    return;
+  }
+
+  // سیخور دەستگیرکرا — شانسی ئاخری
+  updateDadgaStep(3);
+  document.getElementById('dadgaPhase2').classList.add('hidden');
+  document.getElementById('dadgaPhase3').classList.remove('hidden');
+
+  document.getElementById('dadgaSpyAvatar').src = avatars[playerAvatarIndexes[accusedIdx]];
+  document.getElementById('dadgaSpyRevealName').innerText = dadgaAccused;
+  document.getElementById('dadgaGuessInput').value = '';
+}
+
+function showDadgaFinal(spyWins) {
+  updateDadgaStep(4);
+  document.getElementById('dadgaPhase3').classList.add('hidden');
+  document.getElementById('dadgaPhase4').classList.remove('hidden');
+
+  const hero = document.getElementById('dadgaFinalHero');
+  hero.className = 'dadga-final-hero ' + (spyWins ? 'spy-wins' : 'citizens-win');
+
+  const ico = document.getElementById('dadgaFinalTrophyIcon');
+  if (spyWins) {
+    ico.innerHTML = `<path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/>`;
+    document.getElementById('dadgaFinalTitle').innerText = 'سیخور براوە';
+    document.getElementById('dadgaFinalSub').innerText = 'وشەکەی باش حەز کرد — مووندا!';
+  } else {
+    ico.innerHTML = `<path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/>`;
+    document.getElementById('dadgaFinalTitle').innerText = 'یاریزانی ئاسایی براوە';
+    document.getElementById('dadgaFinalSub').innerText = 'سیخور دەستگیرکرا — گەروو دووبارەیە!';
+  }
+}
+
+function showDadgaNextStep() {
+  const card = document.getElementById('dadgaVerdictCard');
+  card.style.background = '';
+
+  // queue دروست بکە بۆ سیخورەکان
+  dadgaPhase3Queue = dadgaAccusedList.filter(name =>
+    spyIndexes.includes(players.indexOf(name))
+  );
+
+  if (dadgaPhase3Queue.length === 0) {
+    // بێتاوانە دەستگیرکرا
+    card.className = 'dadga-verdict-card innocent';
+    const ico = document.getElementById('dadgaVerdictIcon');
+    ico.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/></svg>`;
+    document.getElementById('dadgaVerdictDesc').innerText = 'بێتاوانە دەستگیرکرا — سیخور ئازادە';
+    setTimeout(() => showDadgaFinal(false), 1200);
+  } else {
+    // سیخور دۆزرایەوە — بە نۆبە شانسی ئاخری
+    card.className = 'dadga-verdict-card guilty';
+    const ico = document.getElementById('dadgaVerdictIcon');
+    ico.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2L4 7v5c0 5 3.5 9.7 8 11 4.5-1.3 8-6 8-11V7l-8-5z"/></svg>`;
+    document.getElementById('dadgaVerdictDesc').innerText = 'سیخور دۆزرایەوە';
+    setTimeout(() => nextPhase3Spy(), 1200);
+  }
+}
+
+function nextPhase3Spy() {
+  if (dadgaPhase3Queue.length === 0) {
+    // هەموو سیخورەکان تێپەڕان — یاریزانی ئاسایی براوە
+    showDadgaFinal(false);
+    return;
+  }
+
+  const spyName = dadgaPhase3Queue.shift();
+  const spyIdx = players.indexOf(spyName);
+
+  updateDadgaStep(3);
+  document.getElementById('dadgaPhase2').classList.add('hidden');
+  document.getElementById('dadgaPhase3').classList.remove('hidden');
+
+  document.getElementById('dadgaSpyAvatar').src = avatars[playerAvatarIndexes[spyIdx]];
+  document.getElementById('dadgaSpyRevealName').innerText = spyName;
+  document.getElementById('dadgaGuessInput').value = '';
+}
+
+function checkSpyGuess(adminSaysCorrect) {
+  const input = document.getElementById('dadgaGuessInput').value.trim();
+  
+  const normalize = s => s
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/ي/g, 'ی')
+    .replace(/ك/g, 'ک')
+    .replace(/ة/g, 'ە')
+    .replace(/\u200c/g, '')
+    .replace(/\u200d/g, '');
+  
+  const correct = normalize(input) === normalize(gameWord);
+  
+  document.getElementById('dadgaGuessInput').value = correct ? '✓ راستە' : '✗ هەڵەیە';
+  document.getElementById('dadgaGuessInput').disabled = true;
+  
+  setTimeout(() => {
+    document.getElementById('dadgaGuessInput').disabled = false;
+    document.getElementById('dadgaGuessInput').value = '';
+    
+    if (correct) {
+      if (dadgaPhase3Queue.length > 0) {
+        document.getElementById('dadgaPhase3').classList.add('hidden');
+        document.getElementById('dadgaPhase2').classList.remove('hidden');
+        nextPhase3Spy();
+      } else {
+        showDadgaFinal(true);
+      }
+    } else {
+      showDadgaFinal(false);
+    }
+  }, 1200);
+}
+
+
+
+function startTieVote() {
+  dadgaVotes = {};
+  dadgaCurrentVoterIdx = 0;
+  updateDadgaStep(1);
+  document.getElementById('dadgaPhase2').classList.add('hidden');
+  document.getElementById('dadgaPhase1').classList.remove('hidden');
+  renderTieVoter();
+}
+
+
+function renderTieVoter() {
+  const voter = players[dadgaCurrentVoterIdx];
+  document.getElementById('dadgaVoterAvatar').src = avatars[playerAvatarIndexes[dadgaCurrentVoterIdx]];
+  document.getElementById('dadgaVoterName').innerText = voter;
+  dadgaSelectedIdx = -1;
+  document.getElementById('dadgaVoteBtn').classList.remove('ready');
+
+  const list = document.getElementById('dadgaSuspectList');
+  list.innerHTML = '';
+
+  // تەنها ئەو دوو کەسە نیشان بدە کە دەنگیان یەکسان بوو
+  dadgaTieNames.forEach(name => {
+    if (name === voter) return;
+    const idx = players.indexOf(name);
+    const div = document.createElement('div');
+    div.className = 'dadga-suspect-item';
+    div.id = 'dsusp_' + idx;
+    div.onclick = () => { vib('light'); selectSuspect(idx); };
+    div.innerHTML = `
+      <div class="dadga-suspect-avatar"><img src="${avatars[playerAvatarIndexes[idx]]}" loading="lazy"></div>
+      <div class="dadga-suspect-name">${name}</div>
+      <div class="dadga-suspect-check">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+
+function submitTieVote() {
+  if (dadgaSelectedIdx < 0) return;
+  const voter = players[dadgaCurrentVoterIdx];
+  const suspect = players[dadgaSelectedIdx];
+  dadgaVotes[voter] = suspect;
+  dadgaSelectedIdx = -1;
+
+  dadgaCurrentVoterIdx++;
+  if (dadgaCurrentVoterIdx < players.length) {
+    renderTieVoter();
+  } else {
+    showDadgaResult();
+  }
+}
+
+
+
 
 </script>
 </body>
