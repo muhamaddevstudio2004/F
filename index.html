@@ -18,6 +18,7 @@
 <link rel="dns-prefetch" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 <link rel="dns-prefetch" href="https://api.dicebear.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@700;800&display=swap" rel="stylesheet">
@@ -1961,6 +1962,186 @@ background: linear-gradient(160deg, #ffffff 0%, #fafafa 40%, #fff9f0 100%);
   color: #555; font-size: var(--fs-base); font-weight: 800;
 }
 
+/* ══ SCORES PANEL ══ */
+.scores-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 4000;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.scores-overlay.active { opacity: 1; pointer-events: auto; }
+
+.scores-sheet {
+  background: #fffdf5;
+  border-radius: 32px 32px 0 0;
+  width: 100%; max-width: 540px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 0 0 40px;
+  transform: translateY(100%);
+  transition: transform .38s cubic-bezier(.34,1.1,.64,1);
+  position: relative;
+}
+.scores-overlay.active .scores-sheet { transform: translateY(0); }
+
+/* کاغەز تێکستور */
+.scores-sheet::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      rgba(100,140,255,.08) 31px,
+      rgba(100,140,255,.08) 32px
+    );
+  border-radius: 32px 32px 0 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.scores-inner { position: relative; z-index: 1; padding: 0 22px; }
+
+.scores-handle {
+  width: 40px; height: 5px;
+  background: #d0c8a0; border-radius: 10px;
+  margin: 14px auto 0;
+}
+
+.scores-title-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 22px 0;
+  position: relative; z-index: 1;
+}
+.scores-title {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(28px, 7vw, 36px);
+  font-weight: 700;
+  color: #2a2a2a;
+  letter-spacing: 1px;
+}
+.scores-close-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.08);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 900; color: #555;
+}
+
+.scores-round-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,212,0,.25);
+  border: 1.5px solid rgba(255,188,0,.4);
+  color: #7a5200;
+  font-size: 12px; font-weight: 800;
+  padding: 5px 14px; border-radius: 999px;
+  margin: 10px 22px 16px;
+  position: relative; z-index: 1;
+  display: flex; width: fit-content;
+}
+
+/* هێڵی بەین */
+.scores-divider {
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    #c8b87a 0px, #c8b87a 6px,
+    transparent 6px, transparent 12px
+  );
+  margin: 4px 0 16px;
+  opacity: .5;
+}
+
+/* ڕیزی یاریزان */
+.scores-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  margin-bottom: 8px;
+  background: rgba(255,255,255,.6);
+  border: 1px solid rgba(0,0,0,.06);
+  animation: slideIn .3s ease both;
+  position: relative;
+}
+.scores-row.rank-1 { background: rgba(255,212,0,.18); border-color: rgba(255,188,0,.3); }
+.scores-row.rank-2 { background: rgba(220,220,220,.25); }
+.scores-row.rank-3 { background: rgba(255,160,60,.12); }
+
+.scores-rank {
+  font-family: 'Caveat', cursive;
+  font-size: 22px; font-weight: 700;
+  width: 28px; text-align: center; flex-shrink: 0;
+  color: #aaa;
+}
+.scores-row.rank-1 .scores-rank { color: #c8960a; }
+.scores-row.rank-2 .scores-rank { color: #888; }
+.scores-row.rank-3 .scores-rank { color: #b07030; }
+
+.scores-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  overflow: hidden; border: 2px solid rgba(255,212,0,.5);
+  flex-shrink: 0; background: #fff;
+}
+.scores-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.scores-name {
+  flex: 1;
+  font-family: 'Caveat', cursive;
+  font-size: clamp(19px,5vw,23px);
+  font-weight: 700; color: #222;
+  line-height: 1.1;
+}
+
+.scores-pts-wrap { text-align: center; flex-shrink: 0; }
+.scores-pts {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(26px,7vw,32px);
+  font-weight: 700; color: #111;
+  line-height: 1;
+}
+.scores-row.rank-1 .scores-pts { color: #c8960a; }
+.scores-pts-label {
+  font-size: 10px; font-weight: 800; color: #aaa;
+  letter-spacing: .5px;
+}
+
+/* خالی نوێ */
+.scores-new-pts {
+  position: absolute;
+  left: 12px; top: -8px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  font-family: 'Caveat', cursive;
+  font-size: 14px; font-weight: 700;
+  padding: 2px 9px; border-radius: 999px;
+  animation: popIn .4s cubic-bezier(.34,1.6,.64,1) both;
+  white-space: nowrap;
+}
+@keyframes popIn {
+  from { opacity:0; transform: scale(.5) translateY(6px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+
+/* دوگمەی ڕەشکردنەوە */
+.scores-reset-btn {
+  width: 100%;
+  height: var(--btn-h);
+  border-radius: var(--radius-btn);
+  background: rgba(255,59,59,.08);
+  color: #c62828;
+  font-size: var(--fs-sm); font-weight: 800;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+.scores-reset-btn svg { width: 16px; height: 16px; fill: #c62828; }
+
 
 </style>
 </head>
@@ -2391,8 +2572,8 @@ background: linear-gradient(160deg, #ffffff 0%, #fafafa 40%, #fff9f0 100%);
       <div id="spyCards"></div>
     </div>
     <div class="end-buttons">
-      <button class="restart-btn" onclick="vib();playAgain()">خولی دواتر</button>
-      <button class="restart-btn dark-btn" onclick="vib();resetAll()">گەرانەوە بۆ سەرەتا</button>
+<button class="restart-btn" id="playAgainBtn" onclick="vib();playAgain()">خولی ٢</button>
+<button class="restart-btn dark-btn" onclick="vib();openScores()">خشتەی خالەکان</button>
     </div>
   </div>
 </section>
@@ -2681,6 +2862,33 @@ background: linear-gradient(160deg, #ffffff 0%, #fafafa 40%, #fff9f0 100%);
 </button>
 
 </nav>
+
+<!-- SCORES PANEL -->
+<div class="scores-overlay" id="scoresOverlay" onclick="closeScoresOutside(event)">
+  <div class="scores-sheet" id="scoresSheet">
+    <div class="scores-handle"></div>
+    <div class="scores-title-row">
+<div class="scores-title">
+  <svg viewBox="0 0 24 24" width="32" height="32" style="vertical-align:middle;margin-left:8px">
+    <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" fill="#c8960a"/>
+  </svg>
+  <span style="font-family:'Caveat',cursive;font-size:clamp(26px,7vw,34px);font-weight:700;color:#2a2a2a;vertical-align:middle;">خالەکان</span>
+</div>
+
+      <button class="scores-close-btn" onclick="vib();closeScores()">✕</button>
+    </div>
+    <div class="scores-round-badge" id="scoresRoundBadge">خول ١</div>
+    <div class="scores-inner">
+      <div class="scores-divider"></div>
+      <div id="scoresList"></div>
+     <button class="scores-reset-btn" id="scoresResetBtn">
+  <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+  ڕەشکردنەوەی هەموو خالەکان
+</button>
+    </div>
+  </div>
+</div>
+
 
 <div class="suggestion-portal" id="suggPortal"></div>
 
@@ -3294,6 +3502,7 @@ function updateTimer(sec){
   document.getElementById("timer").innerText=`${m}:${s}`;
 }
 function showResults(){
+  updateRoundBtn();
   saveGameStats();
   checkReviewPopup();
   showScreen("screen5");
@@ -3318,8 +3527,26 @@ function showResults(){
       spyCardsEl.appendChild(div);
     });
   }
+
+  // ← ئەمە زیاد بکە
+  setTimeout(() => openScores(), 600);
 }
-function playAgain(){prepareGame();showScreen("screen3");showPlayer();}
+
+function playAgain(){
+  prepareGame();
+  updateRoundBtn(); // ← زیاد بکە
+  showScreen("screen3");
+  showPlayer();
+}
+
+function updateRoundBtn(){
+  const rounds = getTotalRounds();
+  const btn = document.getElementById('playAgainBtn');
+  if(btn) btn.innerText = `خولی ${rounds + 1}`;
+}
+
+
+
 function resetAll(){
   document.getElementById('bottomNav').classList.remove('hidden');
 navClick('home'); // active state بگەڕێنەوە
@@ -3729,7 +3956,6 @@ let dadgaAccused = '';     // کەی زیاتر دەنگی وەرگرت
 
 function openDadga() {
   saveGameStats();
-checkReviewPopup();
   dadgaVotes = {};
   dadgaCurrentVoterIdx = 0;
   dadgaAccused = '';
@@ -3778,6 +4004,16 @@ checkReviewPopup();
 
 }
 
+function closeDadgaToResults() {
+  // داتای screen5 پڕ بکەوە
+  document.getElementById('wordRevealText').innerText = gameWord;
+  document.getElementById('wordRevealCat').innerText = 'جۆری وشەکە: ' + selectedCategory;
+  
+  showScreen('screen5');
+  // کەمێک چاوەڕوانی بکە پاشان خالەکان بکەوە
+  updateRoundBtn();
+  setTimeout(() => openScores(), 400);
+}
 
 
 function closeDadga() {
@@ -3963,6 +4199,7 @@ function goToPhase3() {
 }
 
 function showDadgaFinal(spyWins) {
+  awardPoints(spyWins);
   updateDadgaStep(4);
   document.getElementById('dadgaPhase3').classList.add('hidden');
   document.getElementById('dadgaPhase4').classList.remove('hidden');
@@ -3980,6 +4217,10 @@ function showDadgaFinal(spyWins) {
     document.getElementById('dadgaFinalTitle').innerText = 'یاریزانی ئاسایی براوەیە';
     document.getElementById('dadgaFinalSub').innerText = 'سیخور دەستگیرکرا !';
   }
+setTimeout(() => {
+    showScreen('screen5');
+    setTimeout(() => openScores(), 600);
+  }, 2500);
 }
 
 function showDadgaNextStep() {
@@ -4118,6 +4359,127 @@ function submitTieVote() {
   }
 }
 
+/* ══════════════════════════════════════
+   SCORES SYSTEM
+══════════════════════════════════════ */
+let lastRoundPoints = {}; // خالی ئەم خولە تەنها
+
+function loadScores() {
+  return JSON.parse(localStorage.getItem('sexur_scores') || '{}');
+}
+function saveScores(data) {
+  localStorage.setItem('sexur_scores', JSON.stringify(data));
+}
+function getTotalRounds() {
+  return parseInt(localStorage.getItem('sexur_rounds') || '0');
+}
+
+function awardPoints(spyWon) {
+  const scores = loadScores();
+  lastRoundPoints = {};
+
+  if (spyWon) {
+    // سیخور وشەکەی دۆزیەوە — +3 بۆ هەموو سیخورەکان
+    spyIndexes.forEach(idx => {
+      const name = players[idx];
+      scores[name] = (scores[name] || 0) + 3;
+      lastRoundPoints[name] = 3;
+    });
+  } else {
+    // سیخور دەستگیرکرا — +2 بۆ هەموو هاوڵاتییە ئاسایییەکان
+    players.forEach((name, idx) => {
+      if (!spyIndexes.includes(idx)) {
+        scores[name] = (scores[name] || 0) + 2;
+        lastRoundPoints[name] = 2;
+      }
+    });
+  }
+
+  // خولەکان زیاد بکە
+  const rounds = getTotalRounds() + 1;
+  localStorage.setItem('sexur_rounds', rounds);
+
+  saveScores(scores);
+}
+
+function openScores() {
+  renderScores();
+  updateRoundBtn();
+  document.getElementById('scoresOverlay').classList.add('active');
+}
+
+
+function closeScores() {
+  document.getElementById('scoresOverlay').classList.remove('active');
+}
+function closeScoresOutside(e) {
+  if (e.target === document.getElementById('scoresOverlay')) {
+    vib(); closeScores();
+  }
+}
+
+function renderScores() {
+  const scores = loadScores();
+  const rounds = getTotalRounds();
+  document.getElementById('scoresRoundBadge').innerText = `خول ${rounds}`;
+
+  // تەنها یاریزانانی ئێستا نیشان بدە + یاریزانی کۆن کە خالیان هەیە
+  const allNames = new Set([...players, ...Object.keys(scores)]);
+  const sorted = [...allNames]
+    .map(name => ({ name, pts: scores[name] || 0 }))
+    .sort((a, b) => b.pts - a.pts);
+
+  const list = document.getElementById('scoresList');
+  list.innerHTML = '';
+
+  sorted.forEach((p, i) => {
+    const rank = i + 1;
+    const rankClass = rank <= 3 ? ` rank-${rank}` : '';
+    const rankSymbol = rank === 1 ? '١' : rank === 2 ? '٢' : rank === 3 ? '٣' : rank + '';
+    const newPts = lastRoundPoints[p.name];
+    const avatarSeed = encodeURIComponent(p.name);
+
+    const div = document.createElement('div');
+    div.className = 'scores-row' + rankClass;
+    div.style.animationDelay = (i * 0.06) + 's';
+    div.innerHTML = `
+      ${newPts ? `<div class="scores-new-pts">+${newPts}</div>` : ''}
+      <div class="scores-rank">${rankSymbol}</div>
+      <div class="scores-avatar">
+        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=${avatarSeed}" loading="lazy">
+      </div>
+      <div class="scores-name">${p.name}</div>
+      <div class="scores-pts-wrap">
+        <div class="scores-pts">${p.pts}</div>
+        <div class="scores-pts-label">خال</div>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+async function confirmResetScores() {
+  const yes = await showModal({
+    title: "ڕەشکردنەوەی خالەکان",
+    msg: "دڵنیایت؟ هەموو خالەکان دەسڕێتەوە.",
+    icon: "danger",
+    dangerConfirm: true
+  });
+  if (yes) {
+    localStorage.removeItem('sexur_scores');
+    localStorage.removeItem('sexur_rounds');
+    lastRoundPoints = {};
+    renderScores();
+    vib('success');
+  }
+}
+
+document.getElementById('scoresResetBtn')
+  .addEventListener('click', async () => {
+    vib('heavy');
+    closeScores();
+    await new Promise(r => setTimeout(r, 300));
+    await confirmResetScores();
+  });
 
 
 
