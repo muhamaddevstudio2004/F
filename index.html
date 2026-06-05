@@ -3997,7 +3997,7 @@ function showDadgaNextStep() {
     const ico = document.getElementById('dadgaVerdictIcon');
     ico.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/></svg>`;
     document.getElementById('dadgaVerdictDesc').innerText = 'بێتاوانە دەستگیرکرا — سیخور ئازادە';
-    setTimeout(() => showDadgaFinal(false), 1200);
+    setTimeout(() => showDadgaFinal(true), 1200);
   } else {
     // سیخور دۆزرایەوە — بە نۆبە شانسی ئاخری
     card.className = 'dadga-verdict-card guilty';
