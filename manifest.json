@@ -1,7 +1,8 @@
 {
-  "name": "sexur game ",
+  "name": "sexur game",
   "short_name": "sexur",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffd84d",
   "theme_color": "#ffd84d",
