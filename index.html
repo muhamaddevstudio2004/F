@@ -95,6 +95,48 @@ body{
   .app-wrap{max-width:600px;}
 }
 
+/* ══ DESKTOP / LAPTOP RESPONSIVE FIX ══ */
+@media(min-width:600px){
+  .app-wrap{
+    position: relative;
+    min-height: calc(100vh - 48px);
+  }
+  .screen{
+    position: relative !important;
+    inset: auto !important;
+    min-height: auto;
+    padding-bottom: 100px;
+  }
+  #dadgaScreen{
+    position: absolute !important;
+    inset: 0 !important;
+  }
+}
+
+@media(min-width:900px){
+  body{
+    align-items: flex-start;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+  .app-wrap{
+    position: relative;
+    min-height: auto;
+  }
+  .screen{
+    position: relative !important;
+    inset: auto !important;
+    animation: fade .3s ease;
+  }
+  .bottom-nav{
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 24px;
+  }
+}
+
+
 
 .nav-item {
   display: flex;
