@@ -3542,7 +3542,7 @@ function buildAdBanner() {
    const track = document.getElementById('adTrack');
    const base = adCurrent * 100;
    track.style.transition = 'none';
-   track.style.transform = `translateX(calc(-${base}% + ${dx}px))`;
+   track.style.transform = `translateX(calc(${base}% + ${dx}px))`;
  }, { passive: true });
 
  banner.addEventListener('touchend', e => {
