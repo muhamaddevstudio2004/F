@@ -3565,8 +3565,7 @@ function buildAdBanner() {
 
 function adUpdateUI() {
   const track = document.getElementById('adTrack');
-  // مطمئن بە کە transition هەیە
-  track.style.transition = 'transform .55s cubic-bezier(.4,0,.2,1)';
+  track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
   track.style.transform = `translateX(-${adCurrent * 100}%)`;
   document.querySelectorAll('.ad-dot').forEach((d, i) => {
     d.classList.toggle('active', i === adCurrent);
