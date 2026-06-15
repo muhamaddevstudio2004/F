@@ -3542,7 +3542,7 @@ function buildAdBanner() {
    const track = document.getElementById('adTrack');
    const base = adCurrent * 100;
    track.style.transition = 'none';
-   track.style.transform = `translateX(calc(${base}% + ${dx}px))`;
+   track.style.transform = `translateX(calc(-${base}% + ${dx}px))`;
  }, { passive: true });
 
  banner.addEventListener('touchend', e => {
@@ -3564,13 +3564,14 @@ function buildAdBanner() {
 }
 
 function adUpdateUI() {
- const track = document.getElementById('adTrack');
- track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
- track.style.transform = `translateX(${adCurrent * 100}%)`;
- document.querySelectorAll('.ad-dot').forEach((d, i) => {
-   d.classList.toggle('active', i === adCurrent);
- });
+  const track = document.getElementById('adTrack');
+  track.style.transition = 'transform .45s cubic-bezier(.4,0,.2,1)';
+  track.style.transform = `translateX(-${adCurrent * 100}%)`;
+  document.querySelectorAll('.ad-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === adCurrent);
+  });
 }
+
 
 function adGoTo(idx) {
  if (adIsAnimating) return;
@@ -3607,67 +3608,6 @@ function adResetProgress() {
    fill.style.width = adProgress + '%';
  }, 100);
 }
-
-
-
-
-function adUpdateUI() {
-  document.getElementById('adTrack').style.transform = `translateX(${adCurrent * 100}%)`;
-  document.querySelectorAll('.ad-dot').forEach((d, i) => {
-    d.classList.toggle('active', i === adCurrent);
-  });
-}
-
-function adGoTo(idx) {
-  adCurrent = (idx + adSlides.length) % adSlides.length;
-  adUpdateUI();
-  adResetProgress();
-}
-function adNext() { adGoTo(adCurrent + 1); }
-function adPrev() { adGoTo(adCurrent - 1); }
-
-function adStartAuto() {
-  adStopAuto();
-  adResetProgress();
-  adAutoTimer = setInterval(() => {
-    adGoTo(adCurrent + 1);
-  }, AD_INTERVAL);
-}
-function adStopAuto() {
-  clearInterval(adAutoTimer);
-  clearInterval(adProgressTimer);
-}
-function adResetProgress() {
-  clearInterval(adProgressTimer);
-  adProgress = 100;
-  const fill = document.getElementById('adProgressFill');
-  if (!fill) return;
-  fill.style.width = '100%';
-  const step = 100 / (AD_INTERVAL / 100);
-  adProgressTimer = setInterval(() => {
-    adProgress = Math.max(0, adProgress - step);
-    fill.style.width = adProgress + '%';
-  }, 100);
-}
-
-// touch/swipe on ad banner
-(function(){
-  const banner = document.getElementById('adBanner');
-  let tx = 0, dragging = false;
-  banner.addEventListener('touchstart', e => {
-    tx = e.touches[0].clientX;
-    dragging = true;
-    adStopAuto();
-  }, {passive:true});
-  banner.addEventListener('touchend', e => {
-    if (!dragging) return;
-    dragging = false;
-    const dx = e.changedTouches[0].clientX - tx;
-    if (Math.abs(dx) > 40) { dx > 0 ? adPrev() : adNext(); }
-    adStartAuto();
-  }, {passive:true});
-})();
-
 buildAdBanner();
 
 // Skeleton loader
