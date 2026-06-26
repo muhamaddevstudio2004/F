@@ -3001,7 +3001,7 @@ let SETTINGS = { store_name:'Mobile Store', store_phone:'', store_address:'', pr
 function setConnStatus(state) {
   const el = document.getElementById('connStatus');
   if (!el) return;
-  if (state === 'online') { el.className = 'conn-status online'; el.innerHTML = '<span class="conn-dot"></span> @DevMuhamad '; }
+  if (state === 'online') { el.className = 'conn-status online'; el.innerHTML = '<span class="conn-dot"></span> DevMuhamad@ '; }
   else if (state === 'offline') { el.className = 'conn-status offline'; el.innerHTML = '<span class="conn-dot"></span> پەیوەندی نیە'; }
   else { el.className = 'conn-status loading'; el.innerHTML = '<span class="conn-dot"></span> پەیوەندی...'; }
 }
