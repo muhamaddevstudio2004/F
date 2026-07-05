@@ -1495,7 +1495,7 @@ kbd {
 		<div class="table-wrap">
 		  <table>
 			<thead><tr>
-			  <th>#</th><th>ناوی کاڵا</th><th>براند</th><th>کاتیگۆری</th>
+<th>وێنە</th><th>#</th><th>ناوی کاڵا</th><th>براند</th><th>کاتیگۆری</th>
 			  <th>نرخی کڕین</th><th>نرخی فرۆشتن</th><th>قازانج</th><th>بڕ</th><th>کردار</th>
 			</tr></thead>
 			<tbody id="productBody"></tbody>
@@ -1556,7 +1556,7 @@ kbd {
 		<div class="table-wrap">
 		  <table>
 			<thead><tr>
-			  <th>#</th><th>کڕیار</th><th>ژمارە</th><th>ئامێر</th><th>کێشە</th><th>هزینە</th><th>ستاتوس</th><th>بەروار</th><th>کردار</th>
+			  <th>وێنە</th><th>#</th><th>کڕیار</th><th>ژمارە</th><th>ئامێر</th><th>کێشە</th><th>هزینە</th><th>ستاتوس</th><th>بەروار</th><th>کردار</th>
 			</tr></thead>
 			<tbody id="repairBody"></tbody>
 		  </table>
@@ -2515,6 +2515,24 @@ kbd {
 		  <input class="form-control" id="pQty" type="number" placeholder="0" min="0">
 		</div>
     <div class="form-group">
+  <label>وێنەی کاڵا</label>
+  <div style="display:flex;gap:10px;align-items:center">
+    <div id="pImagePreview" style="width:70px;height:70px;border-radius:10px;background:var(--card);border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+      <i class="ti ti-photo" style="font-size:24px;color:var(--text3)"></i>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+      <input type="file" id="pImageFile" accept="image/*" capture="environment" style="display:none" onchange="handleImageSelect(event,'product')">
+      <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('pImageFile').click()">
+        <i class="ti ti-camera"></i> کامێرا / گەلری
+      </button>
+      <button class="btn btn-ghost btn-sm" type="button" onclick="removeSelectedImage('product')" id="pImageRemoveBtn" style="display:none">
+        <i class="ti ti-x"></i> لابردنی وێنە
+      </button>
+    </div>
+  </div>
+</div>
+
+    <div class="form-group">
   <label>بارکۆد (ئارەزوومەندانە)</label>
   <div style="display:flex;gap:8px">
     <input class="form-control" id="pBarcode" placeholder="بارکۆد بنووسە یان سکان بکە">
@@ -2605,6 +2623,24 @@ kbd {
 			<label>ناوی ئامێر *</label>
 			<input class="form-control" id="rDevice" placeholder="Samsung S24">
 		  </div>
+      <div class="form-group">
+  <label>وێنەی ئامێر</label>
+  <div style="display:flex;gap:10px;align-items:center">
+    <div id="rImagePreview" style="width:70px;height:70px;border-radius:10px;background:var(--card);border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+      <i class="ti ti-photo" style="font-size:24px;color:var(--text3)"></i>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+      <input type="file" id="rImageFile" accept="image/*" capture="environment" style="display:none" onchange="handleImageSelect(event,'repair')">
+      <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('rImageFile').click()">
+        <i class="ti ti-camera"></i> کامێرا / گەلری
+      </button>
+      <button class="btn btn-ghost btn-sm" type="button" onclick="removeSelectedImage('repair')" id="rImageRemoveBtn" style="display:none">
+        <i class="ti ti-x"></i> لابردنی وێنە
+      </button>
+    </div>
+  </div>
+</div>
+
 		  <div class="form-group">
 			<label>جۆری ئامێر</label>
 <select class="form-control" id="rDeviceType">
@@ -3007,10 +3043,10 @@ function setConnStatus(state) {
 }
 
 // Map DB row (snake_case) <-> App object (camelCase)
-function productFromDb(r) { return { id: r.id, name: r.name, brand: r.brand, model: r.model, category: r.category, buyPrice: Number(r.buy_price), sellPrice: Number(r.sell_price), qty: r.qty, notes: r.notes, barcode: r.barcode || null, createdAt: r.created_at }; }
+function productFromDb(r) { return { id: r.id, name: r.name, brand: r.brand, model: r.model, category: r.category, buyPrice: Number(r.buy_price), sellPrice: Number(r.sell_price), qty: r.qty, notes: r.notes, barcode: r.barcode || null, imageUrl: r.image_url || null, createdAt: r.created_at }; }
 function saleFromDb(r) { return { id: r.id, productId: r.product_id, productName: r.product_name, unitPrice: Number(r.unit_price), qty: r.qty, total: Number(r.total), profit: Number(r.profit), returned: r.returned||false, returnedAt: r.returned_at, createdAt: r.created_at }; }
 function debtFromDb(r) { return { id: r.id, customerName: r.customer_name, phone: r.phone, amount: Number(r.amount), paidAmount: Number(r.paid_amount), source: r.source, notes: r.notes, dueDate: r.due_date, status: r.status, createdAt: r.created_at }; }
-function repairFromDb(r) { return { id: r.id, customerName: r.customer_name, phone: r.phone, device: r.device, deviceType: r.device_type, problem: r.problem, cost: Number(r.cost), status: r.status, notes: r.notes, createdAt: r.created_at }; }
+function repairFromDb(r) { return { id: r.id, customerName: r.customer_name, phone: r.phone, device: r.device, deviceType: r.device_type, problem: r.problem, cost: Number(r.cost), status: r.status, notes: r.notes, imageUrl: r.image_url || null, createdAt: r.created_at }; }
 
 async function loadAllData() {
   setConnStatus('loading');
@@ -3909,6 +3945,8 @@ function renderProducts() {
     const low = p.qty<=5;
     return `<tr>
       <td data-label="#" class="td-muted">${i+1}</td>
+  <td data-label="#" class="td-muted">${i+1}</td>
+          <td data-label="وێنە">${p.imageUrl ? `<img src="${p.imageUrl}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
       <td data-label="ناوی کاڵا"><div style="font-weight:600">${p.name}</div>
       <div class="td-muted" style="font-size:11.5px">${p.model||''}</div></td>
       <td data-label="براند" class="td-muted">${p.brand}</td>
@@ -3929,22 +3967,46 @@ function renderProducts() {
 
 
 function openProductModal(id) {
+  selectedImageFile.product = null;
+  window._removedExistingImage_product = false;
+
   editProductId = id||null;
   document.getElementById('productModalTitle').textContent = id ? 'دەستکاریکردنی کاڵا' : 'کاڵای نوێ زیاد بکە';
+
   if(id) {
-	const p = DB.get('products').find(x=>x.id===id);
-if(p) { document.getElementById('pName').value=p.name; document.getElementById('pBrand').value=p.brand; document.getElementById('pModel').value=p.model||''; document.getElementById('pCategory').value=p.category; document.getElementById('pBuyPrice').value=p.buyPrice; document.getElementById('pSellPrice').value=p.sellPrice; document.getElementById('pQty').value=p.qty; document.getElementById('pNotes').value=p.notes||''; document.getElementById('pBarcode').value=p.barcode||''; }
-} else {
-  ['pName','pBrand','pModel','pBuyPrice','pSellPrice','pQty','pNotes','pBarcode'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('pCategory').value='';
-}
+    const p = DB.get('products').find(x=>x.id===id);
+    if(p) {
+      document.getElementById('pName').value=p.name;
+      document.getElementById('pBrand').value=p.brand;
+      document.getElementById('pModel').value=p.model||'';
+      document.getElementById('pCategory').value=p.category;
+      document.getElementById('pBuyPrice').value=p.buyPrice;
+      document.getElementById('pSellPrice').value=p.sellPrice;
+      document.getElementById('pQty').value=p.qty;
+      document.getElementById('pNotes').value=p.notes||'';
+      document.getElementById('pBarcode').value=p.barcode||'';
+    }
+    if(p && p.imageUrl) {
+      document.getElementById('pImagePreview').innerHTML = `<img src="${p.imageUrl}" style="width:100%;height:100%;object-fit:cover">`;
+      document.getElementById('pImageRemoveBtn').style.display = 'inline-flex';
+    } else {
+      document.getElementById('pImagePreview').innerHTML = '<i class="ti ti-photo" style="font-size:24px;color:var(--text3)"></i>';
+      document.getElementById('pImageRemoveBtn').style.display = 'none';
+    }
+  } else {
+    ['pName','pBrand','pModel','pBuyPrice','pSellPrice','pQty','pNotes','pBarcode'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pCategory').value='';
+    document.getElementById('pImagePreview').innerHTML = '<i class="ti ti-photo" style="font-size:24px;color:var(--text3)"></i>';
+    document.getElementById('pImageRemoveBtn').style.display = 'none';
+  }
 
   const catSelect = document.getElementById('pCategory');
-catSelect.innerHTML = '<option value="">هەڵبژێرە...</option>' +
-  (CACHE.categories||[]).map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+  catSelect.innerHTML = '<option value="">هەڵبژێرە...</option>' +
+    (CACHE.categories||[]).map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
 
   openModal('productModal');
 }
+
 
 function editProduct(id) { openProductModal(id); }
 async function saveProduct() {
@@ -3956,16 +4018,23 @@ async function saveProduct() {
   const qty=parseInt(document.getElementById('pQty').value)||0;
   const barcode=document.getElementById('pBarcode').value.trim()||null; // ✅ زیادکرا
   if(!name||!cat||!sell) { toast('تکایە خانەی پێویستەکان پڕبکەرەوە','error'); return; }
-
+let image_url = editProductId ? (DB.get('products').find(x=>x.id===editProductId)?.imageUrl || null) : null;
   const btn = document.getElementById('pSaveBtn');
   btn.disabled = true;
   try {
+    if(selectedImageFile.product) {
+  image_url = await uploadImageToSupabase(selectedImageFile.product, 'products');
+} else if(window._removedExistingImage_product) {
+  image_url = null;
+}
+
     if(editProductId) {
       const { error } = await sb.from('products').update({
         name, brand, model: document.getElementById('pModel').value, category: cat,
         buy_price: buy, sell_price: sell, qty, 
         notes: document.getElementById('pNotes').value,
-        barcode  // ✅ زیادکرا
+        barcode,  // ✅ زیادکرا
+        image_url
       }).eq('id', editProductId);
       if(error) throw error;
       toast('کاڵاکە نوێ کرایەوە','success');
@@ -3974,7 +4043,8 @@ async function saveProduct() {
         name, brand, model: document.getElementById('pModel').value, category: cat,
         buy_price: buy, sell_price: sell, qty, 
         notes: document.getElementById('pNotes').value,
-        barcode  // ✅ زیادکرا
+        barcode,  // ✅ زیادکرا
+        image_url
       });
       if(error) throw error;
       toast('کاڵای نوێ زیادکرا','success');
@@ -4261,7 +4331,9 @@ function renderRepairs() {
   const filtered = repairs.filter(r=>(!q||(r.customerName+r.device+r.phone).toLowerCase().includes(q))&&(!sf||r.status===sf));
   const sorted = [...filtered].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
   const body = document.getElementById('repairBody');
+
 body.innerHTML = sorted.length ? sorted.map((r,i)=>`<tr>
+    <td data-label="وێنە">${r.imageUrl ? `<img src="${r.imageUrl}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
   <td data-label="#" class="td-muted">${i+1}</td>
   <td data-label="کڕیار"><b>${r.customerName}</b></td>
   <td data-label="ژمارە" class="td-muted">${r.phone}</td>
@@ -4300,12 +4372,20 @@ async function saveRepair() {
   const problem=document.getElementById('rProblem').value.trim();
   if(!name||!phone||!device||!problem) { toast('تکایە خانەی پێویستەکان پڕبکەرەوە','error'); return; }
 
+let image_url = editRepairId ? (DB.get('repairs').find(x=>x.id===editRepairId)?.imageUrl || null) : null;
+if(selectedImageFile.repair) {
+  image_url = await uploadImageToSupabase(selectedImageFile.repair, 'repairs');
+} else if(window._removedExistingImage_repair) {
+  image_url = null;
+}
+
   const btn = document.getElementById('rSaveBtn');
   btn.disabled = true;
   const data = {
 	customer_name: name, phone, device, device_type: document.getElementById('rDeviceType').value,
 	problem, cost: parseFloat(document.getElementById('rCost').value)||0,
-	status: document.getElementById('rStatus').value, notes: document.getElementById('rNotes').value
+	status: document.getElementById('rStatus').value, notes: document.getElementById('rNotes').value,
+  image_url
   };
   try {
 	if(editRepairId) {
@@ -5505,6 +5585,76 @@ function handleBarcodeResult(code) {
   document.getElementById(barcodeScanTarget).value = code;
   toast('بارکۆد سکانکرا: ' + code, 'success');
 }
+
+// ══════════════════════════════════════════
+//  IMAGE UPLOAD
+// ══════════════════════════════════════════
+let selectedImageFile = { product: null, repair: null };
+let selectedImagePreviewUrl = { product: null, repair: null };
+
+function handleImageSelect(event, type) {
+  const file = event.target.files[0];
+  if(!file) return;
+
+  if(!file.type.startsWith('image/')) {
+    toast('تکایە وێنەیەک هەڵبژێرە', 'error');
+    return;
+  }
+
+  selectedImageFile[type] = file;
+  const previewUrl = URL.createObjectURL(file);
+  selectedImagePreviewUrl[type] = previewUrl;
+
+  const previewId = type === 'product' ? 'pImagePreview' : 'rImagePreview';
+  const removeBtnId = type === 'product' ? 'pImageRemoveBtn' : 'rImageRemoveBtn';
+  document.getElementById(previewId).innerHTML = `<img src="${previewUrl}" style="width:100%;height:100%;object-fit:cover">`;
+  document.getElementById(removeBtnId).style.display = 'inline-flex';
+}
+
+function removeSelectedImage(type) {
+  selectedImageFile[type] = null;
+  if(selectedImagePreviewUrl[type]) {
+    URL.revokeObjectURL(selectedImagePreviewUrl[type]);
+    selectedImagePreviewUrl[type] = null;
+  }
+  const previewId = type === 'product' ? 'pImagePreview' : 'rImagePreview';
+  const removeBtnId = type === 'product' ? 'pImageRemoveBtn' : 'rImageRemoveBtn';
+  const fileInputId = type === 'product' ? 'pImageFile' : 'rImageFile';
+  document.getElementById(previewId).innerHTML = '<i class="ti ti-photo" style="font-size:24px;color:var(--text3)"></i>';
+  document.getElementById(removeBtnId).style.display = 'none';
+  document.getElementById(fileInputId).value = '';
+  // ئەگەر وێنەی پێشوو هەبوو دەبێت وا بکەین کە بزانین لابردراوە (لای دواوە بەکاردێت)
+  window['_removedExistingImage_' + type] = true;
+}
+
+async function compressImage(file, maxWidth = 900, quality = 0.7) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = e => { img.src = e.target.result; };
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if(w > maxWidth) { h = h * (maxWidth / w); w = maxWidth; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => resolve(blob), 'image/jpeg', quality);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadImageToSupabase(file, folder) {
+  const compressed = await compressImage(file);
+  const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
+  const { error } = await sb.storage.from('images').upload(fileName, compressed, {
+    contentType: 'image/jpeg', upsert: false
+  });
+  if(error) throw error;
+  const { data } = sb.storage.from('images').getPublicUrl(fileName);
+  return data.publicUrl;
+}
+
 
 init();
 </script>
