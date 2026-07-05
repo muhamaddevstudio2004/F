@@ -3986,6 +3986,7 @@ function renderProducts() {
       <td data-label="کردار">
         <div style="display:flex;gap:6px">
           <button class="btn btn-ghost btn-sm btn-icon" onclick="editProduct('${p.id}')"><i class="ti ti-edit"></i></button>
+             <button class="btn btn-ghost btn-sm btn-icon" onclick="duplicateProduct('${p.id}')" title="کۆپیکردن"><i class="ti ti-copy"></i></button>
           <button class="btn btn-danger btn-sm btn-icon" onclick="deleteProduct('${p.id}')"><i class="ti ti-trash"></i></button>
         </div>
       </td>
@@ -4000,6 +4001,11 @@ function openProductModal(id) {
 
   editProductId = id||null;
   document.getElementById('productModalTitle').textContent = id ? 'دەستکاریکردنی کاڵا' : 'کاڵای نوێ زیاد بکە';
+
+  // ✅ یەکەم جار کاتیگۆریەکان پڕبکەرەوە
+  const catSelect = document.getElementById('pCategory');
+  catSelect.innerHTML = '<option value="">هەڵبژێرە...</option>' +
+    (CACHE.categories||[]).map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
 
   if(id) {
     const p = DB.get('products').find(x=>x.id===id);
@@ -4022,18 +4028,15 @@ function openProductModal(id) {
       document.getElementById('pImageRemoveBtn').style.display = 'none';
     }
   } else {
-    ['pName','pBrand','pModel','pBuyPrice','pSellPrice','pQty','pNotes','pBarcode'].forEach(id=>document.getElementById(id).value='');
+    ['pName','pBrand','pModel','pBuyPrice','pSellPrice','pQty','pNotes','pBarcode'].forEach(fid=>document.getElementById(fid).value='');
     document.getElementById('pCategory').value='';
     document.getElementById('pImagePreview').innerHTML = '<i class="ti ti-photo" style="font-size:24px;color:var(--text3)"></i>';
     document.getElementById('pImageRemoveBtn').style.display = 'none';
   }
 
-  const catSelect = document.getElementById('pCategory');
-  catSelect.innerHTML = '<option value="">هەڵبژێرە...</option>' +
-    (CACHE.categories||[]).map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
-
   openModal('productModal');
 }
+
 
 
 function editProduct(id) { openProductModal(id); }
@@ -4099,6 +4102,25 @@ async function deleteProduct(id) {
 	toast('کێشە لە سڕینەوە: ' + (err.message||err), 'error');
   }
 }
+
+function duplicateProduct(id) {
+  const p = DB.get('products').find(x=>x.id===id);
+  if(!p) return;
+
+  openProductModal(); // وەک کاڵای نوێ دەکرێتەوە (editProductId = null)
+
+  document.getElementById('productModalTitle').textContent = 'کاڵای نوێ (کۆپی)';
+  document.getElementById('pName').value = p.name;
+  document.getElementById('pBrand').value = p.brand;
+  document.getElementById('pModel').value = p.model || '';
+  document.getElementById('pCategory').value = p.category;
+  document.getElementById('pBuyPrice').value = p.buyPrice;
+  document.getElementById('pSellPrice').value = p.sellPrice;
+  document.getElementById('pQty').value = p.qty;
+  document.getElementById('pNotes').value = p.notes || '';
+  // بارکۆد و وێنە کۆپی ناکرێن — کاڵای نوێیە و پێویستی بە بارکۆدی جیاوازە
+}
+
 
 // ══════════════════════════════════════════
 //  SALES
