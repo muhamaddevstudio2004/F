@@ -4020,7 +4020,8 @@ function renderProducts() {
     const low = p.qty<=5;
     return `<tr>
       <td data-label="#" class="td-muted">${i+1}</td>
-<td data-label="وێنە">${p.imageUrl ? `<img src="${p.imageUrl}" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${p.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
+<td data-label="وێنە">${r.imageUrl ? `<img src="${r.imageUrl}" loading="lazy" decoding="async" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${r.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
+
       <td data-label="ناوی کاڵا"><div style="font-weight:600">${p.name}</div>
       <div class="td-muted" style="font-size:11.5px">${p.model||''}</div></td>
       <td data-label="براند" class="td-muted">${p.brand}</td>
@@ -4532,7 +4533,7 @@ function renderRepairs() {
   const body = document.getElementById('repairBody');
 
 body.innerHTML = sorted.length ? sorted.map((r,i)=>`<tr>
-<td data-label="وێنە">${r.imageUrl ? `<img src="${r.imageUrl}" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${r.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
+<td data-label="وێنە">${r.imageUrl ? `<img src="${r.imageUrl}" loading="lazy" decoding="async" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${r.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
   <td data-label="#" class="td-muted">${i+1}</td>
   <td data-label="کڕیار"><b>${r.customerName}</b></td>
   <td data-label="ژمارە" class="td-muted">${r.phone}</td>
