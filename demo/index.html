@@ -5689,14 +5689,11 @@ function showFullscreenImage(url) {
   openModal('imageFullscreenModal');
 }
 
-// یەکەم کلیک لەسەر پەڕەکە، فوول سکرین دەکاتەوە// یەکەم کلیک لەسەر هەر شوێنێکی پەڕەکە (بەشمول دوگمەکان)، فوول سکرین دەکاتەوە
-let fullscreenTried = false;
-document.addEventListener('click', function() {
-  if(!fullscreenTried && !document.fullscreenElement) {
-    fullscreenTried = true;
+// یەکەم کلیک لەسەر پەڕەکە، فوول سکرین دەکاتەوە// یەکەم کلیک لەسەر هەر شوێنێکی پەڕەکە (بەشمول دوگمەکان)، فوول سکرین دەکاتەوەdocument.addEventListener('click', function() {
+  if(!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch(()=>{});
   }
-}, true); // ✅ true بۆ capture phase — دەگرێت پێش ئەوەی click handler-ی دوگمە کار بکات
+}, true);
 
 
 
