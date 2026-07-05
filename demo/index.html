@@ -1827,6 +1827,19 @@ kbd {
   </div>
 </div>
 
+<div class="form-row">
+  <div class="form-group">
+    <label>قەبارەی وێنە لە خشتەکان</label>
+    <select class="form-control" id="setImageSize">
+      <option value="32">بچووک (32px)</option>
+      <option value="40">مامناوەند (40px)</option>
+      <option value="56">گەورە (56px)</option>
+      <option value="72">گەورەتر (72px)</option>
+    </select>
+  </div>
+</div>
+
+
         <div style="margin-top:16px">
           <button class="btn btn-primary" id="saveDesignBtn" onclick="saveDesignSettings()"><i class="ti ti-check"></i> پاشەکەوتکردن</button>
         </div>
@@ -2524,8 +2537,8 @@ kbd {
       <i class="ti ti-photo" style="font-size:24px;color:var(--text3)"></i>
     </div>
     <div style="display:flex;flex-direction:column;gap:6px;flex:1">
-      <input type="file" id="pImageFile" accept="image/*" capture="environment" style="display:none" onchange="handleImageSelect(event,'product')">
-      <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('pImageFile').click()">
+      <input type="file" id="pImageFile" accept="image/*" style="display:none" onchange="handleImageSelect(event,'product')">
+       <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('pImageFile').click()">
         <i class="ti ti-camera"></i> کامێرا / گەلری
       </button>
       <button class="btn btn-ghost btn-sm" type="button" onclick="removeSelectedImage('product')" id="pImageRemoveBtn" style="display:none">
@@ -2633,8 +2646,8 @@ kbd {
       <i class="ti ti-photo" style="font-size:24px;color:var(--text3)"></i>
     </div>
     <div style="display:flex;flex-direction:column;gap:6px;flex:1">
-      <input type="file" id="rImageFile" accept="image/*" capture="environment" style="display:none" onchange="handleImageSelect(event,'repair')">
-      <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('rImageFile').click()">
+     <input type="file" id="rImageFile" accept="image/*" style="display:none" onchange="handleImageSelect(event,'repair')">
+       <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('rImageFile').click()">
         <i class="ti ti-camera"></i> کامێرا / گەلری
       </button>
       <button class="btn btn-ghost btn-sm" type="button" onclick="removeSelectedImage('repair')" id="rImageRemoveBtn" style="display:none">
@@ -2845,6 +2858,11 @@ kbd {
       </div>
     </div>
   </div>
+</div>
+
+<!-- IMAGE FULLSCREEN MODAL -->
+<div class="modal-overlay" id="imageFullscreenModal" onclick="closeModal('imageFullscreenModal')" style="background:rgba(0,0,0,0.9)">
+  <img id="fullscreenImg" src="" style="max-width:95%;max-height:95vh;border-radius:8px;object-fit:contain">
 </div>
 
 
@@ -3475,6 +3493,7 @@ function renderSettings() {
   document.getElementById('setStoreName').value = SETTINGS.store_name || '';
   document.getElementById('setStorePhone').value = SETTINGS.store_phone || '';
   document.getElementById('setStoreAddress').value = SETTINGS.store_address || '';
+  document.getElementById('setImageSize').value = SETTINGS.image_size || 40;
   document.getElementById('setPrimaryColor').value = SETTINGS.primary_color || '#6C63FF';
   document.getElementById('setThemeMode').value = SETTINGS.theme_mode || 'dark';
   document.getElementById('oldAppPin').value = '';
@@ -3645,19 +3664,23 @@ async function saveDesignSettings() {
   const font_size = document.getElementById('setFontSize').value;
   const density = document.getElementById('setDensity').value;
   const bg_pattern = document.getElementById('setBgPattern').value;
+  const image_size = parseInt(document.getElementById('setImageSize').value) || 40;
   const btn = document.getElementById('saveDesignBtn');
   btn.disabled = true;
   try {
  const bg_color = document.getElementById('setBgColor').value;
 const { error } = await sb.from('settings').update({
-  primary_color, secondary_color, theme_mode, font_size, density, bg_pattern, bg_color
+  primary_color, secondary_color, theme_mode, font_size, density, bg_pattern, bg_color, image_size
 }).eq('id',1);
 
-    if(error) throw error;
-    await loadAllData();
-    applyDesignSettings();
-    renderDashboard();
-    toast('ڕێکخستنی دیزاین پاشەکەوتکرا','success');
+
+if(error) throw error;
+await loadAllData();
+applyDesignSettings();
+renderDashboard();
+renderInventory();   // ✅ ئەمە زیاد بکە
+renderRepairs();     // ✅ ئەمە زیاد بکە
+toast('ڕێکخستنی دیزاین پاشەکەوتکرا','success');
   } catch(err) {
     toast('کێشە ڕوویدا: '+(err.message||err),'error');
   } finally { btn.disabled=false; }
@@ -3949,7 +3972,7 @@ function renderProducts() {
     const low = p.qty<=5;
     return `<tr>
       <td data-label="#" class="td-muted">${i+1}</td>
-          <td data-label="وێنە">${p.imageUrl ? `<img src="${p.imageUrl}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
+<td data-label="وێنە">${p.imageUrl ? `<img src="${p.imageUrl}" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${p.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
       <td data-label="ناوی کاڵا"><div style="font-weight:600">${p.name}</div>
       <div class="td-muted" style="font-size:11.5px">${p.model||''}</div></td>
       <td data-label="براند" class="td-muted">${p.brand}</td>
@@ -4336,7 +4359,7 @@ function renderRepairs() {
   const body = document.getElementById('repairBody');
 
 body.innerHTML = sorted.length ? sorted.map((r,i)=>`<tr>
-    <td data-label="وێنە">${r.imageUrl ? `<img src="${r.imageUrl}" style="width:40px;height:40px;border-radius:8px;object-fit:cover">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
+<td data-label="وێنە">${r.imageUrl ? `<img src="${r.imageUrl}" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${r.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
   <td data-label="#" class="td-muted">${i+1}</td>
   <td data-label="کڕیار"><b>${r.customerName}</b></td>
   <td data-label="ژمارە" class="td-muted">${r.phone}</td>
@@ -5658,6 +5681,11 @@ async function uploadImageToSupabase(file, folder) {
   return data.publicUrl;
 }
 
+function showFullscreenImage(url) {
+  if(!url) return;
+  document.getElementById('fullscreenImg').src = url;
+  openModal('imageFullscreenModal');
+}
 
 init();
 </script>
