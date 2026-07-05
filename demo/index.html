@@ -3818,6 +3818,31 @@ function renderDashboard() {
   const lowStock = products.filter(p=>p.qty<=5).length;
   const totalPendingDebt = DB.get('debts').filter(d=>d.status==='pending').reduce((a,d)=>a+debtRemaining(d),0);
 
+  // بەراوردی مانگی ڕابردوو
+const now = new Date();
+const lastMonthDate = new Date(now.getFullYear(), now.getMonth()-1, 1);
+const lastMonthSales = activeSales.filter(s=>{
+  const d = new Date(s.createdAt);
+  return d.getMonth()===lastMonthDate.getMonth() && d.getFullYear()===lastMonthDate.getFullYear();
+});
+const lastMonthTotal = lastMonthSales.reduce((a,s)=>a+s.total,0);
+const lastMonthProfit = lastMonthSales.reduce((a,s)=>a+(s.profit||0),0);
+const curMonthTotal = monthSales.reduce((a,s)=>a+s.total,0);
+
+function calcPct(cur, prev) {
+  if(prev === 0) return cur > 0 ? 100 : 0;
+  return Math.round(((cur - prev) / prev) * 100);
+}
+const salesPct = calcPct(curMonthTotal, lastMonthTotal);
+const profitPct = calcPct(monthProfit, lastMonthProfit);
+function trendBadge(pct) {
+  if(pct === 0) return '';
+  const up = pct > 0;
+  return `<span style="font-size:10.5px;font-weight:700;color:${up?'var(--success)':'var(--danger)'};margin-right:6px">
+    <i class="ti ti-trending-${up?'up':'down'}"></i> ${up?'+':''}${pct}%
+  </span>`;
+}
+
   // ✅ ئەمانە بردرانە ئێرە — پێش innerHTML
   const monthExpenses = (CACHE.expenses||[])
     .filter(e=>isInPeriod(e.createdAt,'month'))
@@ -3831,18 +3856,18 @@ function renderDashboard() {
 	  <div class="stat-label">کۆی کاڵاکان</div>
 	  <div class="stat-sub">کۆی حەدەد: ${fmtN(totalStock)}</div>
 	</div>
-	<div class="stat-card green">
-	  <div class="stat-icon"><i class="ti ti-cash"></i></div>
-	  <div class="stat-value text-mono">${fmtN(monthSales.reduce((a,s)=>a+s.total,0))}</div>
-	  <div class="stat-label">فرۆشتنی مانگانە</div>
+<div class="stat-card green">
+  <div class="stat-icon"><i class="ti ti-cash"></i></div>
+  <div class="stat-value text-mono">${fmtN(monthSales.reduce((a,s)=>a+s.total,0))} ${trendBadge(salesPct)}</div>
+  <div class="stat-label">فرۆشتنی مانگانە</div>
 <div class="stat-sub">ئەمڕۆ: ${fmt(todaySales.reduce((a,s)=>a+s.total,0))}</div>
-	</div>
-	<div class="stat-card blue">
-	  <div class="stat-icon"><i class="ti ti-trending-up"></i></div>
-	  <div class="stat-value text-mono">${fmtN(totalProfit)}</div>
-	  <div class="stat-label">کۆی قازانج</div>
-<div class="stat-sub">ئەم مانگە: ${fmt(monthProfit)}</div>
-	</div>
+</div>
+<div class="stat-card blue">
+  <div class="stat-icon"><i class="ti ti-trending-up"></i></div>
+  <div class="stat-value text-mono">${fmtN(totalProfit)}</div>
+  <div class="stat-label">کۆی قازانج</div>
+<div class="stat-sub">ئەم مانگە: ${fmt(monthProfit)} ${trendBadge(profitPct)}</div>
+</div>
 	<div class="stat-card yellow">
 	  <div class="stat-icon"><i class="ti ti-tool"></i></div>
 	  <div class="stat-value text-mono">${pendingRepairs}</div>
@@ -3866,6 +3891,7 @@ function renderDashboard() {
 	  <div class="stat-label">قازانجی ڕاستەقینە</div>
 	  <div class="stat-sub">قازانج - خەرجی</div>
 	</div>
+  
 	<div class="stat-card red">
 	  <div class="stat-icon"><i class="ti ti-credit-card"></i></div>
 	  <div class="stat-value text-mono" style="font-size:20px">${fmtN(totalPendingDebt)}</div>
@@ -4143,6 +4169,70 @@ async function deleteProduct(id) {
 	console.error(err);
 	toast('کێشە لە سڕینەوە: ' + (err.message||err), 'error');
   }
+}
+
+let eodSummaryText = '';
+
+function showEndOfDaySummary() {
+  const sales = DB.get('sales').filter(s=>!s.returned && isInPeriod(s.createdAt,'today'));
+  const repairs = DB.get('repairs').filter(r=>isInPeriod(r.createdAt,'today'));
+  const completedRepairs = repairs.filter(r=>r.status==='completed'||r.status==='delivered');
+  const expenses = (CACHE.expenses||[]).filter(e=>isInPeriod(e.createdAt,'today'));
+
+  const totalSales = sales.reduce((a,s)=>a+s.total,0);
+  const totalProfit = sales.reduce((a,s)=>a+(s.profit||0),0);
+  const repairRevenue = completedRepairs.reduce((a,r)=>a+(r.cost||0),0);
+  const totalExpenses = expenses.reduce((a,e)=>a+e.amount,0);
+  const netProfit = totalProfit + repairRevenue - totalExpenses;
+
+  const dateLabel = new Date().toLocaleDateString('ku',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const store = SETTINGS.store_name || 'Mobile Store';
+
+  document.getElementById('eodBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:13px;color:var(--text2)">${dateLabel}</div>
+      <div style="font-size:16px;font-weight:700;margin-top:4px">${store}</div>
+    </div>
+    <div style="display:grid;gap:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--card);border-radius:10px">
+        <span style="display:flex;align-items:center;gap:8px"><i class="ti ti-shopping-cart" style="color:var(--primary);font-size:18px"></i> کۆی فرۆشتن</span>
+        <b class="text-mono color-primary">${fmt(totalSales)}</b>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--card);border-radius:10px">
+        <span style="display:flex;align-items:center;gap:8px"><i class="ti ti-trending-up" style="color:var(--success);font-size:18px"></i> قازانجی فرۆشتن</span>
+        <b class="text-mono color-green">${fmt(totalProfit)}</b>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--card);border-radius:10px">
+        <span style="display:flex;align-items:center;gap:8px"><i class="ti ti-tool" style="color:var(--warning);font-size:18px"></i> چاکسازی تەواوبوو</span>
+        <b class="text-mono">${completedRepairs.length} دانە (${fmt(repairRevenue)})</b>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--card);border-radius:10px">
+        <span style="display:flex;align-items:center;gap:8px"><i class="ti ti-wallet" style="color:var(--danger);font-size:18px"></i> خەرجی ڕۆژانە</span>
+        <b class="text-mono color-red">${fmt(totalExpenses)}</b>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--primary-light);border-radius:10px;margin-top:6px">
+        <span style="font-weight:700;display:flex;align-items:center;gap:8px"><i class="ti ti-report-money" style="color:var(--primary);font-size:20px"></i> قازانجی ڕاستەقینەی ڕۆژ</span>
+        <b class="text-mono" style="font-size:16px;color:var(--primary)">${fmt(netProfit)}</b>
+      </div>
+    </div>`;
+
+  eodSummaryText = 
+`📊 کورتەی ڕۆژی ${dateLabel}
+🏪 ${store}
+
+🛒 کۆی فرۆشتن: ${fmtN(totalSales)} د.ع
+📈 قازانجی فرۆشتن: ${fmtN(totalProfit)} د.ع
+🔧 چاکسازی تەواوبوو: ${completedRepairs.length} دانە (${fmtN(repairRevenue)} د.ع)
+💸 خەرجی ڕۆژانە: ${fmtN(totalExpenses)} د.ع
+
+💰 قازانجی ڕاستەقینە: ${fmtN(netProfit)} د.ع`;
+
+  openModal('eodModal');
+}
+
+function shareEodWhatsapp() {
+  const url = `https://wa.me/?text=${encodeURIComponent(eodSummaryText)}`;
+  window.open(url, '_blank');
 }
 
 function duplicateProduct(id) {
