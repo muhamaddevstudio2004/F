@@ -1389,12 +1389,16 @@ kbd {
 
 	<!-- ═══════════════════════ DASHBOARD ═══════════════════════ -->
 	<div class="page active" id="page-dashboard">
-	  <div class="page-title">
-		<div>
-		  <h2>داشبۆرد</h2>
-		  <p id="dashDate"></p>
-		</div>
-	  </div>
+	 <div class="page-title">
+  <div>
+    <h2>داشبۆرد</h2>
+    <p id="dashDate"></p>
+  </div>
+  <button class="btn btn-primary" onclick="showEndOfDaySummary()">
+    <i class="ti ti-file-report"></i> کورتەی ڕۆژ
+  </button>
+</div>
+
 
 	  <!-- STATS -->
 	  <div class="stats-grid" id="dashStats"></div>
@@ -2160,6 +2164,22 @@ kbd {
   </div>
 </div>
 
+<!-- END OF DAY MODAL -->
+<div class="modal-overlay" id="eodModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h3><i class="ti ti-file-report" style="color:var(--primary)"></i> کورتەی ڕۆژ</h3>
+      <button class="modal-close" onclick="closeModal('eodModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="eodBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('eodModal')">داخستن</button>
+      <button class="btn btn-success" onclick="shareEodWhatsapp()"><i class="ti ti-brand-whatsapp"></i> ناردن بۆ WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- HELP MODAL -->
 <div class="modal-overlay" id="helpModal">
   <div class="modal" style="max-width:680px">
@@ -2491,7 +2511,7 @@ kbd {
 		<div class="form-row">
 		  <div class="form-group">
 			<label>ناوی کاڵا *</label>
-			<input class="form-control" id="pName" placeholder="iPhone 15 Pro">
+<input class="form-control" id="pName" placeholder="iPhone 15 Pro" oninput="suggestProductInfo(this.value)">
 		  </div>
 		  <div class="form-group">
 			<label>براند *</label>
@@ -4037,6 +4057,28 @@ function openProductModal(id) {
   openModal('productModal');
 }
 
+function suggestProductInfo(name) {
+  name = name.trim().toLowerCase();
+  if(name.length < 3) return; // پێویستە بەلایەنی کەم ٣ پیت بنووسرێت
+
+  // تەنها لە کاتی زیادکردنی کاڵای نوێ کاردەکات (نەک edit)
+  if(editProductId) return;
+
+  const products = CACHE.products || [];
+  // گەڕان بۆ کاڵایەک کە ناوی یەکسان یان نزیکە
+  const match = products.find(p => {
+    const pname = p.name.toLowerCase();
+    return pname.includes(name) || name.includes(pname.split(' ')[0]);
+  });
+
+  if(match) {
+    const brandField = document.getElementById('pBrand');
+    const catField = document.getElementById('pCategory');
+    // تەنها پڕی بکەرەوە ئەگەر بەتاڵ بێت (نەک زۆرداری بکات)
+    if(!brandField.value.trim()) brandField.value = match.brand;
+    if(!catField.value) catField.value = match.category;
+  }
+}
 
 
 function editProduct(id) { openProductModal(id); }
