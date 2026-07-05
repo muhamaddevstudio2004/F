@@ -5689,11 +5689,16 @@ function showFullscreenImage(url) {
   openModal('imageFullscreenModal');
 }
 
-// یەکەم کلیک لەسەر پەڕەکە، فوول سکرین دەکاتەوە// یەکەم کلیک لەسەر هەر شوێنێکی پەڕەکە (بەشمول دوگمەکان)، فوول سکرین دەکاتەوەdocument.addEventListener('click', function() {
-  if(!document.fullscreenElement) {
+
+let fullscreenTried = false;
+document.addEventListener('click', function() {
+  if(!fullscreenTried && !document.fullscreenElement) {
+    fullscreenTried = true;
     document.documentElement.requestFullscreen().catch(()=>{});
   }
 }, true);
+
+
 
 
 
