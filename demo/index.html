@@ -4386,74 +4386,91 @@ product_model: item.model||'',
       created_at: new Date().toISOString()
     }));
 
-    if(isOnline) {
-      // ئۆنلاین — مەستەقیم بنێرە Supabase
-      const { error: saleErr } = await sb.from('sales').insert(
-        saleRows.map(r => ({
-          id: r.id, product_id: r.product_id, product_name: r.product_name,
-          unit_price: r.unit_price, qty: r.qty, total: r.total,
-          profit: r.profit, returned: false
-        }))
-      );
-      if(saleErr) throw saleErr;
+if(isOnline) {
+  const { error: saleErr } = await sb.from('sales').insert(
+    saleRows.map(r => ({
+      id: r.id, product_id: r.product_id, product_name: r.product_name,
+      unit_price: r.unit_price, qty: r.qty, total: r.total,
+      profit: r.profit, returned: false
+    }))
+  );
+  if(saleErr) throw saleErr;
 
-      for(const item of saleCart) {
-        const p = DB.get('products').find(x=>x.id===item.id);
-        const newQty = Math.max(0, (p?p.qty:0) - item.qty);
-        const { error: qtyErr } = await sb.from('products').update({ qty: newQty }).eq('id', item.id);
-        if(qtyErr) throw qtyErr;
-      }
-    } else {
-      // ئۆفلاین — پاشەکەوت بکە IDB و sync queue
-      await idbPutAll('sales', saleRows);
+  // ✅ بە یەکجار (parallel) نەک یەک لەدوای یەک
+  await Promise.all(saleCart.map(item => {
+    const p = DB.get('products').find(x=>x.id===item.id);
+    const newQty = Math.max(0, (p?p.qty:0) - item.qty);
+    return sb.from('products').update({ qty: newQty }).eq('id', item.id);
+  }));
 
-      for(const item of saleCart) {
-        const p = DB.get('products').find(x=>x.id===item.id);
-        if(p) {
-          const newQty = Math.max(0, p.qty - item.qty);
-          const updated = { ...p, qty: newQty };
-          await idbPut('products', updated);
-          CACHE.products = CACHE.products.map(x => x.id===p.id ? updated : x);
-        }
-      }
+  // ✅ نوێکردنەوەی cache خۆماڵی — بەبێ loadAllData
+  CACHE.sales = [...saleRows.map(r=>({
+    id:r.id, productId:r.product_id, productName:r.product_name,
+    unitPrice:r.unit_price, qty:r.qty, total:r.total, profit:r.profit,
+    returned:false, createdAt:r.createdAt
+  })), ...CACHE.sales];
 
-      // زیادکردن بە sync queue
-      for(const row of saleRows) {
-        await addToSyncQueue({ type:'insert', table:'sales', data: {
-          id: row.id, product_id: row.product_id, product_name: row.product_name,
-          unit_price: row.unit_price, qty: row.qty, total: row.total,
-          profit: row.profit, returned: false
-        }});
-      }
-      for(const item of saleCart) {
-        const p = DB.get('products').find(x=>x.id===item.id);
-        if(p) {
-          await addToSyncQueue({ type:'update', table:'products',
-            id: item.id, data: { qty: Math.max(0, p.qty - item.qty) }
-          });
-        }
-      }
+  saleCart.forEach(item=>{
+    const p = CACHE.products.find(x=>x.id===item.id);
+    if(p) p.qty = Math.max(0, p.qty - item.qty);
+  });
 
-      // نوێکردنەوەی cache
-      CACHE.sales = [...saleRows, ...CACHE.sales];
-      toast('ئۆفلاین — فرۆشتن پاشەکەوتکرا، sync دەکرێت کاتێک ئینتەرنێت بگەڕێتەوە', 'info');
-      closeModal('saleModal'); saleCart=[];
-      renderSales(); buildNotifications();
-      btn.disabled = false;
-      return;
+  // sync بۆ IDB لە پشتەوە (بێ چاوەڕوانی)
+  idbPutAll('sales', CACHE.sales.slice(0, saleRows.length));
+  idbPutAll('products', CACHE.products);
+
+} else {
+  // ئۆفلاین — پاشەکەوت بکە IDB و sync queue
+  await idbPutAll('sales', saleRows);
+
+  for(const item of saleCart) {
+    const p = DB.get('products').find(x=>x.id===item.id);
+    if(p) {
+      const newQty = Math.max(0, p.qty - item.qty);
+      const updated = { ...p, qty: newQty };
+      await idbPut('products', updated);
+      CACHE.products = CACHE.products.map(x => x.id===p.id ? updated : x);
     }
+  }
 
-    const totalSold = saleCart.reduce((a,i)=>a+i.unitPrice*i.qty,0);
-    await loadAllData();
-    toast(`فرۆشتن تۆمارکرا — کۆی: ${fmt(totalSold)}`,'success');
-closeModal('saleModal');
+  for(const row of saleRows) {
+    await addToSyncQueue({ type:'insert', table:'sales', data: {
+      id: row.id, product_id: row.product_id, product_name: row.product_name,
+      unit_price: row.unit_price, qty: row.qty, total: row.total,
+      profit: row.profit, returned: false
+    }});
+  }
+  for(const item of saleCart) {
+    const p = DB.get('products').find(x=>x.id===item.id);
+    if(p) {
+      await addToSyncQueue({ type:'update', table:'products',
+        id: item.id, data: { qty: Math.max(0, p.qty - item.qty) }
+      });
+    }
+  }
+
+  CACHE.sales = [...saleRows, ...CACHE.sales];
+  toast('ئۆفلاین — فرۆشتن پاشەکەوتکرا، sync دەکرێت کاتێک ئینتەرنێت بگەڕێتەوە', 'info');
+  saleCart=[];
+  renderSaleProducts(); renderSaleCart();
+  btn.disabled = false;
+  return;
+}
+
+
+const totalSold = saleCart.reduce((a,i)=>a+i.unitPrice*i.qty,0);
+toast(`فرۆشتن تۆمارکرا — کۆی: ${fmt(totalSold)}`,'success');
+
 if(SETTINGS.auto_print) {
   printReceipt(saleRows, totalSold);
 }
 
-
 saleCart=[];
-renderSales(); buildNotifications();
+renderSaleProducts();   // ✅ لیستی کاڵا نوێ دەکاتەوە (بڕی نوێ نیشان دەدات)
+renderSaleCart();       // ✅ سەبەتەکە بەتاڵ دەکاتەوە
+renderSales();
+buildNotifications();
+// ❌ closeModal('saleModal') لابراوە — مۆدەڵ کراوە دەمێنێتەوە
 
   } catch(err) {
     console.error(err);
