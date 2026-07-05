@@ -5689,18 +5689,14 @@ function showFullscreenImage(url) {
   openModal('imageFullscreenModal');
 }
 
-
-let fullscreenTried = false;
-document.addEventListener('click', function() {
-  if(!fullscreenTried && !document.fullscreenElement) {
-    fullscreenTried = true;
+document.addEventListener('click', function(e) {
+  // ئەگەر هێشتا قوفڵەکە کراوەیە (پینکۆد داخل نەکراوە)، هیچ مەکە
+  if(document.getElementById('lockOverlay').style.display !== 'none') return;
+  
+  if(!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch(()=>{});
   }
 }, true);
-
-
-
-
 
 init();
 </script>
