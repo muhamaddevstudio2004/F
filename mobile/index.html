@@ -1353,14 +1353,14 @@ kbd {
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
+<div class="sidebar-logo">
 	<div class="sidebar-logo-icon"><i class="ti ti-device-mobile"></i></div>
 	<div class="sidebar-logo-text">
 <h1 id="sidebarStoreName">Mobile Store</h1>
-
-	  <p>سیستەمی بەڕێوەبردن</p>
+	  <p id="sidebarUserLabel"></p>
 	</div>
   </div>
+
   <nav class="sidebar-nav">
 	<div class="nav-section">
 	  <div class="nav-item active" data-page="dashboard" onclick="navigate(this)">
@@ -1406,7 +1406,6 @@ kbd {
   </nav>
 
 <div class="sidebar-footer" style="flex-direction:column;gap:10px;align-items:stretch">
-  <div id="currentUserLabel" style="text-align:center;font-size:12.5px;font-weight:600;color:var(--text)"></div>
   <div class="flex items-center" style="justify-content:center">
     <span class="conn-status loading" id="connStatus"><span class="conn-dot"></span> پەیوەندی...</span>
   </div>
@@ -1417,8 +1416,6 @@ kbd {
     <i class="ti ti-logout"></i> دەرچوون
   </button>
 </div>
-
-
 
   </div>
 </div>
