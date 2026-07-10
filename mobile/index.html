@@ -5478,11 +5478,11 @@ async function checkPin(val) {
   if(user) {
     currentUser = { id: user.id, name: user.name, role: user.role, permissions: user.permissions || {} };
     sessionStorage.setItem('ms_current_user', JSON.stringify(currentUser));
-    //console.log('چوونەژوورەوە کرا وەک:', currentUser);
-alert(JSON.stringify(currentUser));  // ← 
-    document.getElementById('lockOverlay').style.display = 'none';
-    document.documentElement.requestFullscreen().catch(()=>{});
-    applyRolePermissions();
+    console.log('چوونەژوورەوە کرا وەک:', currentUser);
+document.getElementById('lockOverlay').style.display = 'none';
+applyRolePermissions();
+try { document.documentElement.requestFullscreen().catch(()=>{}); } catch(e) {}
+
   } else {
     document.getElementById('pinError').textContent = 'پینکۆد هەڵەیە';
     document.getElementById('pinInput').value = '';
