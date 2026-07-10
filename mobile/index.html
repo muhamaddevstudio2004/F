@@ -3186,9 +3186,10 @@ function setConnStatus(state) {
 
 // Map DB row (snake_case) <-> App object (camelCase)
 function productFromDb(r) { return { id: r.id, name: r.name, brand: r.brand, model: r.model, category: r.category, buyPrice: Number(r.buy_price), sellPrice: Number(r.sell_price), qty: r.qty, notes: r.notes, barcode: r.barcode || null, imageUrl: r.image_url || null, createdAt: r.created_at }; }
-function saleFromDb(r) { return { id: r.id, productId: r.product_id, productName: r.product_name, unitPrice: Number(r.unit_price), qty: r.qty, total: Number(r.total), profit: Number(r.profit), returned: r.returned||false, returnedAt: r.returned_at, createdAt: r.created_at }; }
-function debtFromDb(r) { return { id: r.id, customerName: r.customer_name, phone: r.phone, amount: Number(r.amount), paidAmount: Number(r.paid_amount), source: r.source, notes: r.notes, dueDate: r.due_date, status: r.status, createdAt: r.created_at }; }
-function repairFromDb(r) { return { id: r.id, customerName: r.customer_name, phone: r.phone, device: r.device, deviceType: r.device_type, problem: r.problem, cost: Number(r.cost), status: r.status, notes: r.notes, imageUrl: r.image_url || null, createdAt: r.created_at }; }
+function saleFromDb(r) { return { id: r.id, productId: r.product_id, productName: r.product_name, unitPrice: Number(r.unit_price), qty: r.qty, total: Number(r.total), profit: Number(r.profit), returned: r.returned||false, returnedAt: r.returned_at, createdAt: r.created_at, createdBy: r.created_by }; }
+function debtFromDb(r) { return { id: r.id, customerName: r.customer_name, phone: r.phone, amount: Number(r.amount), paidAmount: Number(r.paid_amount), source: r.source, notes: r.notes, dueDate: r.due_date, status: r.status, createdAt: r.created_at, createdBy: r.created_by }; }
+function repairFromDb(r) { return { id: r.id, customerName: r.customer_name, phone: r.phone, device: r.device, deviceType: r.device_type, problem: r.problem, cost: Number(r.cost), status: r.status, notes: r.notes, imageUrl: r.image_url || null, createdAt: r.created_at, createdBy: r.created_by }; }
+
 
 async function loadAllData() {
   setConnStatus('loading');
@@ -3242,12 +3243,14 @@ const [pRes, sRes, rRes, dRes, plRes, stRes, exRes, catRes, usrRes] = await Prom
     CACHE.debts = (dRes.data || []).map(debtFromDb);
     CACHE.plans = (plRes.data || []).map(r => ({
       id: r.id, title: r.title, content: r.content,
-      status: r.status, createdAt: r.created_at
+      status: r.status, createdAt: r.created_at, createdBy: r.created_by
     }));
-    CACHE.expenses = (exRes.data || []).map(r => ({
+
+CACHE.expenses = (exRes.data || []).map(r => ({
   id: r.id, title: r.title, amount: Number(r.amount),
-  category: r.category, note: r.note, createdAt: r.created_at
+  category: r.category, note: r.note, createdAt: r.created_at, createdBy: r.created_by
 }));
+
 
     CACHE.settings = stRes.data || SETTINGS;
     SETTINGS = CACHE.settings;
@@ -3537,11 +3540,12 @@ async function savePlan() {
       const { error } = await sb.from('plans').update({ title, content }).eq('id', editPlanId);
       if(error) throw error;
       toast('پلانەکە نوێ کرایەوە','success');
-    } else {
-      const { error } = await sb.from('plans').insert({ title, content, status:'active' });
+   } else {
+      const { error } = await sb.from('plans').insert({ title, content, status:'active', created_by: currentUser?.name || null });
       if(error) throw error;
       toast('پلانی نوێ زیادکرا','success');
     }
+
     await loadAllData();
     closeModal('planModal'); renderPlans();
   } catch(err) {
@@ -4560,6 +4564,7 @@ function renderSales() {
   <td data-label="نرخی یەکە" class="text-mono td-muted">${fmt(s.unitPrice)}</td>
   <td data-label="کۆی نرخ" class="text-mono fw-700 color-primary">${fmt(s.total)}</td>
   <td data-label="قازانج" class="text-mono color-green">${fmt(s.profit)}</td>
+  <td data-label="کارمەند" class="td-muted">${s.createdBy||'—'}</td>
   <td data-label="بەروار" class="td-muted">${dateStr(s.createdAt)}</td>
 <td data-label="کردار">
   <div style="display:flex;gap:6px">
@@ -4667,13 +4672,14 @@ product_model: item.model||'',
     }));
 
 if(isOnline) {
-  const { error: saleErr } = await sb.from('sales').insert(
+ const { error: saleErr } = await sb.from('sales').insert(
     saleRows.map(r => ({
       id: r.id, product_id: r.product_id, product_name: r.product_name,
       unit_price: r.unit_price, qty: r.qty, total: r.total,
-      profit: r.profit, returned: false
+      profit: r.profit, returned: false, created_by: currentUser?.name || null
     }))
   );
+
   if(saleErr) throw saleErr;
 
   // ✅ بە یەکجار (parallel) نەک یەک لەدوای یەک
@@ -4867,16 +4873,17 @@ if(selectedImageFile.repair) {
 	status: document.getElementById('rStatus').value, notes: document.getElementById('rNotes').value,
   image_url
   };
-  try {
+try {
 	if(editRepairId) {
 	  const { error } = await sb.from('repairs').update(data).eq('id', editRepairId);
 	  if(error) throw error;
 	  toast('چاکسازیەکە نوێ کرایەوە','success');
 	} else {
-	  const { error } = await sb.from('repairs').insert(data);
+	  const { error } = await sb.from('repairs').insert({...data, created_by: currentUser?.name || null});
 	  if(error) throw error;
 	  toast('چاکسازی نوێ زیادکرا','success');
 	}
+
 	await loadAllData();
 	closeModal('repairModal'); renderRepairs(); buildNotifications();
   } catch(err) {
@@ -5026,8 +5033,9 @@ async function saveDebt() {
 	  customer_name: name, phone, amount, paid_amount: 0,
 	  source: 'other', notes: document.getElementById('dNotes').value,
 	  due_date: document.getElementById('dDueDate').value || null,
-	  status: 'pending'
+	  status: 'pending', created_by: currentUser?.name || null
 	});
+
 	if(error) throw error;
 	toast('قەرزی نوێ زیادکرا','success');
 	await loadAllData();
@@ -5497,12 +5505,13 @@ async function saveExpense() {
         .eq('id', editExpenseId);
       if(error) throw error;
       toast('خەرجییەکە نوێ کرایەوە','success');
-    } else {
+} else {
       const { error } = await sb.from('expenses')
-        .insert({ title, amount, category, note });
+        .insert({ title, amount, category, note, created_by: currentUser?.name || null });
       if(error) throw error;
       toast('خەرجی نوێ زیادکرا','success');
     }
+
     await loadAllData();
     closeModal('expenseModal');
     renderExpenses();
