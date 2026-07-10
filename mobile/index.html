@@ -5509,8 +5509,16 @@ function applyRolePermissions() {
     if(nav) nav.style.display = can(sec,'view') ? '' : 'none';
   });
 
-  const label = document.getElementById('currentUserLabel');
-  if(label) label.textContent = currentUser ? ('👤 ' + currentUser.name) : '';
+const label = document.getElementById('currentUserLabel');
+if(label) {
+  if(currentUser) {
+    const icon = currentUser.role === 'admin' ? 'ti-shield-star' : 'ti-user';
+    label.innerHTML = `<i class="ti ${icon}" style="margin-left:5px"></i> ${currentUser.name}`;
+  } else {
+    label.textContent = '';
+  }
+}
+
 }
 
 
