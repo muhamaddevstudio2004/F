@@ -1751,6 +1751,15 @@ kbd {
     </div>
     <i class="ti ti-chevron-left settings-menu-arrow"></i>
   </div>
+    <div class="settings-menu-item" data-s="employees" onclick="openSettingsSection(this)">
+    <div class="settings-menu-icon" style="background:var(--primary-light);color:var(--primary)"><i class="ti ti-users"></i></div>
+    <div class="settings-menu-text">
+      <div class="settings-menu-title">کارمەندان</div>
+      <div class="settings-menu-desc">دروستکردنی هەژمار و دەسەڵات</div>
+    </div>
+    <i class="ti ti-chevron-left settings-menu-arrow"></i>
+  </div>
+
 </div>
 
 <!-- دوگمەی گەڕانەوە -->
@@ -2074,6 +2083,20 @@ kbd {
     </div>
   </div>
 </div>
+
+<!-- ٦. کارمەندان -->
+<div class="settings-section" data-section="employees" style="display:none">
+  <div class="card mb-16">
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700">لیستی کارمەندان</div>
+        <button class="btn btn-primary btn-sm" onclick="openEmployeeModal()"><i class="ti ti-plus"></i> کارمەندی نوێ</button>
+      </div>
+      <div id="employeesList"></div>
+    </div>
+  </div>
+</div>
+
 
 </div>
 
@@ -2898,6 +2921,54 @@ kbd {
   </div>
 </div>
 
+<!-- EMPLOYEE MODAL -->
+<div class="modal-overlay" id="employeeModal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <h3 id="employeeModalTitle">کارمەندی نوێ</h3>
+      <button class="modal-close" onclick="closeModal('employeeModal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-row">
+          <div class="form-group">
+            <label>ناوی کارمەند *</label>
+            <input class="form-control" id="empName" placeholder="ناوی کارمەند">
+          </div>
+          <div class="form-group">
+            <label>پینکۆد (٤ ژمارە) *</label>
+            <input class="form-control" id="empPin" type="password" maxlength="4" inputmode="numeric" placeholder="••••">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>ڕۆڵ</label>
+            <select class="form-control" id="empRole">
+              <option value="employee">کارمەند</option>
+              <option value="admin">بەڕێوەبەر (دەسەڵاتی تەواو)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>دۆخ</label>
+            <div style="display:flex;align-items:center;gap:8px;height:44px">
+              <input type="checkbox" id="empActive" checked style="width:18px;height:18px">
+              <label for="empActive" style="font-size:13px">چالاکە</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>دەسەڵاتەکان (بۆ ڕۆڵی کارمەند)</label>
+          <div id="empPermGrid"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('employeeModal')">هەڵوەشاندنەوە</button>
+      <button class="btn btn-primary" id="empSaveBtn" onclick="saveEmployee()"><i class="ti ti-check"></i> پاشەکەوتکردن</button>
+    </div>
+  </div>
+</div>
+
 <!-- FAB -->
 <button class="fab" id="fabBtn" onclick="toggleFab()">
   <i class="ti ti-plus" id="fabIcon"></i>
@@ -3226,9 +3297,10 @@ const [pRes, sRes, rRes, dRes, plRes, stRes, exRes, catRes, usrRes] = await Prom
   sb.from('plans').select('*').order('created_at', { ascending: false }),
   sb.from('settings').select('*').eq('id',1).single(),
   sb.from('expenses').select('*').order('created_at', { ascending: false }),
-  sb.from('categories').select('*').order('name', { ascending: true }),
-  sb.from('users').select('*').eq('active', true)
+    sb.from('categories').select('*').order('name', { ascending: true }),
+  sb.from('users').select('*').order('created_at', { ascending: false })
 ]);
+
 
 
 
@@ -3616,7 +3688,9 @@ function openSettingsSection(el) {
   });
   if(tab === 'info') setTimeout(() => updateInfoConnStatus(), 80);
   if(tab === 'backup') setTimeout(() => renderDataUsage(), 80);
+  if(tab === 'employees') setTimeout(() => renderEmployees(), 80);
 }
+
 
 
 function closeSettingsSection() {
@@ -5391,7 +5465,7 @@ function checkPin(val) {
   if(val.length < 4) { document.getElementById('pinError').textContent = ''; return; }
   const user = USERS.find(u => u.pin === val && u.active !== false);
   if(user) {
-    currentUser = { id: user.id, name: user.name, role: user.role };
+    currentUser = { id: user.id, name: user.name, role: user.role, permissions: user.permissions || {} };
     sessionStorage.setItem('ms_current_user', JSON.stringify(currentUser));
     document.getElementById('lockOverlay').style.display = 'none';
     document.documentElement.requestFullscreen().catch(()=>{});
@@ -5402,13 +5476,29 @@ function checkPin(val) {
   }
 }
 
+const PERM_SECTIONS = ['inventory','sales','repairs','debts','plans','expenses','reports'];
+const PERM_LABELS = {inventory:'کاڵا',sales:'فرۆشتن',repairs:'چاکسازی',debts:'قەرزەکان',plans:'پلانەکان',expenses:'خەرجییەکان',reports:'ڕاپۆرتەکان'};
+
+function can(section, action) {
+  if(!currentUser) return false;
+  if(currentUser.role === 'admin') return true;
+  return !!(currentUser.permissions && currentUser.permissions[section] && currentUser.permissions[section][action]);
+}
+
 function applyRolePermissions() {
   const isAdmin = currentUser && currentUser.role === 'admin';
   const settingsNav = document.querySelector('.nav-item[data-page="settings"]');
   if(settingsNav) settingsNav.style.display = isAdmin ? '' : 'none';
+
+  PERM_SECTIONS.forEach(sec => {
+    const nav = document.querySelector('.nav-item[data-page="'+sec+'"]');
+    if(nav) nav.style.display = can(sec,'view') ? '' : 'none';
+  });
+
   const label = document.getElementById('currentUserLabel');
   if(label) label.textContent = currentUser ? ('👤 ' + currentUser.name) : '';
 }
+
 
 function logoutUser() {
   sessionStorage.removeItem('ms_current_user');
@@ -6219,6 +6309,107 @@ document.addEventListener('click', function(e) {
     document.documentElement.requestFullscreen().catch(()=>{});
   }
 }, true);
+
+let editEmployeeId = null;
+
+function openEmployeeModal(id) {
+  editEmployeeId = id || null;
+  document.getElementById('employeeModalTitle').textContent = id ? 'دەستکاریکردنی کارمەند' : 'کارمەندی نوێ';
+  let perms = {};
+  if(id) {
+    const u = CACHE.users.find(x=>x.id===id);
+    if(u) {
+      document.getElementById('empName').value = u.name;
+      document.getElementById('empPin').value = u.pin;
+      document.getElementById('empRole').value = u.role;
+      document.getElementById('empActive').checked = u.active !== false;
+      perms = u.permissions || {};
+    }
+  } else {
+    document.getElementById('empName').value = '';
+    document.getElementById('empPin').value = '';
+    document.getElementById('empRole').value = 'employee';
+    document.getElementById('empActive').checked = true;
+  }
+  document.getElementById('empPermGrid').innerHTML = PERM_SECTIONS.map(sec=>{
+    const p = perms[sec] || {};
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--card);border:1px solid var(--card-border);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+      <span style="font-size:13px;font-weight:600;min-width:70px">${PERM_LABELS[sec]}</span>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:4px;font-size:11.5px"><input type="checkbox" data-sec="${sec}" data-act="view" ${p.view?'checked':''}> بینین</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:11.5px"><input type="checkbox" data-sec="${sec}" data-act="add" ${p.add?'checked':''}> زیادکردن</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:11.5px"><input type="checkbox" data-sec="${sec}" data-act="edit" ${p.edit?'checked':''}> دەستکاری</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:11.5px"><input type="checkbox" data-sec="${sec}" data-act="delete" ${p.delete?'checked':''}> سڕینەوە</label>
+      </div>
+    </div>`;
+  }).join('');
+  openModal('employeeModal');
+}
+
+async function saveEmployee() {
+  const name = document.getElementById('empName').value.trim();
+  const pin = document.getElementById('empPin').value.trim();
+  const role = document.getElementById('empRole').value;
+  const active = document.getElementById('empActive').checked;
+  if(!name || pin.length !== 4) { toast('ناو و پینکۆدی ٤ ژمارە پێویستە','error'); return; }
+
+  const dup = (CACHE.users||[]).find(u=>u.pin===pin && u.id!==editEmployeeId);
+  if(dup) { toast('ئەم پینکۆدە پێشتر بەکارهاتووە','error'); return; }
+
+  const permissions = {};
+  document.querySelectorAll('#empPermGrid input[type=checkbox]').forEach(cb=>{
+    const sec = cb.dataset.sec, act = cb.dataset.act;
+    if(!permissions[sec]) permissions[sec] = {};
+    permissions[sec][act] = cb.checked;
+  });
+
+  const btn = document.getElementById('empSaveBtn');
+  btn.disabled = true;
+  try {
+    if(editEmployeeId) {
+      const { error } = await sb.from('users').update({ name, pin, role, active, permissions }).eq('id', editEmployeeId);
+      if(error) throw error;
+      toast('کارمەندەکە نوێ کرایەوە','success');
+    } else {
+      const { error } = await sb.from('users').insert({ name, pin, role, active, permissions });
+      if(error) throw error;
+      toast('کارمەندی نوێ زیادکرا','success');
+    }
+    await loadAllData();
+    closeModal('employeeModal');
+    renderEmployees();
+  } catch(err) {
+    toast('کێشە ڕوویدا: '+(err.message||err),'error');
+  } finally { btn.disabled=false; }
+}
+
+async function deleteEmployee(id) {
+  if(!confirm('دڵنیایت لە سڕینەوەی ئەم کارمەندە؟')) return;
+  try {
+    const { error } = await sb.from('users').delete().eq('id', id);
+    if(error) throw error;
+    await loadAllData();
+    toast('کارمەندەکە سڕایەوە','info');
+    renderEmployees();
+  } catch(err) { toast('کێشە: '+(err.message||err),'error'); }
+}
+
+function renderEmployees() {
+  const users = CACHE.users || [];
+  const el = document.getElementById('employeesList');
+  if(!el) return;
+  if(!users.length) { el.innerHTML = '<div style="font-size:12.5px;color:var(--text3)">هیچ کارمەندێک نیە</div>'; return; }
+  el.innerHTML = users.map(u=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border:1px solid var(--card-border);border-radius:10px;margin-bottom:8px">
+      <div style="width:38px;height:38px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--primary)"><i class="ti ti-user"></i></div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13.5px">${u.name} ${u.role==='admin'?'<span class="badge badge-purple">بەڕێوەبەر</span>':''} ${u.active===false?'<span class="badge badge-red">ناچالاک</span>':''}</div>
+        <div style="font-size:11px;color:var(--text3)">پینکۆد: ${u.pin}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="openEmployeeModal('${u.id}')"><i class="ti ti-edit"></i></button>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteEmployee('${u.id}')"><i class="ti ti-trash"></i></button>
+    </div>`).join('');
+}
 
 init();
 </script>
