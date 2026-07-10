@@ -715,6 +715,29 @@ select.filter-input { cursor: pointer; }
 }
 .period-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
 
+.sale-cat-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+}
+.sale-cat-pills::-webkit-scrollbar { height: 4px; }
+.sale-cat-pill {
+  flex-shrink: 0;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 12.5px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--card-border);
+  background: var(--card); color: var(--text2);
+  transition: all var(--transition);
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 5px;
+}
+.sale-cat-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.sale-cat-pill .cnt { font-size: 10.5px; opacity: 0.75; }
+
 /* ── LOW STOCK TABLE ── */
 .low-stock-row td:first-child { border-right: 3px solid var(--danger); }
 
@@ -1260,6 +1283,53 @@ kbd {
   50% { opacity: 0.4; transform: translateX(-50%) scale(1.4); }
 }
 
+/* ── QUICK SALE GRID ── */
+.sale-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.sale-product-card {
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:12px;
+  cursor:pointer;
+  transition:all var(--transition);
+}
+.sale-product-card:hover { border-color:var(--primary); transform:translateY(-2px); }
+.sale-product-card.in-cart { border-color:var(--success); background:var(--success-light); }
+.spc-img { width:100%; aspect-ratio:1/1; border-radius:8px; object-fit:cover; display:block; margin-bottom:8px; }
+.spc-noimg { display:flex; align-items:center; justify-content:center; background:var(--bg); color:var(--text3); font-size:28px; }
+.spc-name { font-size:13px; font-weight:600; line-height:1.3; }
+.spc-details { font-size:11px; color:var(--text3); margin-top:2px; }
+.spc-cat { margin-top:4px; }
+.spc-cat .badge { font-size:10px; padding:2px 8px; }
+.spc-price { font-size:11.5px; color:var(--text2); margin-top:5px; }
+.spc-qty-row { display:flex; align-items:center; justify-content:space-between; margin-top:10px; gap:5px; }
+.spc-qty-btn {
+  width:26px; height:26px; border-radius:6px; border:1px solid var(--card-border);
+  background:var(--card-hover); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:14px;
+}
+.spc-qty-val { font-weight:700; font-size:13px; min-width:18px; text-align:center; }
+.spc-remove { color:var(--danger); }
+
+.sale-sticky-bar {
+  position:fixed; bottom:0; left:0; right:0;
+  background:var(--bg2); border-top:1px solid var(--card-border);
+  padding:12px 16px; display:flex; align-items:center; justify-content:space-between;
+  z-index:600; box-shadow:0 -4px 20px rgba(0,0,0,0.3);
+}
+.sale-sticky-info { display:flex; flex-direction:column; gap:2px; font-size:12.5px; color:var(--text2); }
+
+@media (max-width: 768px) {
+  .content { padding-bottom: 130px; }
+}
+
+
 </style>
 </head>
 <body>
@@ -1305,7 +1375,7 @@ kbd {
 		<i class="ti ti-shopping-cart"></i> فرۆشتن
 	  </div>
 <div class="nav-item" data-page="repairs" onclick="navigate(this)">
-		<i class="ti ti-tool"></i> چاکسازی
+		<i class="ti ti-tool"></i> صیانە
 		<span class="nav-badge" id="repairBadge">0</span>
 	  </div>
 	  <div class="nav-item" data-page="debts" onclick="navigate(this)">
@@ -1515,8 +1585,25 @@ kbd {
 	<div class="page" id="page-sales">
 	  <div class="page-title">
 		<div><h2>فرۆشتن</h2><p>تۆمارکردن و مێژووی فرۆشتن</p></div>
-		<button class="btn btn-primary" onclick="openSaleModal()"><i class="ti ti-shopping-cart-plus"></i> فرۆشتنی نوێ</button>
 	  </div>
+
+<!-- QUICK SALE SEARCH -->
+<div class="filters-bar">
+ <input class="filter-input" style="min-width:220px" type="text"
+  placeholder="گەڕان بۆ زیادکردنی کاڵا بۆ فرۆشتن..." id="quickSaleSearch"
+  oninput="applySaleFilters()">
+  <button class="btn btn-ghost" onclick="openBarcodeScanner('sale')">
+    <i class="ti ti-camera"></i> سکانکردنی بارکۆد
+  </button>
+</div>
+<div class="sale-cat-pills" id="quickSaleCatPills"></div>
+
+
+
+	  <!-- QUICK SALE GRID -->
+	  <div class="sale-grid" id="quickSaleGrid"></div>
+	  <div class="divider"></div>
+
 	  <div class="stats-grid" id="saleStats"></div>
 	  <div class="report-period-tabs" id="salePeriodTabs">
 		<div class="period-tab active" data-p="today" onclick="setSalePeriod(this)">ئەمڕۆ</div>
@@ -1544,7 +1631,7 @@ kbd {
 	<!-- ═══════════════════════ REPAIRS ═══════════════════════ -->
 	<div class="page" id="page-repairs">
 	  <div class="page-title">
-		<div><h2>چاکسازی</h2><p>بەڕێوەبردنی ئامێرەکانی چاکسازی</p></div>
+		<div><h2>چاکسازی</h2><p>بەڕێوەبردنی ئامێرەکان</p></div>
 		<button class="btn btn-primary" onclick="openRepairModal()"><i class="ti ti-plus"></i> چاکسازی نوێ</button>
 	  </div>
 	  <div class="stats-grid" id="repairStats"></div>
@@ -2087,8 +2174,21 @@ kbd {
       </div>
     </div>
 
-  </div><!-- /content -->
+</div><!-- /content -->
+
+<!-- STICKY SALE BAR -->
+<div class="sale-sticky-bar" id="saleStickyBar" style="display:none">
+  <div class="sale-sticky-info">
+    <span id="saleStickyCount">0 کاڵا</span>
+    <span id="saleStickyTotal" style="font-weight:700;font-size:15px"></span>
+  </div>
+<button class="btn btn-success" id="saleCompleteBtn" onclick="completeSale()">
+    <i class="ti ti-check"></i> تەواوکردنی فرۆشتن
+</button>
+</div>
+
 </div><!-- /main -->
+
 
 
 <!-- PLAN MODAL -->
@@ -2474,7 +2574,7 @@ kbd {
               <i class="ti ti-tool" style="font-size:20px;color:var(--info);flex-shrink:0;margin-top:2px"></i>
               <div>
                 <div style="font-weight:700;font-size:13px;margin-bottom:4px">ستاتوسی چاکسازی</div>
-                <div style="font-size:12.5px;color:var(--text2);line-height:1.7">لە بەشی چاکسازی، دوگمەی چاو (👁) کلیک بکە بۆ دیتنی وردەکاری و گۆڕینی ستاتوس بە کلیکی ساکار</div>
+                <div style="font-size:12.5px;color:var(--text2);line-height:1.7">لە بەشی صیانە، دوگمەی چاو (👁) کلیک بکە بۆ دیتنی وردەکاری و گۆڕینی ستاتوس بە کلیکی ساکار</div>
               </div>
             </div>
           </div>
@@ -2593,49 +2693,7 @@ kbd {
   </div>
 </div>
 
-<!-- SALE MODAL -->
-<div class="modal-overlay" id="saleModal">
-  <div class="modal" style="max-width:600px">
-	<div class="modal-header">
-	  <h3>فرۆشتنی نوێ</h3>
-	  <button class="modal-close" onclick="closeModal('saleModal')"><i class="ti ti-x"></i></button>
-	</div>
-	<div class="modal-body">
-	  <div class="form-group mb-16">
-		<label>گەڕان و هەڵبژاردنی کاڵا</label>
-		<input class="form-control" id="saleProductSearch" placeholder="ناوی کاڵا بنووسە..." oninput="filterSaleProducts()">
-	  </div>
-    <button class="btn btn-ghost" type="button" onclick="openBarcodeScanner('sale')" style="margin-bottom:12px;width:100%">
-  <i class="ti ti-camera"></i> سکانکردنی بارکۆد بۆ فرۆشتن
-</button>
 
-	  <div class="product-search-list" id="saleProductList"></div>
-	  <div class="sale-cart" id="saleCart"></div>
-	  <div id="saleTotalBox" style="display:none">
-		<div class="sale-total-box">
-		  <div class="sale-total-label">کۆی گشتی</div>
-		  <div class="sale-total-val text-mono" id="saleTotalVal">0 د.ع</div>
-		</div>
-		<div style="display:flex;gap:10px;margin-top:8px">
-		  <div style="flex:1;background:var(--success-light);border:1px solid rgba(0,217,166,0.2);border-radius:10px;padding:10px;text-align:center">
-			<div style="font-size:11px;color:var(--text2)">قازانج</div>
-			<div class="text-mono" style="font-size:16px;font-weight:700;color:var(--success)" id="saleProfitVal">0</div>
-		  </div>
-		  <div style="flex:1;background:var(--info-light);border:1px solid rgba(56,189,248,0.2);border-radius:10px;padding:10px;text-align:center">
-			<div style="font-size:11px;color:var(--text2)">کۆی بڕ</div>
-			<div class="text-mono" style="font-size:16px;font-weight:700;color:var(--info)" id="saleTotalQty">0</div>
-		  </div>
-		</div>
-	  </div>
-	</div>
-<div class="modal-footer">
-  <button class="btn btn-ghost" onclick="closeModal('saleModal')">هەڵوەشاندنەوە</button>
-  <button class="btn btn-success" id="saleCompleteBtn" onclick="completeSale()"><i class="ti ti-check"></i> تەواوکردنی فرۆشتن</button>
-</div>
-
-
-  </div>
-</div>
 
 <!-- REPAIR MODAL -->
 <div class="modal-overlay" id="repairModal">
@@ -2699,7 +2757,7 @@ kbd {
 		</div>
 		<div class="form-row">
 		  <div class="form-group">
-			<label>هزینەی چاکسازی (د.ع)</label>
+			<label>نرخی چاکسازی (د.ع)</label>
 			<input class="form-control" id="rCost" type="number" placeholder="0">
 		  </div>
 		  <div class="form-group">
@@ -3016,7 +3074,9 @@ window.addEventListener('online', async () => {
   renderPage(getCurrentPage());
   toast('داتاکان sync کران', 'success');
   updateInfoConnStatus();
+  subscribeRealtime();
 });
+
 
 window.addEventListener('offline', () => {
   isOnline = false;
@@ -3033,6 +3093,33 @@ window.addEventListener('online', () => {
   document.getElementById('offlineBanner').classList.remove('show');
 });
 
+let realtimeSubscribed = false;
+let realtimeDebounceTimer = null;
+
+function scheduleRealtimeRefresh() {
+  clearTimeout(realtimeDebounceTimer);
+  realtimeDebounceTimer = setTimeout(async () => {
+    if(!isOnline) return;
+    await loadAllData();
+    renderPage(getCurrentPage());
+    buildNotifications();
+  }, 400);
+}
+
+function subscribeRealtime() {
+  if(realtimeSubscribed) return;
+  realtimeSubscribed = true;
+  sb.channel('mstore-realtime')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, scheduleRealtimeRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'sales' }, scheduleRealtimeRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'repairs' }, scheduleRealtimeRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'debts' }, scheduleRealtimeRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'plans' }, scheduleRealtimeRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'expenses' }, scheduleRealtimeRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, scheduleRealtimeRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, scheduleRealtimeRefresh)
+    .subscribe();
+}
 
 function getCurrentPage() {
   const active = document.querySelector('.nav-item.active');
@@ -3069,9 +3156,14 @@ async function processSyncQueue() {
 // ══════════════════════════════════════════════════════════════
 //  SUPABASE CONNECTION
 // ══════════════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://mysfyodtvawjnumbxzup.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_1AbBOxAHs-LX32Ax16_fPA_0-xet0C0';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = 'https://rbwaynlgbstnbgkduxbq.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_n-SgbF92hOzRpSYtIMqz2A_xTSk4O3H';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  global: {
+    fetch: (url, options = {}) => fetch(url, { ...options, cache: 'no-store' })
+  }
+});
+
 
 // In-memory cache of data (loaded from Supabase, kept in sync after every change)
 let CACHE = { products: [], sales: [], repairs: [], debts: [] };
@@ -3221,6 +3313,12 @@ function navigate(el, page) {
   document.getElementById('page-'+page)?.classList.add('active');
   document.getElementById('headerPageTitle').textContent = pageNames[page]||'';
   closeSidebar();
+ if(page === 'sales') {
+    saleCatFilter = '';
+    const searchBox = document.getElementById('quickSaleSearch');
+    if(searchBox) searchBox.value = '';
+  }
+
   renderPage(page);
 }
 function renderPage(p) {
@@ -3784,16 +3882,16 @@ const estKB = (estBytes / 1024).toFixed(1).toLocaleString('en');
     <div style="background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;margin-bottom:8px">
         <span style="font-size:12px;color:var(--text2)">تەخمینی بەکارهێنانی کۆگا</span>
-<span style="font-size:12px;font-weight:700">${estKB} KB &nbsp;/&nbsp; 500 MB</span>
+<span style="font-size:12px;font-weight:700" dir="ltr">${estKB} KB / 500 MB</span>
       </div>
       <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
         <div style="height:100%;width:${pct}%;background:var(--success);border-radius:4px;transition:width 0.5s ease"></div>
       </div>
-<div style="font-size:11px;color:var(--text3);margin-top:6px">${pct}% &nbsp;بەکارهێنراوە — &nbsp;${total.toLocaleString()} کۆی ریکۆرد</div>
+<div style="font-size:11px;color:var(--text3);margin-top:6px"><span dir="ltr">${pct}%</span> بەکارهێنراوە — <span dir="ltr">${total.toLocaleString()}</span> کۆی ریکۆرد</div>
     </div>
     <div style="background:var(--success-light);border:1px solid rgba(0,217,166,0.2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px">
       <i class="ti ti-circle-check" style="color:var(--success)"></i>
-ئەم داتابەیسە بەنزیکەی بەرگەی سەروو ساڵێک دەکرێت - بۆگەورەکردنی داتاکەت پەیوەندی بکە بە Dev.Muhamad@ 07509628683
+ئەم داتابەیسە بەنزیکەی بەرگەی سەروو چەندین ساڵ دەگرێت - بۆگەورەکردنی داتاکەت پەیوەندی بکە بە Dev.Muhamad@ 07509628683
     </div>`;
 }
 
@@ -4020,7 +4118,7 @@ function renderProducts() {
     const low = p.qty<=5;
 return `<tr>
       <td data-label="#" class="td-muted">${i+1}</td>
-<td data-label="وێنە">${r.imageUrl ? `<img src="${r.imageUrl}" loading="lazy" decoding="async" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${r.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
+<td data-label="وێنە">${p.imageUrl ? `<img src="${p.imageUrl}" loading="lazy" decoding="async" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${p.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
 
       <td data-label="ناوی کاڵا"><div style="font-weight:600">${p.name}</div>
       <div class="td-muted" style="font-size:11.5px">${p.model||''}</div></td>
@@ -4260,6 +4358,164 @@ function duplicateProduct(id) {
 // ══════════════════════════════════════════
 let saleCart = [];
 let salePeriod = 'today';
+let saleCatFilter = '';
+
+
+function populateQuickSaleCategories() {
+  const products = DB.get('products');
+  const cats = [...new Set(products.map(p=>p.category))];
+  const counts = {};
+  products.forEach(p=>{ if(p.qty>0) counts[p.category] = (counts[p.category]||0)+1; });
+  const totalCount = products.filter(p=>p.qty>0).length;
+  const wrap = document.getElementById('quickSaleCatPills');
+  wrap.innerHTML = `<div class="sale-cat-pill ${!saleCatFilter?'active':''}" onclick="setSaleCatFilter('')">هەموو <span class="cnt">${totalCount}</span></div>` +
+    cats.map(c=>`<div class="sale-cat-pill ${saleCatFilter===c?'active':''}" onclick="setSaleCatFilter('${c.replace(/'/g,"\\'")}')">${c} <span class="cnt">${counts[c]||0}</span></div>`).join('');
+}
+
+function setSaleCatFilter(cat) {
+  saleCatFilter = cat;
+  populateQuickSaleCategories();
+  applySaleFilters();
+}
+
+
+function buildQtyControlsHTML(p) {
+  const inCart = saleCart.find(c=>c.id===p.id);
+  if(!inCart) return '';
+  return `<div class="spc-qty-row">
+    <div class="spc-qty-btn" onclick="event.stopPropagation();adjustCart('${p.id}',-1)"><i class="ti ti-minus"></i></div>
+    <div class="spc-qty-val">${inCart.qty}</div>
+    <div class="spc-qty-btn" onclick="event.stopPropagation();adjustCart('${p.id}',1)"><i class="ti ti-plus"></i></div>
+    <div class="spc-qty-btn spc-remove" onclick="event.stopPropagation();removeFromCart('${p.id}')"><i class="ti ti-x"></i></div>
+  </div>`;
+}
+
+function buildSaleCardHTML(p) {
+  const inCart = saleCart.find(c=>c.id===p.id);
+  return `<div class="sale-product-card ${inCart?'in-cart':''}" data-id="${p.id}" onclick="onSaleCardClick(event,'${p.id}')">
+    ${p.imageUrl
+      ? `<img class="spc-img" src="${p.imageUrl}" loading="lazy" decoding="async">`
+      : `<div class="spc-img spc-noimg"><i class="ti ti-photo"></i></div>`}
+    <div class="spc-name">${p.name}</div>
+    <div class="spc-details">${p.brand}${p.model?' • '+p.model:''}</div>
+    <div class="spc-cat"><span class="badge badge-purple">${p.category}</span></div>
+    <div class="spc-price">${fmt(p.sellPrice)} — <span id="stock-${p.id}">${p.qty}</span> بەردەست</div>
+    <div class="spc-qty-container" id="qtyC-${p.id}">${buildQtyControlsHTML(p)}</div>
+  </div>`;
+}
+
+
+function onSaleCardClick(e, id) {
+  const inCart = saleCart.find(c=>c.id===id);
+  if(!inCart) addToCart(id);
+}
+
+function renderQuickSaleGrid() {
+  populateQuickSaleCategories();
+  const products = DB.get('products').filter(p=>p.qty>0);
+  const grid = document.getElementById('quickSaleGrid');
+  grid.innerHTML = products.map(buildSaleCardHTML).join('') ||
+    '<div class="empty-state" style="grid-column:1/-1"><p>هیچ کاڵایەک نەدۆزرایەوە</p></div>';
+  applySaleFilters();
+}
+
+function applySaleFilters() {
+  const q = (document.getElementById('quickSaleSearch').value||'').toLowerCase();
+  const cat = saleCatFilter;
+
+  const cards = document.querySelectorAll('#quickSaleGrid .sale-product-card');
+  let visibleCount = 0;
+  cards.forEach(card => {
+    const id = card.dataset.id;
+    const p = DB.get('products').find(x=>x.id===id);
+    if(!p) { card.style.display='none'; return; }
+    const matchQ = !q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q);
+    const matchCat = !cat || p.category===cat;
+    const show = matchQ && matchCat;
+    card.style.display = show ? '' : 'none';
+    if(show) visibleCount++;
+  });
+  const grid = document.getElementById('quickSaleGrid');
+  let emptyMsg = grid.querySelector('.sale-empty-msg');
+  if(visibleCount === 0) {
+    if(!emptyMsg) {
+      emptyMsg = document.createElement('div');
+      emptyMsg.className = 'empty-state sale-empty-msg';
+      emptyMsg.style.gridColumn = '1/-1';
+      emptyMsg.innerHTML = '<p>هیچ کاڵایەک نەدۆزرایەوە</p>';
+      grid.appendChild(emptyMsg);
+    }
+  } else if(emptyMsg) {
+    emptyMsg.remove();
+  }
+}
+
+
+function updateSaleCardUI(id) {
+  const card = document.querySelector(`.sale-product-card[data-id="${id}"]`);
+  if(!card) return;
+  const inCart = saleCart.find(c=>c.id===id);
+  card.classList.toggle('in-cart', !!inCart);
+  const qtyContainer = document.getElementById('qtyC-'+id);
+  const p = DB.get('products').find(x=>x.id===id);
+  if(qtyContainer && p) qtyContainer.innerHTML = buildQtyControlsHTML(p);
+  const stockEl = document.getElementById('stock-'+id);
+  if(stockEl && p) stockEl.textContent = p.qty;
+}
+
+
+// نوێکردنەوەی گرید بەبێ دووبارە بارکردنی وێنە
+// تەنها کاتێک لیستی کاڵاکان (زیاد/کەم بوونی کاڵا) گۆڕاوە گرید بە تەواوی دروست دەکاتەوە
+ function syncSaleGrid() {
+  populateQuickSaleCategories();
+  const products = DB.get('products').filter(p=>p.qty>0 || saleCart.find(c=>c.id===p.id));
+  const grid = document.getElementById('quickSaleGrid');
+  const existingCards = Array.from(grid.querySelectorAll('.sale-product-card'));
+  const existingIds = new Set(existingCards.map(c=>c.dataset.id));
+  const currentIds = new Set(products.map(p=>p.id));
+
+  // ١. لابردنی کارتی کاڵایانەی ئیتر نامێننەوە (بۆ نموونە بڕیان بووە ٠)
+  existingCards.forEach(card => {
+    if(!currentIds.has(card.dataset.id)) card.remove();
+  });
+
+  // ٢. زیادکردنی کارتی کاڵای نوێ (ئەوانەی پێشتر نەبوون لە گرید)
+  const toAdd = products.filter(p => !existingIds.has(p.id));
+  toAdd.forEach(p => {
+    grid.insertAdjacentHTML('beforeend', buildSaleCardHTML(p));
+  });
+
+  // ٣. نوێکردنەوەی بڕ و کۆنترۆڵەکانی کارتە ماوەکان (بەبێ دەستکاری وێنە)
+  products.forEach(p => {
+    if(existingIds.has(p.id)) updateSaleCardUI(p.id);
+  });
+
+  // ٤. پیشاندانی نووسینی "هیچ کاڵایەک نیە" ئەگەر گرید بەتاڵ بوو
+  const emptyMsg = grid.querySelector('.sale-empty-msg');
+  if(products.length === 0) {
+    if(!emptyMsg) {
+      grid.insertAdjacentHTML('beforeend', '<div class="empty-state sale-empty-msg" style="grid-column:1/-1"><p>هیچ کاڵایەک نەدۆزرایەوە</p></div>');
+    }
+  } else if(emptyMsg) {
+    emptyMsg.remove();
+  }
+
+  applySaleFilters();
+}
+
+
+
+
+function updateSaleStickyBar() {
+  const bar = document.getElementById('saleStickyBar');
+  if(!saleCart.length) { bar.style.display='none'; return; }
+  bar.style.display='flex';
+  const total = saleCart.reduce((a,i)=>a+i.unitPrice*i.qty,0);
+  const qty = saleCart.reduce((a,i)=>a+i.qty,0);
+  document.getElementById('saleStickyCount').textContent = qty + ' کاڵا';
+  document.getElementById('saleStickyTotal').textContent = fmt(total);
+}
+
 function setSalePeriod(el) {
   document.querySelectorAll('#salePeriodTabs .period-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
@@ -4267,7 +4523,9 @@ function setSalePeriod(el) {
   renderSales();
 }
 function renderSales() {
+  syncSaleGrid();
   const sales = DB.get('sales');
+
   const filtered = sales.filter(s=>isInPeriod(s.createdAt,salePeriod));
   const q = document.getElementById('saleSearch').value.toLowerCase();
   const shown = filtered.filter(s=>!q||s.productName.toLowerCase().includes(q));
@@ -4331,8 +4589,10 @@ function addToCart(id) {
   const ex = saleCart.find(c=>c.id===id);
   if(ex) { if(ex.qty<p.qty) ex.qty++; else { toast('کاڵا بەسەر چووە','error'); return; } }
 else saleCart.push({id, name:p.name, model:p.model||'', qty:1, unitPrice:p.sellPrice, buyPrice:p.buyPrice, maxQty:p.qty});
-  renderSaleProducts(); renderSaleCart();
+  updateSaleCardUI(id); updateSaleStickyBar();
 }
+
+
 function renderSaleCart() {
   const c = document.getElementById('saleCart');
   if(!saleCart.length) { c.innerHTML=''; document.getElementById('saleTotalBox').style.display='none'; return; }
@@ -4358,13 +4618,19 @@ function renderSaleCart() {
 function adjustCart(id, delta) {
   const item = saleCart.find(c=>c.id===id);
   if(!item) return;
-  item.qty = Math.max(1, Math.min(item.qty+delta, item.maxQty));
-  renderSaleCart();
+  const newQty = item.qty + delta;
+  if(newQty <= 0) { removeFromCart(id); return; }
+  item.qty = Math.min(newQty, item.maxQty);
+  updateSaleCardUI(id); updateSaleStickyBar();
 }
+
+
 function removeFromCart(id) {
   saleCart = saleCart.filter(c=>c.id!==id);
-  renderSaleProducts(); renderSaleCart();
+  updateSaleCardUI(id); updateSaleStickyBar();
 }
+
+
 async function completeSale() {
   if(!saleCart.length) { toast('تکایە کاڵایەک هەڵبژێرە','error'); return; }
   const btn = document.getElementById('saleCompleteBtn');
@@ -4387,74 +4653,92 @@ product_model: item.model||'',
       created_at: new Date().toISOString()
     }));
 
-    if(isOnline) {
-      // ئۆنلاین — مەستەقیم بنێرە Supabase
-      const { error: saleErr } = await sb.from('sales').insert(
-        saleRows.map(r => ({
-          id: r.id, product_id: r.product_id, product_name: r.product_name,
-          unit_price: r.unit_price, qty: r.qty, total: r.total,
-          profit: r.profit, returned: false
-        }))
-      );
-      if(saleErr) throw saleErr;
+if(isOnline) {
+  const { error: saleErr } = await sb.from('sales').insert(
+    saleRows.map(r => ({
+      id: r.id, product_id: r.product_id, product_name: r.product_name,
+      unit_price: r.unit_price, qty: r.qty, total: r.total,
+      profit: r.profit, returned: false
+    }))
+  );
+  if(saleErr) throw saleErr;
 
-      for(const item of saleCart) {
-        const p = DB.get('products').find(x=>x.id===item.id);
-        const newQty = Math.max(0, (p?p.qty:0) - item.qty);
-        const { error: qtyErr } = await sb.from('products').update({ qty: newQty }).eq('id', item.id);
-        if(qtyErr) throw qtyErr;
-      }
-    } else {
-      // ئۆفلاین — پاشەکەوت بکە IDB و sync queue
-      await idbPutAll('sales', saleRows);
+  // ✅ بە یەکجار (parallel) نەک یەک لەدوای یەک
+  await Promise.all(saleCart.map(item => {
+    const p = DB.get('products').find(x=>x.id===item.id);
+    const newQty = Math.max(0, (p?p.qty:0) - item.qty);
+    return sb.from('products').update({ qty: newQty }).eq('id', item.id);
+  }));
 
-      for(const item of saleCart) {
-        const p = DB.get('products').find(x=>x.id===item.id);
-        if(p) {
-          const newQty = Math.max(0, p.qty - item.qty);
-          const updated = { ...p, qty: newQty };
-          await idbPut('products', updated);
-          CACHE.products = CACHE.products.map(x => x.id===p.id ? updated : x);
-        }
-      }
+  // ✅ نوێکردنەوەی cache خۆماڵی — بەبێ loadAllData
+  CACHE.sales = [...saleRows.map(r=>({
+    id:r.id, productId:r.product_id, productName:r.product_name,
+    unitPrice:r.unit_price, qty:r.qty, total:r.total, profit:r.profit,
+    returned:false, createdAt:r.createdAt
+  })), ...CACHE.sales];
 
-      // زیادکردن بە sync queue
-      for(const row of saleRows) {
-        await addToSyncQueue({ type:'insert', table:'sales', data: {
-          id: row.id, product_id: row.product_id, product_name: row.product_name,
-          unit_price: row.unit_price, qty: row.qty, total: row.total,
-          profit: row.profit, returned: false
-        }});
-      }
-      for(const item of saleCart) {
-        const p = DB.get('products').find(x=>x.id===item.id);
-        if(p) {
-          await addToSyncQueue({ type:'update', table:'products',
-            id: item.id, data: { qty: Math.max(0, p.qty - item.qty) }
-          });
-        }
-      }
+  saleCart.forEach(item=>{
+    const p = CACHE.products.find(x=>x.id===item.id);
+    if(p) p.qty = Math.max(0, p.qty - item.qty);
+  });
 
-      // نوێکردنەوەی cache
-      CACHE.sales = [...saleRows, ...CACHE.sales];
-      toast('ئۆفلاین — فرۆشتن پاشەکەوتکرا، sync دەکرێت کاتێک ئینتەرنێت بگەڕێتەوە', 'info');
-      closeModal('saleModal'); saleCart=[];
-      renderSales(); buildNotifications();
-      btn.disabled = false;
-      return;
+  // sync بۆ IDB لە پشتەوە (بێ چاوەڕوانی)
+  idbPutAll('sales', CACHE.sales.slice(0, saleRows.length));
+  idbPutAll('products', CACHE.products);
+
+} else {
+  // ئۆفلاین — پاشەکەوت بکە IDB و sync queue
+  await idbPutAll('sales', saleRows);
+
+  for(const item of saleCart) {
+    const p = DB.get('products').find(x=>x.id===item.id);
+    if(p) {
+      const newQty = Math.max(0, p.qty - item.qty);
+      const updated = { ...p, qty: newQty };
+      await idbPut('products', updated);
+      CACHE.products = CACHE.products.map(x => x.id===p.id ? updated : x);
     }
+  }
 
-    const totalSold = saleCart.reduce((a,i)=>a+i.unitPrice*i.qty,0);
-    await loadAllData();
-    toast(`فرۆشتن تۆمارکرا — کۆی: ${fmt(totalSold)}`,'success');
-closeModal('saleModal');
+  for(const row of saleRows) {
+    await addToSyncQueue({ type:'insert', table:'sales', data: {
+      id: row.id, product_id: row.product_id, product_name: row.product_name,
+      unit_price: row.unit_price, qty: row.qty, total: row.total,
+      profit: row.profit, returned: false
+    }});
+  }
+  for(const item of saleCart) {
+    const p = DB.get('products').find(x=>x.id===item.id);
+    if(p) {
+      await addToSyncQueue({ type:'update', table:'products',
+        id: item.id, data: { qty: Math.max(0, p.qty - item.qty) }
+      });
+    }
+  }
+
+      CACHE.sales = [...saleRows, ...CACHE.sales];
+  toast('ئۆفلاین — فرۆشتن پاشەکەوتکرا، sync دەکرێت کاتێک ئینتەرنێت بگەڕێتەوە', 'info');
+  saleCart=[];
+  syncSaleGrid(); updateSaleStickyBar();
+  btn.disabled = false;
+  return;
+}
+
+
+
+
+const totalSold = saleCart.reduce((a,i)=>a+i.unitPrice*i.qty,0);
+toast(`فرۆشتن تۆمارکرا — کۆی: ${fmt(totalSold)}`,'success');
+
 if(SETTINGS.auto_print) {
   printReceipt(saleRows, totalSold);
 }
 
-
 saleCart=[];
-renderSales(); buildNotifications();
+updateSaleStickyBar();
+renderSales();
+buildNotifications();
+
 
   } catch(err) {
     console.error(err);
@@ -4516,7 +4800,7 @@ function renderRepairs() {
   const body = document.getElementById('repairBody');
 
 body.innerHTML = sorted.length ? sorted.map((r,i)=>`<tr>
-<td data-label="وێنە">${r.imageUrl ? `<img src="${r.imageUrl}" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${r.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
+<td data-label="وێنە">${r.imageUrl ? `<img src="${r.imageUrl}" loading="lazy" decoding="async" style="width:${SETTINGS.image_size||40}px;height:${SETTINGS.image_size||40}px;border-radius:8px;object-fit:cover;cursor:pointer" onclick="showFullscreenImage('${r.imageUrl}')">` : `<i class="ti ti-photo" style="color:var(--text3);font-size:20px"></i>`}</td>
   <td data-label="#" class="td-muted">${i+1}</td>
   <td data-label="کڕیار"><b>${r.customerName}</b></td>
   <td data-label="ژمارە" class="td-muted">${r.phone}</td>
@@ -4770,7 +5054,6 @@ document.addEventListener('fullscreenchange', function() {
 document.addEventListener('keydown', function(e) {
   if(e.key !== 'Enter') return;
   if(document.getElementById('productModal').classList.contains('open')) saveProduct();
-  else if(document.getElementById('saleModal').classList.contains('open')) completeSale();
   else if(document.getElementById('repairModal').classList.contains('open')) saveRepair();
   else if(document.getElementById('debtModal').classList.contains('open')) saveDebt();
   else if(document.getElementById('payDebtModal').classList.contains('open')) confirmPayDebt();
@@ -4788,8 +5071,9 @@ document.addEventListener('keydown', function(e) {
   if(e.ctrlKey && e.key === 'f') {
     e.preventDefault();
     navigate(null, 'sales');
-    setTimeout(() => openSaleModal(), 300);
+    setTimeout(() => document.getElementById('quickSaleSearch').focus(), 300);
   }
+
   if(e.ctrlKey && e.key === 'p') {
   e.preventDefault();
   navigate(null, 'plans');
@@ -4821,11 +5105,11 @@ if(e.ctrlKey && e.key === 'Enter') {
 }
 
 if(e.key === 'Escape') {
-  const anyOpen = ['productModal','saleModal','repairModal','debtModal','payDebtModal','repairDetailModal','resetAllModal']
+  const anyOpen = ['productModal','repairModal','debtModal','payDebtModal','repairDetailModal','resetAllModal']
     .some(id => document.getElementById(id).classList.contains('open'));
   
   if(anyOpen) {
-    ['productModal','saleModal','repairModal','debtModal','payDebtModal','repairDetailModal','resetAllModal']
+    ['productModal','repairModal','debtModal','payDebtModal','repairDetailModal','resetAllModal']
       .forEach(id => closeModal(id));
   } else {
     if(document.fullscreenElement) document.exitFullscreen();
@@ -5031,15 +5315,40 @@ function updateStoreName() {
 //  INIT
 // ══════════════════════════════════════════
 async function init() {
+  // یەکەم جار خێرا لە IndexedDB بخوێنەرەوە
+  try {
+    const cachedProducts = await idbGetAll('products');
+    if(cachedProducts.length) {
+      CACHE.products = cachedProducts;
+      CACHE.sales = await idbGetAll('sales');
+      CACHE.repairs = await idbGetAll('repairs');
+      CACHE.debts = await idbGetAll('debts');
+      CACHE.plans = await idbGetAll('plans');
+      CACHE.categories = await idbGetAll('categories');
+      CACHE.expenses = await idbGetAll('expenses');
+      const settingsArr = await idbGetAll('settings');
+      if(settingsArr.length) SETTINGS = settingsArr[0];
+
+      updateStoreName();
+      applyDesignSettings();
+      renderDashboard();
+      buildNotifications();
+      document.getElementById('loadingOverlay').style.display = 'none';
+    }
+  } catch(e) { console.error('cache preload error', e); }
+
   const ok = await loadAllData();
   updateStoreName();
-  renderDashboard();
+  renderPage(getCurrentPage());
   buildNotifications();
   document.getElementById('loadingOverlay').style.display = 'none';
   if (!ok) {
-	toast('نەتوانرا پەیوەندی بە داتابەیس بکرێت. تکایە بەستنەوەی Supabase و خشتەکان بپشکنە.', 'error');
+    toast('نەتوانرا پەیوەندی بە داتابەیس بکرێت. تکایە بەستنەوەی Supabase و خشتەکان بپشکنە.', 'error');
+  } else {
+    subscribeRealtime();
   }
 }
+
 
 const SESSION_KEY = 'ms_unlocked';
 
@@ -5071,7 +5380,7 @@ function toggleFab() {
 }
 function fabAction(type) {
   toggleFab();
-  if(type === 'sale') { navigate(null,'sales'); setTimeout(()=>openSaleModal(),300); }
+if(type === 'sale') { navigate(null,'sales'); setTimeout(()=>document.getElementById('quickSaleSearch').focus(),300); }
   else if(type === 'repair') { navigate(null,'repairs'); setTimeout(()=>openRepairModal(),300); }
   else if(type === 'debt') { navigate(null,'debts'); setTimeout(()=>openDebtModal(),300); }
   else if(type === 'product') { navigate(null,'inventory'); setTimeout(()=>openProductModal(),300); }
