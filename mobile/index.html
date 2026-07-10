@@ -3258,6 +3258,45 @@ function saleFromDb(r) { return { id: r.id, productId: r.product_id, productName
 function debtFromDb(r) { return { id: r.id, customerName: r.customer_name, phone: r.phone, amount: Number(r.amount), paidAmount: Number(r.paid_amount), source: r.source, notes: r.notes, dueDate: r.due_date, status: r.status, createdAt: r.created_at, createdBy: r.created_by }; }
 function repairFromDb(r) { return { id: r.id, customerName: r.customer_name, phone: r.phone, device: r.device, deviceType: r.device_type, problem: r.problem, cost: Number(r.cost), status: r.status, notes: r.notes, imageUrl: r.image_url || null, createdAt: r.created_at, createdBy: r.created_by }; }
 
+async function reloadTable(table) {
+  try {
+    let query;
+    switch(table) {
+      case 'products': query = sb.from('products').select('*').order('created_at',{ascending:false}); break;
+      case 'repairs': query = sb.from('repairs').select('*').order('created_at',{ascending:false}); break;
+      case 'debts': query = sb.from('debts').select('*').order('created_at',{ascending:false}); break;
+      case 'plans': query = sb.from('plans').select('*').order('created_at',{ascending:false}); break;
+      case 'expenses': query = sb.from('expenses').select('*').order('created_at',{ascending:false}); break;
+      case 'categories': query = sb.from('categories').select('*').order('name',{ascending:true}); break;
+      case 'users': query = sb.from('users').select('*').order('created_at',{ascending:false}); break;
+      case 'settings': query = sb.from('settings').select('*').eq('id',1).single(); break;
+      default: return false;
+    }
+    const { data, error } = await query;
+    if(error) throw error;
+
+    if(table==='products') CACHE.products = (data||[]).map(productFromDb);
+    else if(table==='repairs') CACHE.repairs = (data||[]).map(repairFromDb);
+    else if(table==='debts') CACHE.debts = (data||[]).map(debtFromDb);
+    else if(table==='plans') CACHE.plans = (data||[]).map(r=>({id:r.id,title:r.title,content:r.content,status:r.status,createdAt:r.created_at,createdBy:r.created_by}));
+    else if(table==='expenses') CACHE.expenses = (data||[]).map(r=>({id:r.id,title:r.title,amount:Number(r.amount),category:r.category,note:r.note,createdAt:r.created_at,createdBy:r.created_by}));
+    else if(table==='categories') CACHE.categories = data||[];
+    else if(table==='users') { CACHE.users = data||[]; USERS = CACHE.users; }
+    else if(table==='settings') { CACHE.settings = data || SETTINGS; SETTINGS = CACHE.settings; }
+
+    // sync لە IDB بکە لە پشتەوە بەبێ چاوەڕوانی (خێراترە)
+    if(table==='settings') {
+      idbClear('settings').then(()=>idbPut('settings', SETTINGS));
+    } else {
+      idbClear(table).then(()=>idbPutAll(table, CACHE[table]));
+    }
+    return true;
+  } catch(err) {
+    console.error(`reloadTable(${table}) error:`, err);
+    return false;
+  }
+}
+
 
 async function loadAllData() {
   setConnStatus('loading');
@@ -4303,59 +4342,73 @@ async function saveProduct() {
   const buy=parseFloat(document.getElementById('pBuyPrice').value)||0;
   const sell=parseFloat(document.getElementById('pSellPrice').value)||0;
   const qty=parseInt(document.getElementById('pQty').value)||0;
-  const barcode=document.getElementById('pBarcode').value.trim()||null; // ✅ زیادکرا
+  const barcode=document.getElementById('pBarcode').value.trim()||null;
   if(!name||!cat||!sell) { toast('تکایە خانەی پێویستەکان پڕبکەرەوە','error'); return; }
-let image_url = editProductId ? (DB.get('products').find(x=>x.id===editProductId)?.imageUrl || null) : null;
+  let image_url = editProductId ? (DB.get('products').find(x=>x.id===editProductId)?.imageUrl || null) : null;
   const btn = document.getElementById('pSaveBtn');
   btn.disabled = true;
   try {
     if(selectedImageFile.product) {
-  image_url = await uploadImageToSupabase(selectedImageFile.product, 'products');
-} else if(window._removedExistingImage_product) {
-  image_url = null;
-}
+      image_url = await uploadImageToSupabase(selectedImageFile.product, 'products');
+    } else if(window._removedExistingImage_product) {
+      image_url = null;
+    }
+
+    const model = document.getElementById('pModel').value;
+    const notes = document.getElementById('pNotes').value;
 
     if(editProductId) {
+      const idx = CACHE.products.findIndex(p=>p.id===editProductId);
+      if(idx>-1) {
+        CACHE.products[idx] = { ...CACHE.products[idx], name, brand, model, category:cat, buyPrice:buy, sellPrice:sell, qty, notes, barcode, imageUrl:image_url };
+        renderInventory();
+      }
       const { error } = await sb.from('products').update({
-        name, brand, model: document.getElementById('pModel').value, category: cat,
+        name, brand, model, category: cat,
         buy_price: buy, sell_price: sell, qty, 
-        notes: document.getElementById('pNotes').value,
-        barcode,  // ✅ زیادکرا
-        image_url
+        notes, barcode, image_url
       }).eq('id', editProductId);
       if(error) throw error;
       toast('کاڵاکە نوێ کرایەوە','success');
     } else {
-      const { error } = await sb.from('products').insert({
-        name, brand, model: document.getElementById('pModel').value, category: cat,
+      const { data: inserted, error } = await sb.from('products').insert({
+        name, brand, model, category: cat,
         buy_price: buy, sell_price: sell, qty, 
-        notes: document.getElementById('pNotes').value,
-        barcode,  // ✅ زیادکرا
-        image_url
-      });
+        notes, barcode, image_url
+      }).select().single();
       if(error) throw error;
+      CACHE.products.unshift(productFromDb(inserted));
+      renderInventory();
       toast('کاڵای نوێ زیادکرا','success');
     }
-    await loadAllData();
-    closeModal('productModal'); renderInventory(); buildNotifications();
+    closeModal('productModal');
+    buildNotifications();
+    reloadTable('products');
   } catch(err) {
     console.error(err);
     toast('کێشە ڕوویدا: ' + (err.message||err), 'error');
+    reloadTable('products');
   } finally {
     btn.disabled = false;
   }
 }
 
+
+
 async function deleteProduct(id) {
   if(!confirm('دڵنیایت لە سڕینەوەی ئەم کاڵایە؟')) return;
+  const backup = CACHE.products.find(p=>p.id===id);
+  CACHE.products = CACHE.products.filter(p=>p.id!==id);
+  renderInventory();
   try {
-	const { error } = await sb.from('products').delete().eq('id', id);
-	if(error) throw error;
-	await loadAllData();
-	toast('کاڵاکە سڕایەوە','info'); renderInventory();
+    const { error } = await sb.from('products').delete().eq('id', id);
+    if(error) throw error;
+    toast('کاڵاکە سڕایەوە','info');
+    reloadTable('products');
   } catch(err) {
-	console.error(err);
-	toast('کێشە لە سڕینەوە: ' + (err.message||err), 'error');
+    console.error(err);
+    toast('کێشە لە سڕینەوە: ' + (err.message||err), 'error');
+    if(backup) { CACHE.products.unshift(backup); renderInventory(); }
   }
 }
 
@@ -4946,15 +4999,22 @@ if(selectedImageFile.repair) {
   image_url
   };
 try {
-	if(editRepairId) {
-	  const { error } = await sb.from('repairs').update(data).eq('id', editRepairId);
-	  if(error) throw error;
-	  toast('چاکسازیەکە نوێ کرایەوە','success');
-	} else {
-	  const { error } = await sb.from('repairs').insert({...data, created_by: currentUser?.name || null});
-	  if(error) throw error;
-	  toast('چاکسازی نوێ زیادکرا','success');
-	}
+	    if(editRepairId) {
+      const idx = CACHE.repairs.findIndex(r=>r.id===editRepairId);
+      if(idx>-1) { CACHE.repairs[idx] = { ...CACHE.repairs[idx], customerName:name, phone, device, deviceType:data.device_type, problem, cost:data.cost, status:data.status, notes:data.notes, imageUrl:image_url }; renderRepairs(); }
+      const { error } = await sb.from('repairs').update(data).eq('id', editRepairId);
+      if(error) throw error;
+      toast('چاکسازیەکە نوێ کرایەوە','success');
+    } else {
+      const { data: inserted, error } = await sb.from('repairs').insert({...data, created_by: currentUser?.name || null}).select().single();
+      if(error) throw error;
+      CACHE.repairs.unshift(repairFromDb(inserted));
+      renderRepairs();
+      toast('چاکسازی نوێ زیادکرا','success');
+    }
+    closeModal('repairModal'); buildNotifications();
+    reloadTable('repairs');
+
 
 	await loadAllData();
 	closeModal('repairModal'); renderRepairs(); buildNotifications();
@@ -4967,16 +5027,20 @@ try {
 }
 async function deleteRepair(id) {
   if(!confirm('دڵنیایت لە سڕینەوەی ئەم چاکسازییە؟')) return;
+  const backup = CACHE.repairs.find(r=>r.id===id);
+  CACHE.repairs = CACHE.repairs.filter(r=>r.id!==id);
+  renderRepairs();
   try {
-	const { error } = await sb.from('repairs').delete().eq('id', id);
-	if(error) throw error;
-	await loadAllData();
-	toast('چاکسازیەکە سڕایەوە','info'); renderRepairs(); buildNotifications();
+    const { error } = await sb.from('repairs').delete().eq('id', id);
+    if(error) throw error;
+    toast('چاکسازیەکە سڕایەوە','info'); buildNotifications();
+    reloadTable('repairs');
   } catch(err) {
-	console.error(err);
-	toast('کێشە لە سڕینەوە: ' + (err.message||err), 'error');
+    toast('کێشە لە سڕینەوە: ' + (err.message||err), 'error');
+    if(backup) { CACHE.repairs.unshift(backup); renderRepairs(); }
   }
 }
+
 function viewRepair(id) {
   const r = DB.get('repairs').find(x=>x.id===id);
   if(!r) return;
@@ -5101,24 +5165,29 @@ async function saveDebt() {
   const btn = document.getElementById('dSaveBtn');
   btn.disabled = true;
   try {
-	const { error } = await sb.from('debts').insert({
-	  customer_name: name, phone, amount, paid_amount: 0,
-	  source: 'other', notes: document.getElementById('dNotes').value,
-	  due_date: document.getElementById('dDueDate').value || null,
-	  status: 'pending', created_by: currentUser?.name || null
-	});
+    const { data: inserted, error } = await sb.from('debts').insert({
+      customer_name: name, phone, amount, paid_amount: 0,
+      source: 'other', notes: document.getElementById('dNotes').value,
+      due_date: document.getElementById('dDueDate').value || null,
+      status: 'pending', created_by: currentUser?.name || null
+    }).select().single();
 
-	if(error) throw error;
-	toast('قەرزی نوێ زیادکرا','success');
-	await loadAllData();
-	closeModal('debtModal'); renderDebts(); buildNotifications();
+    if(error) throw error;
+
+    CACHE.debts.unshift(debtFromDb(inserted));
+    renderDebts();
+    toast('قەرزی نوێ زیادکرا','success');
+    closeModal('debtModal');
+    buildNotifications();
+    reloadTable('debts');
   } catch(err) {
-	console.error(err);
-	toast('کێشە ڕوویدا: ' + (err.message||err), 'error');
+    console.error(err);
+    toast('کێشە ڕوویدا: ' + (err.message||err), 'error');
   } finally {
-	btn.disabled = false;
+    btn.disabled = false;
   }
 }
+
 
 
 document.addEventListener('fullscreenchange', function() {
