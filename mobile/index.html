@@ -3308,6 +3308,7 @@ const [pRes, sRes, rRes, dRes, plRes, stRes, exRes, catRes, usrRes] = await Prom
     if(sRes.error) throw sRes.error;
     if(rRes.error) throw rRes.error;
     if(plRes.error) throw plRes.error;
+    if(usrRes.error) throw usrRes.error;
 
     CACHE.products = (pRes.data || []).map(productFromDb);
     CACHE.sales = (sRes.data || []).map(saleFromDb);
@@ -5461,12 +5462,23 @@ let currentUser = null;
   }
 })();
 
-function checkPin(val) {
+async function checkPin(val) {
   if(val.length < 4) { document.getElementById('pinError').textContent = ''; return; }
-  const user = USERS.find(u => u.pin === val && u.active !== false);
+
+  let user = USERS.find(u => u.pin === val && u.active !== false);
+
+  // ئەگەر لە یادگاری خۆیدا نەدۆزرایەوە، ڕاستەوخۆ لە Supabase بگەڕێ
+  if(!user) {
+    try {
+      const { data } = await sb.from('users').select('*').eq('pin', val).eq('active', true).single();
+      if(data) user = data;
+    } catch(e) { /* نەدۆزرایەوە */ }
+  }
+
   if(user) {
     currentUser = { id: user.id, name: user.name, role: user.role, permissions: user.permissions || {} };
     sessionStorage.setItem('ms_current_user', JSON.stringify(currentUser));
+    console.log('چوونەژوورەوە کرا وەک:', currentUser);
     document.getElementById('lockOverlay').style.display = 'none';
     document.documentElement.requestFullscreen().catch(()=>{});
     applyRolePermissions();
@@ -5475,6 +5487,7 @@ function checkPin(val) {
     document.getElementById('pinInput').value = '';
   }
 }
+
 
 const PERM_SECTIONS = ['inventory','sales','repairs','debts','plans','expenses','reports'];
 const PERM_LABELS = {inventory:'کاڵا',sales:'فرۆشتن',repairs:'چاکسازی',debts:'قەرزەکان',plans:'پلانەکان',expenses:'خەرجییەکان',reports:'ڕاپۆرتەکان'};
