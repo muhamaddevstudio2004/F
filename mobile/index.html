@@ -1406,13 +1406,18 @@ kbd {
   </nav>
 
 <div class="sidebar-footer" style="flex-direction:column;gap:10px;align-items:stretch">
+  <div id="currentUserLabel" style="text-align:center;font-size:12.5px;font-weight:600;color:var(--text)"></div>
   <div class="flex items-center" style="justify-content:center">
     <span class="conn-status loading" id="connStatus"><span class="conn-dot"></span> پەیوەندی...</span>
   </div>
   <button class="footer-btn" onclick="openHelpModal()">
     <i class="ti ti-help-circle"></i> چۆن بەکاربێنم؟
   </button>
+  <button class="footer-btn" onclick="logoutUser()" style="color:var(--danger)">
+    <i class="ti ti-logout"></i> دەرچوون
+  </button>
 </div>
+
 
 
   </div>
@@ -2961,8 +2966,9 @@ const IDB_NAME = 'MobileStoreDB';
 const IDB_VERSION = 1;
 const IDB_STORES = [
   'products','sales','repairs','debts',
-  'plans','expenses','settings','categories','sync_queue'
+  'plans','expenses','settings','categories','sync_queue','users'
 ];
+
 
 
 let idb = null;
@@ -3197,6 +3203,7 @@ async function loadAllData() {
       CACHE.debts = await idbGetAll('debts');
       CACHE.plans = await idbGetAll('plans');
       CACHE.categories = await idbGetAll('categories');
+      CACHE.users = await idbGetAll('users');
       const settingsArr = await idbGetAll('settings');
       if(settingsArr.length) { SETTINGS = settingsArr[0]; }
       setConnStatus('offline');
@@ -3210,7 +3217,7 @@ async function loadAllData() {
 
   // ئۆنلاینە — لە Supabase بخوێنەرەوە
   try {
-    const [pRes, sRes, rRes, dRes, plRes, stRes, exRes, catRes] = await Promise.all([
+const [pRes, sRes, rRes, dRes, plRes, stRes, exRes, catRes, usrRes] = await Promise.all([
   sb.from('products').select('*').order('created_at', { ascending: false }),
   sb.from('sales').select('*').order('created_at', { ascending: false }),
   sb.from('repairs').select('*').order('created_at', { ascending: false }),
@@ -3218,8 +3225,10 @@ async function loadAllData() {
   sb.from('plans').select('*').order('created_at', { ascending: false }),
   sb.from('settings').select('*').eq('id',1).single(),
   sb.from('expenses').select('*').order('created_at', { ascending: false }),
-  sb.from('categories').select('*').order('name', { ascending: true })
+  sb.from('categories').select('*').order('name', { ascending: true }),
+  sb.from('users').select('*').eq('active', true)
 ]);
+
 
 
     if(pRes.error) throw pRes.error;
@@ -3243,6 +3252,8 @@ async function loadAllData() {
     CACHE.settings = stRes.data || SETTINGS;
     SETTINGS = CACHE.settings;
     if(catRes.error) throw catRes.error;
+        CACHE.users = usrRes.data || [];
+    USERS = CACHE.users;
     CACHE.categories = catRes.data || [];
 
     // پاشەکەوتکردن لە IDB بۆ ئۆفلاین
@@ -3252,6 +3263,7 @@ async function loadAllData() {
     await idbClear('debts'); await idbPutAll('debts', CACHE.debts);
     await idbClear('plans'); await idbPutAll('plans', CACHE.plans);
     await idbClear('categories'); await idbPutAll('categories', CACHE.categories);
+        await idbClear('users'); await idbPutAll('users', CACHE.users);
     await idbClear('settings'); await idbPut('settings', SETTINGS);
     await idbClear('expenses'); 
 await idbPutAll('expenses', CACHE.expenses);
@@ -3271,6 +3283,7 @@ await idbPutAll('expenses', CACHE.expenses);
       CACHE.debts = await idbGetAll('debts');
       CACHE.plans = await idbGetAll('plans');
       CACHE.categories = await idbGetAll('categories');
+      CACHE.users = await idbGetAll('users');
       const settingsArr = await idbGetAll('settings');
       if(settingsArr.length) { SETTINGS = settingsArr[0]; }
       setConnStatus('offline');
@@ -5328,6 +5341,9 @@ async function init() {
       CACHE.expenses = await idbGetAll('expenses');
       const settingsArr = await idbGetAll('settings');
       if(settingsArr.length) SETTINGS = settingsArr[0];
+            CACHE.users = await idbGetAll('users');
+      if(CACHE.users.length) USERS = CACHE.users;
+
 
       updateStoreName();
       applyDesignSettings();
@@ -5341,6 +5357,7 @@ async function init() {
   updateStoreName();
   renderPage(getCurrentPage());
   buildNotifications();
+    applyRolePermissions();
   document.getElementById('loadingOverlay').style.display = 'none';
   if (!ok) {
     toast('نەتوانرا پەیوەندی بە داتابەیس بکرێت. تکایە بەستنەوەی Supabase و خشتەکان بپشکنە.', 'error');
@@ -5350,25 +5367,57 @@ async function init() {
 }
 
 
-const SESSION_KEY = 'ms_unlocked';
+let USERS = [];
+let currentUser = null;
+
+// ئەگەر پێشتر چوونەژوورەوە کراوە لەم session-دا، دیسان پینکۆد نەخوازێت
+(function restoreSession(){
+  const saved = sessionStorage.getItem('ms_current_user');
+  if(saved) {
+    currentUser = JSON.parse(saved);
+    document.getElementById('lockOverlay').style.display = 'none';
+  }
+})();
 
 function checkPin(val) {
   if(val.length < 4) { document.getElementById('pinError').textContent = ''; return; }
-  if(val === SETTINGS.app_pin) {
+  const user = USERS.find(u => u.pin === val && u.active !== false);
+  if(user) {
+    currentUser = { id: user.id, name: user.name, role: user.role };
+    sessionStorage.setItem('ms_current_user', JSON.stringify(currentUser));
     document.getElementById('lockOverlay').style.display = 'none';
     document.documentElement.requestFullscreen().catch(()=>{});
+    applyRolePermissions();
   } else {
     document.getElementById('pinError').textContent = 'پینکۆد هەڵەیە';
     document.getElementById('pinInput').value = '';
   }
 }
 
+function applyRolePermissions() {
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  const settingsNav = document.querySelector('.nav-item[data-page="settings"]');
+  if(settingsNav) settingsNav.style.display = isAdmin ? '' : 'none';
+  const label = document.getElementById('currentUserLabel');
+  if(label) label.textContent = currentUser ? ('👤 ' + currentUser.name) : '';
+}
+
+function logoutUser() {
+  sessionStorage.removeItem('ms_current_user');
+  currentUser = null;
+  location.reload();
+}
+
+
 (async function preload(){
   try {
     const { data } = await sb.from('settings').select('*').eq('id',1).single();
     if(data) SETTINGS = data;
     applyDesignSettings();
-  } catch(e) { console.error('preload settings error', e); }
+    const { data: uData } = await sb.from('users').select('*').eq('active', true);
+    if(uData) USERS = uData;
+    applyRolePermissions();
+  } catch(e) { console.error('preload error', e); }
 })();
 
 // ── FAB ──
