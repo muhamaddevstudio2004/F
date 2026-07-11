@@ -1621,8 +1621,8 @@ kbd {
 		<div class="table-wrap">
 		  <table>
 <thead><tr>
-			  <th>#</th><th>کاڵا</th><th>بڕ</th><th>نرخی یەکە</th><th>کۆی نرخ</th><th>قازانج</th><th>بەروار</th><th>کردار</th>
-			</tr></thead>
+  <th>#</th><th>کاڵا</th><th>بڕ</th><th>نرخی یەکە</th><th>کۆی نرخ</th><th>قازانج</th><th>کارمەند</th><th>بەروار</th><th>کردار</th>
+</tr></thead>
 			<tbody id="saleBody"></tbody>
 
 		  </table>
@@ -3192,8 +3192,33 @@ function subscribeRealtime() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'expenses' }, scheduleRealtimeRefresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, scheduleRealtimeRefresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, scheduleRealtimeRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, handleUserRealtimeChange) // ✅ نوێ
     .subscribe();
 }
+
+// ✅ فەنکشنی نوێ — لای هەر شوێنێک زیادی بکە (نزیک applyRolePermissions باشترە)
+function handleUserRealtimeChange(payload) {
+  scheduleRealtimeRefresh(); // بۆ نوێکردنەوەی لیستی کارمەندان لای بەڕێوەبەر
+
+  if(!currentUser) return;
+  const row = payload.new || payload.old;
+  if(!row || row.id !== currentUser.id) return; // تەنها ئەگەر خۆیەتی
+
+  if(payload.eventType === 'DELETE' || row.active === false) {
+    toast('هەژمارەکەت لابرا یان ناچالاک کرا', 'error');
+    logoutUser();
+    return;
+  }
+
+  const updated = { id: row.id, name: row.name, role: row.role, permissions: row.permissions || {} };
+  const changed = updated.role !== currentUser.role ||
+                  JSON.stringify(updated.permissions) !== JSON.stringify(currentUser.permissions);
+  currentUser = updated;
+  sessionStorage.setItem('ms_current_user', JSON.stringify(currentUser));
+  applyRolePermissions();
+  if(changed) toast('دەسەڵاتەکانت نوێکرانەوە', 'info');
+}
+
 
 function getCurrentPage() {
   const active = document.querySelector('.nav-item.active');
@@ -4700,7 +4725,7 @@ function renderSales() {
   </div>
 </td>
 
-</tr>`).join('') : `<tr><td colspan="8"><div class="empty-state"><i class="ti ti-shopping-cart"></i><p>هیچ فرۆشتنێک نیە</p></div></td></tr>`;
+</tr>`).join('') : `<tr><td colspan="9"><div class="empty-state"><i class="ti ti-shopping-cart"></i><p>هیچ فرۆشتنێک نیە</p></div></td></tr>`;
 }
 
 function openSaleModal() {
@@ -5522,8 +5547,10 @@ let currentUser = null;
   if(saved) {
     currentUser = JSON.parse(saved);
     document.getElementById('lockOverlay').style.display = 'none';
+    applyRolePermissions(); // ✅ زوو جێبەجێی بکە — پێش چوونەژوورەوەی داتا، بۆ لابردنی گلیچ
   }
 })();
+
 
 async function checkPin(val) {
   if(val.length < 4) { document.getElementById('pinError').textContent = ''; return; }
