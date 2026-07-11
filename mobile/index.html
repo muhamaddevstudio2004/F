@@ -4983,23 +4983,23 @@ async function saveRepair() {
   const problem=document.getElementById('rProblem').value.trim();
   if(!name||!phone||!device||!problem) { toast('تکایە خانەی پێویستەکان پڕبکەرەوە','error'); return; }
 
-let image_url = editRepairId ? (DB.get('repairs').find(x=>x.id===editRepairId)?.imageUrl || null) : null;
-if(selectedImageFile.repair) {
-  image_url = await uploadImageToSupabase(selectedImageFile.repair, 'repairs');
-} else if(window._removedExistingImage_repair) {
-  image_url = null;
-}
+  let image_url = editRepairId ? (DB.get('repairs').find(x=>x.id===editRepairId)?.imageUrl || null) : null;
+  if(selectedImageFile.repair) {
+    image_url = await uploadImageToSupabase(selectedImageFile.repair, 'repairs');
+  } else if(window._removedExistingImage_repair) {
+    image_url = null;
+  }
 
   const btn = document.getElementById('rSaveBtn');
   btn.disabled = true;
   const data = {
-	customer_name: name, phone, device, device_type: document.getElementById('rDeviceType').value,
-	problem, cost: parseFloat(document.getElementById('rCost').value)||0,
-	status: document.getElementById('rStatus').value, notes: document.getElementById('rNotes').value,
-  image_url
+    customer_name: name, phone, device, device_type: document.getElementById('rDeviceType').value,
+    problem, cost: parseFloat(document.getElementById('rCost').value)||0,
+    status: document.getElementById('rStatus').value, notes: document.getElementById('rNotes').value,
+    image_url
   };
-try {
-	    if(editRepairId) {
+  try {
+    if(editRepairId) {
       const idx = CACHE.repairs.findIndex(r=>r.id===editRepairId);
       if(idx>-1) { CACHE.repairs[idx] = { ...CACHE.repairs[idx], customerName:name, phone, device, deviceType:data.device_type, problem, cost:data.cost, status:data.status, notes:data.notes, imageUrl:image_url }; renderRepairs(); }
       const { error } = await sb.from('repairs').update(data).eq('id', editRepairId);
@@ -5015,12 +5015,13 @@ try {
     closeModal('repairModal'); buildNotifications();
     reloadTable('repairs');
   } catch(err) {
-	console.error(err);
-	toast('کێشە ڕوویدا: ' + (err.message||err), 'error');
+    console.error(err);
+    toast('کێشە ڕوویدا: ' + (err.message||err), 'error');
   } finally {
-	btn.disabled = false;
+    btn.disabled = false;
   }
 }
+
 async function deleteRepair(id) {
   if(!confirm('دڵنیایت لە سڕینەوەی ئەم چاکسازییە؟')) return;
   const backup = CACHE.repairs.find(r=>r.id===id);
