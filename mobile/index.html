@@ -5014,10 +5014,6 @@ try {
     }
     closeModal('repairModal'); buildNotifications();
     reloadTable('repairs');
-
-
-	await loadAllData();
-	closeModal('repairModal'); renderRepairs(); buildNotifications();
   } catch(err) {
 	console.error(err);
 	toast('کێشە ڕوویدا: ' + (err.message||err), 'error');
@@ -5575,15 +5571,17 @@ function applyRolePermissions() {
     if(nav) nav.style.display = can(sec,'view') ? '' : 'none';
   });
 
-const label = document.getElementById('currentUserLabel');
+const label = document.getElementById('sidebarUserLabel');
 if(label) {
   if(currentUser) {
     const icon = currentUser.role === 'admin' ? 'ti-shield-star' : 'ti-user';
-    label.innerHTML = `<i class="ti ${icon}" style="margin-left:5px"></i> ${currentUser.name}`;
+    const roleLabel = currentUser.role === 'admin' ? 'بەڕێوەبەر' : 'کارمەند';
+    label.innerHTML = `<i class="ti ${icon}" style="margin-left:4px;font-size:12px;vertical-align:-1px"></i> ${currentUser.name} (${roleLabel})`;
   } else {
-    label.textContent = '';
+    label.textContent = 'سیستەمی بەڕێوەبردن';
   }
 }
+
 
 }
 
