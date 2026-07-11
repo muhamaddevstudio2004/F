@@ -5553,8 +5553,8 @@ try { document.documentElement.requestFullscreen().catch(()=>{}); } catch(e) {}
 }
 
 
-const PERM_SECTIONS = ['inventory','sales','repairs','debts','plans','expenses','reports'];
-const PERM_LABELS = {inventory:'کاڵا',sales:'فرۆشتن',repairs:'چاکسازی',debts:'قەرزەکان',plans:'پلانەکان',expenses:'خەرجییەکان',reports:'ڕاپۆرتەکان'};
+const PERM_SECTIONS = ['dashboard','inventory','sales','repairs','debts','plans','expenses','reports'];
+const PERM_LABELS = {dashboard:'داشبۆرد',inventory:'کاڵا',sales:'فرۆشتن',repairs:'چاکسازی',debts:'قەرزەکان',plans:'پلانەکان',expenses:'خەرجییەکان',reports:'ڕاپۆرتەکان'};
 
 function can(section, action) {
   if(!currentUser) return false;
@@ -5572,16 +5572,30 @@ function applyRolePermissions() {
     if(nav) nav.style.display = can(sec,'view') ? '' : 'none';
   });
 
-const label = document.getElementById('sidebarUserLabel');
-if(label) {
-  if(currentUser) {
-    const icon = currentUser.role === 'admin' ? 'ti-shield-star' : 'ti-user';
-    const roleLabel = currentUser.role === 'admin' ? 'بەڕێوەبەر' : 'کارمەند';
-    label.innerHTML = `<i class="ti ${icon}" style="margin-left:4px;font-size:12px;vertical-align:-1px"></i> ${currentUser.name} (${roleLabel})`;
-  } else {
-    label.textContent = 'سیستەمی بەڕێوەبردن';
+  const label = document.getElementById('sidebarUserLabel');
+  if(label) {
+    if(currentUser) {
+      const icon = currentUser.role === 'admin' ? 'ti-shield-star' : 'ti-user';
+      const roleLabel = currentUser.role === 'admin' ? 'بەڕێوەبەر' : 'کارمەند';
+      label.innerHTML = `<i class="ti ${icon}" style="margin-left:4px;font-size:12px;vertical-align:-1px"></i> ${currentUser.name} (${roleLabel})`;
+    } else {
+      label.textContent = 'سیستەمی بەڕێوەبردن';
+    }
+  }
+
+  // ✅ ئەگەر بەشی چالاک شاراوەیە، بگۆڕە بۆ یەکەم بەشی دیارە
+  const activeNav = document.querySelector('.nav-item.active');
+  if(activeNav && activeNav.style.display === 'none') {
+    const firstVisible = document.querySelector('.sidebar-nav .nav-item:not([style*="display: none"])');
+    if(firstVisible) navigate(firstVisible);
+  }
+
+  // ئەگەر داشبۆرد دووبارە دیار بووەوە، دووبارە ڕێندەری بکە بۆ نیشاندان/شاردنەوەی قازانج
+  if(document.getElementById('page-dashboard')?.classList.contains('active')) {
+    renderDashboard();
   }
 }
+
 
 
 }
@@ -6420,6 +6434,15 @@ function openEmployeeModal(id) {
   }
   document.getElementById('empPermGrid').innerHTML = PERM_SECTIONS.map(sec=>{
     const p = perms[sec] || {};
+    if(sec === 'dashboard') {
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--card);border:1px solid var(--card-border);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+        <span style="font-size:13px;font-weight:600;min-width:70px">${PERM_LABELS[sec]}</span>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:4px;font-size:11.5px"><input type="checkbox" data-sec="${sec}" data-act="view" ${p.view?'checked':''}> بینین</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11.5px"><input type="checkbox" data-sec="${sec}" data-act="profit" ${p.profit?'checked':''}> بینینی قازانج</label>
+        </div>
+      </div>`;
+    }
     return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--card);border:1px solid var(--card-border);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;gap:8px">
       <span style="font-size:13px;font-weight:600;min-width:70px">${PERM_LABELS[sec]}</span>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
@@ -6430,6 +6453,7 @@ function openEmployeeModal(id) {
       </div>
     </div>`;
   }).join('');
+
   openModal('employeeModal');
 }
 
