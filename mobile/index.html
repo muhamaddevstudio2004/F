@@ -5537,6 +5537,48 @@ async function init() {
   }
 }
 
+const PERM_SECTIONS = ['dashboard','inventory','sales','repairs','debts','plans','expenses','reports'];
+const PERM_LABELS = {dashboard:'داشبۆرد',inventory:'کاڵا',sales:'فرۆشتن',repairs:'چاکسازی',debts:'قەرزەکان',plans:'پلانەکان',expenses:'خەرجییەکان',reports:'ڕاپۆرتەکان'};
+
+function can(section, action) {
+  if(!currentUser) return false;
+  if(currentUser.role === 'admin') return true;
+  return !!(currentUser.permissions && currentUser.permissions[section] && currentUser.permissions[section][action]);
+}
+
+function applyRolePermissions() {
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  const settingsNav = document.querySelector('.nav-item[data-page="settings"]');
+  if(settingsNav) settingsNav.style.display = isAdmin ? '' : 'none';
+
+  PERM_SECTIONS.forEach(sec => {
+    const nav = document.querySelector('.nav-item[data-page="'+sec+'"]');
+    if(nav) nav.style.display = can(sec,'view') ? '' : 'none';
+  });
+
+  const label = document.getElementById('sidebarUserLabel');
+  if(label) {
+    if(currentUser) {
+      const icon = currentUser.role === 'admin' ? 'ti-shield-star' : 'ti-user';
+      const roleLabel = currentUser.role === 'admin' ? 'بەڕێوەبەر' : 'کارمەند';
+      label.innerHTML = `<i class="ti ${icon}" style="margin-left:4px;font-size:12px;vertical-align:-1px"></i> ${currentUser.name} (${roleLabel})`;
+    } else {
+      label.textContent = 'سیستەمی بەڕێوەبردن';
+    }
+  }
+
+  // ✅ ئەگەر بەشی چالاک شاراوەیە، بگۆڕە بۆ یەکەم بەشی دیارە
+  const activeNav = document.querySelector('.nav-item.active');
+  if(activeNav && activeNav.style.display === 'none') {
+    const firstVisible = document.querySelector('.sidebar-nav .nav-item:not([style*="display: none"])');
+    if(firstVisible) navigate(firstVisible);
+  }
+
+  // ئەگەر داشبۆرد دووبارە دیار بووەوە، دووبارە ڕێندەری بکە بۆ نیشاندان/شاردنەوەی قازانج
+  if(document.getElementById('page-dashboard')?.classList.contains('active')) {
+    renderDashboard();
+  }
+}
 
 let USERS = [];
 let currentUser = null;
