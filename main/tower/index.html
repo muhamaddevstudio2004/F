@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ku" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -8,12 +8,12 @@
     <script src="https://codepen.io/steveg3003/pen/zBVakw"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r83/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
-    <title>GRAW</title>
+    <title>قەڵا دروست بکە!</title>
     <link rel="icon" href="https://i.ibb.co/M6KTWnf/pic.jpg" />
 
     <style>
     
-    @import url("https://fonts.googleapis.com/css?family=Comfortaa");
+    @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@700;800&display=swap");
 html,
 body {
   margin: 0;
@@ -21,7 +21,7 @@ body {
   height: 100%;
   width: 100%;
   position: relative;
-  font-family: "Comfortaa", cursive;
+  font-family: 'Noto Sans Arabic', sans-serif;
 }
 #container {
   width: 100%;
@@ -120,6 +120,22 @@ body {
 #container.ended .game-over p {
   transition-delay: 0.3s;
 }
+#combo-msg{
+  position:absolute;
+  top:22vh;left:0;width:100%;
+  text-align:center;
+  font-size:22px;
+  font-weight:800;
+  color:#22c55e;
+  opacity:0;
+  transform:translatey(-10px) scale(.9);
+  transition:opacity .3s ease, transform .3s ease;
+  pointer-events:none;
+}
+#combo-msg.show{
+  opacity:1;
+  transform:translatey(0) scale(1);
+}
     
     </style>
   </head>
@@ -128,20 +144,20 @@ body {
     <div id="container">
       <div id="game"></div>
       <div id="score">0</div>
-      <div id="instructions">
-        Click (or press the spacebar) to place the block
+      <div id="combo-msg">ریکۆردی نەێت تۆمار کرد! 🎉</div>
+        <div id="instructions">
+        کلیک بکە (یان سپەیس دابگرە) بۆ دانانی بەردەکە
       </div>
       <div class="game-over">
-        <h2>Game Over</h2>
-        <p>You did great, you're the best.</p>
-        <p>Click or spacebar to start again</p>
+        <h2> تەواو بوو</h2>
+        <p>باشبوەیت، بەڵام زیاتر هەوڵدە!</p>
+        <p>کلیک یان سپەیس داگرە بۆ دووبارە دەستپێکردن</p>
       </div>
       <div class="game-ready">
-        <div id="start-button">Start</div>
+        <div id="start-button">بابڕوا</div>
         <div></div>
       </div>
     </div>
-    <footer>Project By -: TANAY PADAR</footer>
     
     <script>
 
@@ -400,6 +416,10 @@ var Game = /** @class */ (function () {
       RESETTING: "resetting",
     };
     this.blocks = [];
+    this.perfectStreak = 0;
+    this.baseSize = 10;
+    this.growFactor = 1.15;
+    this.comboMsgEl = document.getElementById("combo-msg");
     this.state = this.STATES.LOADING;
     this.stage = new Stage();
     this.mainContainer = document.getElementById("container");
@@ -491,6 +511,7 @@ var Game = /** @class */ (function () {
       },
     });
     this.blocks = this.blocks.slice(0, 1);
+    this.perfectStreak = 0;
     setTimeout(function () {
       _this.startGame();
     }, cameraMoveSpeed * 1000);
@@ -499,6 +520,24 @@ var Game = /** @class */ (function () {
     var _this = this;
     var currentBlock = this.blocks[this.blocks.length - 1];
     var newBlocks = currentBlock.place();
+
+    if (newBlocks.bonus) {
+      this.perfectStreak++;
+      if (this.perfectStreak % 3 === 0) {
+        currentBlock.dimension.width = Math.min(
+          this.baseSize,
+          currentBlock.dimension.width * this.growFactor
+        );
+        currentBlock.dimension.depth = Math.min(
+          this.baseSize,
+          currentBlock.dimension.depth * this.growFactor
+        );
+        this.showComboMessage();
+      }
+    } else {
+      this.perfectStreak = 0;
+    }
+
     this.newBlocks.remove(currentBlock.mesh);
     if (newBlocks.placed) this.placedBlocks.add(newBlocks.placed);
     if (newBlocks.chopped) {
@@ -537,6 +576,15 @@ var Game = /** @class */ (function () {
       TweenLite.to(newBlocks.chopped.rotation, 1, rotationParams);
     }
     this.addBlock();
+  };
+  Game.prototype.showComboMessage = function () {
+    var _this = this;
+    if (!this.comboMsgEl) return;
+    this.comboMsgEl.classList.add("show");
+    clearTimeout(this._comboTimer);
+    this._comboTimer = setTimeout(function () {
+      _this.comboMsgEl.classList.remove("show");
+    }, 900);
   };
   Game.prototype.addBlock = function () {
     var lastBlock = this.blocks[this.blocks.length - 1];
