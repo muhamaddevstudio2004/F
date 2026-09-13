@@ -528,10 +528,22 @@ var Game = /** @class */ (function () {
     var _this = this;
     var currentBlock = this.blocks[this.blocks.length - 1];
     var newBlocks = currentBlock.place();
+    var lateGameLevel = 30;
+    var lateGameGrowFactor = 1.06;
 
     if (newBlocks.bonus) {
       this.perfectStreak++;
-      if (this.perfectStreak % 3 === 0) {
+      if (currentBlock.index >= lateGameLevel) {
+        currentBlock.dimension.width = Math.min(
+          this.baseSize,
+          currentBlock.dimension.width * lateGameGrowFactor
+        );
+        currentBlock.dimension.depth = Math.min(
+          this.baseSize,
+          currentBlock.dimension.depth * lateGameGrowFactor
+        );
+        this.showComboMessage();
+      } else if (this.perfectStreak % 3 === 0) {
         currentBlock.dimension.width = Math.min(
           this.baseSize,
           currentBlock.dimension.width * this.growFactor
