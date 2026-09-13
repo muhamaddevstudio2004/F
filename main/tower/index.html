@@ -304,9 +304,6 @@ var Block = /** @class */ (function () {
         Math.random() > 0.5 ? -this.MOVE_AMOUNT : this.MOVE_AMOUNT;
     }
   }
-  Block.prototype.reverseDirection = function () {
-    this.direction = this.direction > 0 ? this.speed : Math.abs(this.speed);
-  };
   Block.prototype.place = function () {
     this.state = this.STATES.STOPPED;
     var overlap =
@@ -319,11 +316,19 @@ var Block = /** @class */ (function () {
       plane: this.workingPlane,
       direction: this.direction,
     };
-    if (this.dimension[this.workingDimension] - overlap < 0.3) {
+    var maxTolerance = 1.6;
+    var minTolerance = 0.3;
+    var toleranceDecayLevels = 25;
+    var progress = Math.min(this.index / toleranceDecayLevels, 1);
+    var tolerance = maxTolerance - (maxTolerance - minTolerance) * progress;
+    if (this.dimension[this.workingDimension] - overlap < tolerance) {
+      var beforeSnapValue = this.position[this.workingPlane];
       overlap = this.dimension[this.workingDimension];
       blocksToReturn.bonus = true;
       this.position.x = this.targetBlock.position.x;
       this.position.z = this.targetBlock.position.z;
+      blocksToReturn.snapFrom = beforeSnapValue;
+      blocksToReturn.snapTo = this.position[this.workingPlane];
       this.dimension.width = this.targetBlock.dimension.width;
       this.dimension.depth = this.targetBlock.dimension.depth;
     }
@@ -539,7 +544,17 @@ var Game = /** @class */ (function () {
     }
 
     this.newBlocks.remove(currentBlock.mesh);
-    if (newBlocks.placed) this.placedBlocks.add(newBlocks.placed);
+    if (newBlocks.placed) {
+      this.placedBlocks.add(newBlocks.placed);
+      if (newBlocks.bonus) {
+        this.playPerfectFeedback(
+          newBlocks.placed,
+          newBlocks.plane,
+          newBlocks.snapFrom,
+          newBlocks.snapTo
+        );
+      }
+    }
     if (newBlocks.chopped) {
       this.choppedBlocks.add(newBlocks.chopped);
       var positionParams = {
@@ -576,6 +591,30 @@ var Game = /** @class */ (function () {
       TweenLite.to(newBlocks.chopped.rotation, 1, rotationParams);
     }
     this.addBlock();
+  };
+  Game.prototype.playPerfectFeedback = function (mesh, plane, snapFrom, snapTo) {
+    if (typeof snapFrom === "number" && Math.abs(snapFrom - snapTo) > 0.05) {
+      mesh.position[plane] = snapFrom;
+      var target = {};
+      target[plane] = snapTo;
+      target.ease = Power2.easeOut;
+      TweenLite.to(mesh.position, 0.18, target);
+    }
+    var s = { x: mesh.scale.x, y: mesh.scale.y, z: mesh.scale.z };
+    TweenLite.to(mesh.scale, 0.12, {
+      x: s.x * 1.08,
+      y: s.y * 1.15,
+      z: s.z * 1.08,
+      ease: Power1.easeOut,
+      onComplete: function () {
+        TweenLite.to(mesh.scale, 0.18, {
+          x: s.x,
+          y: s.y,
+          z: s.z,
+          ease: Power1.easeInOut,
+        });
+      },
+    });
   };
   Game.prototype.showComboMessage = function () {
     var _this = this;
