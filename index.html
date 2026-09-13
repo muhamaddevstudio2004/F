@@ -14,14 +14,15 @@
   --gap: clamp(12px, 3vw, 18px);
   --radius: clamp(20px, 4.5vw, 28px);
 }
+html,body{height:100%;overflow:hidden;}
 body{
   background:linear-gradient(160deg,#0d0d0d 0%,#1a1a1a 100%);
-  min-height:100vh;
   color:#fff;
-  overflow-x:hidden;
-  padding-bottom:40px;
 }
-.app-wrap{max-width:540px;margin:0 auto;padding:0 var(--gap);}
+.app-wrap{
+  max-width:540px;margin:0 auto;padding:0 var(--gap) 40px;
+  height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
 @media(min-width:600px){.app-wrap{max-width:640px;}}
 
 /* HEADER */
@@ -86,11 +87,76 @@ body{
 .badge-new{background:#ff3b3b;color:#fff;}
 .badge-popular{background:#3b82f6;color:#fff;}
 .badge-online{background:#22c55e;color:#fff;}
+
 .empty-note{
   text-align:center;color:rgba(255,255,255,.35);
   font-size:13px;font-weight:700;
   padding:40px 0;
 }
+
+/* ══ GAME OVERLAY (iframe) ══ */
+.game-overlay{
+  position:fixed;inset:0;
+  z-index:5000;
+  background:#000;
+  opacity:0;
+  pointer-events:none;
+  transform:scale(.97);
+  transition:opacity .3s ease, transform .3s cubic-bezier(.34,1.1,.64,1);
+}
+.game-overlay.active{
+  opacity:1;
+  pointer-events:auto;
+  transform:scale(1);
+}
+.game-overlay iframe{
+  width:100%;height:100%;
+  border:none;
+  display:block;
+  background:#fff;
+}
+
+/* دوگمەی هۆڵد بۆ گەڕانەوە — سەرووی iframe */
+#gameBackWrap{
+  position:fixed;
+  bottom:18px;left:18px;
+  z-index:5100;
+  width:56px;height:56px;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s ease;
+}
+.game-overlay.active ~ #gameBackWrap{opacity:1;pointer-events:auto;}
+#gameBackBtn{
+  position:relative;width:100%;height:100%;border-radius:50%;
+  background:rgba(20,20,20,.6);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1.5px solid rgba(255,255,255,.18);
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:transform .15s cubic-bezier(.34,1.56,.64,1);
+}
+#gameBackBtn:active{transform:scale(.92);}
+#gameBackBtn svg{width:24px;height:24px;fill:#fff;opacity:.9;position:relative;z-index:2;}
+#gameBackRing{position:absolute;inset:-3px;border-radius:50%;pointer-events:none;}
+#gameBackRing svg{width:100%;height:100%;transform:rotate(-90deg);}
+#gameBackRing circle{
+  fill:none;stroke:#ffd400;stroke-width:3;stroke-linecap:round;
+  stroke-dasharray:157;stroke-dashoffset:157;
+  transition:stroke-dashoffset linear;
+}
+#gameBackWrap.holding #gameBackBtn{transform:scale(1.06);}
+#gameBackWrap.holding #gameBackRing circle{stroke-dashoffset:0;transition-duration:750ms;}
+#gameBackHint{
+  position:absolute;bottom:64px;left:50%;
+  transform:translateX(-50%) translateY(6px);
+  background:rgba(20,20,20,.85);color:#fff;
+  font-size:11px;font-weight:800;padding:6px 12px;border-radius:100px;
+  white-space:nowrap;opacity:0;
+  transition:opacity .2s ease, transform .2s ease;
+  pointer-events:none;
+}
+#gameBackWrap.holding #gameBackHint{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
@@ -104,13 +170,27 @@ body{
   </div>
 
   <div class="game-grid" id="gameGrid"></div>
-  <div class="empty-note hidden" id="emptyNote">هێشتا کاری لەسەر دەکرێت</div>
+  <div class="empty-note hidden" id="emptyNote">هێشتا یاری زیاد نەکراوە</div>
+</div>
+
+<!-- یاری کراوە لێرە بار دەبێت -->
+<div class="game-overlay" id="gameOverlay">
+  <iframe id="gameFrame" src="" allow="autoplay; clipboard-write; vibrate"></iframe>
+</div>
+
+<!-- دوگمەی هۆڵد بۆ گەڕانەوە -->
+<div id="gameBackWrap">
+  <div id="gameBackHint">هۆڵدی بکە بۆ گەڕانەوە</div>
+  <div id="gameBackBtn">
+    <div id="gameBackRing"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="25"/></svg></div>
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H8.41l3.29 3.29-1.41 1.42L4.83 12l5.46-5.71 1.41 1.42L8.41 11H17v2z"/></svg>
+  </div>
 </div>
 
 <script>
 /* ══════════════════════════════════════════════════
    لیستی یارییەکان — بۆ زیادکردنی یاری نوێ:
-   ١) فایلەکانی یارییەکە لە فۆڵدەرێکی نوێ دابنێ (بۆ نموونە games/newgame/)
+   ١) فایلەکانی یارییەکە لە فۆڵدەرێکی نوێ دابنێ
    ٢) ئۆبجێکتێکی نوێ زیاد بکە لەم لیستەی خوارەوە
    تەواو! پێویست بە هیچ گۆڕانکاریەکی تر نییە.
    ══════════════════════════════════════════════════ */
@@ -118,20 +198,20 @@ const GAMES = [
   {
     id: "sexur",
     title: "سیخوڕ",
-    folder: "main/sexur/",       // شوێنی فایلی index.html ی یارییەکە
+    folder: "main/sexur/",
     bg: "linear-gradient(150deg,#2a1a1a,#4a1010)",
     underline: "#ff4d4d",
-    thumb: "sexur.webp", // وێنەیەکی بچووک بۆ کارتەکە (ئارەزوومەندانە)
-    badge: "ONLINE" // "new" | "popular" | ""  یان بەتاڵ بۆ هیچ
+    thumb: "sexur.webp",
+    badge: "ONLINE"
   },
   {
     id: "tower",
     title: "تاوەر",
-    folder: "game/tower/tower.html",       // شوێنی فایلی index.html ی یارییەکە
+    folder: "game/tower/tower.html",
     bg: "linear-gradient(150deg,#2a1a1a,#4a1010)",
     underline: "#ff4d4d",
-    thumb: "", // وێنەیەکی بچووک بۆ کارتەکە (ئارەزوومەندانە)
-    badge: "NEW" // "new" | "popular" | ""  یان بەتاڵ بۆ هیچ
+    thumb: "",
+    badge: "NEW"
   },
   // یاری نوێ لێرە زیاد بکە، بۆ نموونە:
   // {
@@ -172,10 +252,61 @@ function renderGames(){
   `).join('');
 }
 
+/* ══ کردنەوە و داخستنی یاری لەناو iframe — بۆ ئەوەی URL هەمیشە دۆمەینی سەرەکی بمێنێتەوە ══ */
+const overlay = document.getElementById('gameOverlay');
+const frame = document.getElementById('gameFrame');
+
 function openGame(folder){
   if('vibrate' in navigator) navigator.vibrate(10);
-  window.location.href = folder;
+  frame.src = folder;
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  history.pushState({ game: folder }, '', location.pathname);
 }
+
+function closeGame(){
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  setTimeout(() => { frame.src = ''; }, 300);
+}
+
+/* دوگمەی وێبگەڕی گەڕانەوە (Android/Chrome) یاریەکە دادەخات لە جیاتی دەرچوون لە سایتەکە */
+window.addEventListener('popstate', () => {
+  if(overlay.classList.contains('active')) closeGame();
+});
+
+/* ══ دوگمەی هۆڵد بۆ گەڕانەوە ══ */
+const backWrap = document.getElementById('gameBackWrap');
+const backBtn = document.getElementById('gameBackBtn');
+const HOLD_MS = 750;
+let holdTimer = null, holding = false;
+
+function vib(p){ if('vibrate' in navigator) navigator.vibrate(p); }
+
+function startHold(){
+  if(holding) return;
+  holding = true;
+  backWrap.classList.add('holding');
+  vib(10);
+  holdTimer = setTimeout(() => {
+    vib([15,40,20]);
+    closeGame();
+    if(history.state && history.state.game) history.back();
+  }, HOLD_MS);
+}
+function cancelHold(){
+  if(!holding) return;
+  holding = false;
+  backWrap.classList.remove('holding');
+  clearTimeout(holdTimer);
+}
+
+backBtn.addEventListener('touchstart', e => { e.preventDefault(); startHold(); }, {passive:false});
+backBtn.addEventListener('touchend', cancelHold, {passive:true});
+backBtn.addEventListener('touchcancel', cancelHold, {passive:true});
+backBtn.addEventListener('mousedown', startHold);
+backBtn.addEventListener('mouseup', cancelHold);
+backBtn.addEventListener('mouseleave', cancelHold);
 
 renderGames();
 </script>
