@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#ffd84d">
+<title>یارییەکانی کوردی</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Arabic',sans-serif;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation;}
+:root{
+  --gap: clamp(12px, 3vw, 18px);
+  --radius: clamp(20px, 4.5vw, 28px);
+}
+body{
+  background:linear-gradient(160deg,#0d0d0d 0%,#1a1a1a 100%);
+  min-height:100vh;
+  color:#fff;
+  overflow-x:hidden;
+  padding-bottom:40px;
+}
+.app-wrap{max-width:540px;margin:0 auto;padding:0 var(--gap);}
+@media(min-width:600px){.app-wrap{max-width:640px;}}
+
+/* HEADER */
+.hub-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 0 18px;
+}
+.hub-title{font-size:clamp(22px,6vw,28px);font-weight:800;color:#fff;}
+.hub-sub{font-size:13px;font-weight:700;color:rgba(255,255,255,.4);margin-top:2px;}
+
+/* GRID */
+.game-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:var(--gap);
+  margin-top:8px;
+}
+.game-card{
+  position:relative;
+  border-radius:var(--radius);
+  overflow:hidden;
+  min-height:clamp(180px,42vw,220px);
+  cursor:pointer;
+  padding:clamp(18px,4.5vw,24px);
+  display:flex;flex-direction:column;justify-content:flex-start;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+.game-card:active{transform:scale(.96);}
+.game-card-title{
+  font-size:clamp(18px,4.8vw,22px);
+  font-weight:800;
+  line-height:1.2;
+  margin-bottom:8px;
+  position:relative;z-index:2;
+}
+.game-card-underline{
+  width:34px;height:4px;border-radius:4px;
+  margin-bottom:auto;
+  position:relative;z-index:2;
+}
+.game-card-art{
+  position:absolute;
+  bottom:-8px;left:-8px;right:-8px;
+  height:62%;
+  display:flex;align-items:flex-end;justify-content:center;
+  pointer-events:none;
+}
+.game-card-art img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,.0) 0%, rgba(0,0,0,1) 22%);
+  mask-image:linear-gradient(to bottom, rgba(0,0,0,.0) 0%, rgba(0,0,0,1) 22%);
+}
+.game-card-badge{
+  position:absolute;top:14px;left:14px;z-index:3;
+  padding:5px 12px;border-radius:999px;
+  font-size:11px;font-weight:800;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+.badge-new{background:#ff3b3b;color:#fff;}
+.badge-popular{background:#3b82f6;color:#fff;}
+
+.empty-note{
+  text-align:center;color:rgba(255,255,255,.35);
+  font-size:13px;font-weight:700;
+  padding:40px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="app-wrap">
+  <div class="hub-header">
+    <div>
+      <div class="hub-title">یارییەکان</div>
+      <div class="hub-sub">یاریت هەڵبژێرە و دەست پێبکە</div>
+    </div>
+  </div>
+
+  <div class="game-grid" id="gameGrid"></div>
+  <div class="empty-note hidden" id="emptyNote">هێشتا یاری زیاد نەکراوە</div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   لیستی یارییەکان — بۆ زیادکردنی یاری نوێ:
+   ١) فایلەکانی یارییەکە لە فۆڵدەرێکی نوێ دابنێ (بۆ نموونە games/newgame/)
+   ٢) ئۆبجێکتێکی نوێ زیاد بکە لەم لیستەی خوارەوە
+   تەواو! پێویست بە هیچ گۆڕانکاریەکی تر نییە.
+   ══════════════════════════════════════════════════ */
+const GAMES = [
+  {
+    id: "sexur",
+    title: "سیخور",
+    folder: "main/game/",       // شوێنی فایلی index.html ی یارییەکە
+    bg: "linear-gradient(150deg,#2a1a1a,#4a1010)",
+    underline: "#ff4d4d",
+    thumb: "", // وێنەیەکی بچووک بۆ کارتەکە (ئارەزوومەندانە)
+    badge: "ONLINE" // "new" | "popular" | ""  یان بەتاڵ بۆ هیچ
+  },
+  {
+    id: "tower",
+    title: "تاوەر",
+    folder: "game/tower/tower.html",       // شوێنی فایلی index.html ی یارییەکە
+    bg: "linear-gradient(150deg,#2a1a1a,#4a1010)",
+    underline: "#ff4d4d",
+    thumb: "", // وێنەیەکی بچووک بۆ کارتەکە (ئارەزوومەندانە)
+    badge: "NEW" // "new" | "popular" | ""  یان بەتاڵ بۆ هیچ
+  },
+  // یاری نوێ لێرە زیاد بکە، بۆ نموونە:
+  // {
+  //   id: "game2",
+  //   title: "ناوی یاریی نوێ",
+  //   folder: "games/game2/",
+  //   bg: "linear-gradient(150deg,#1a2a1a,#103a10)",
+  //   underline: "#4dff88",
+  //   thumb: "games/game2/thumb.webp",
+  //   badge: "new"
+  // },
+];
+
+function badgeHtml(badge){
+  if(badge === "new") return `<div class="game-card-badge badge-new">نوێ</div>`;
+  if(badge === "popular") return `<div class="game-card-badge badge-popular">بەناوبانگترین</div>`;
+  return "";
+}
+
+function renderGames(){
+  const grid = document.getElementById('gameGrid');
+  const empty = document.getElementById('emptyNote');
+  if(GAMES.length === 0){
+    grid.innerHTML = "";
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  grid.innerHTML = GAMES.map(g => `
+    <div class="game-card" style="background:${g.bg}" onclick="openGame('${g.folder}')">
+      ${badgeHtml(g.badge)}
+      <div class="game-card-title">${g.title}</div>
+      <div class="game-card-underline" style="background:${g.underline}"></div>
+      ${g.thumb ? `<div class="game-card-art"><img src="${g.thumb}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>` : ''}
+    </div>
+  `).join('');
+}
+
+function openGame(folder){
+  if('vibrate' in navigator) navigator.vibrate(10);
+  window.location.href = folder;
+}
+
+renderGames();
+</script>
+</body>
+</html>
