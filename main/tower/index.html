@@ -304,6 +304,9 @@ var Block = /** @class */ (function () {
         Math.random() > 0.5 ? -this.MOVE_AMOUNT : this.MOVE_AMOUNT;
     }
   }
+  Block.prototype.reverseDirection = function () {
+    this.direction = this.direction > 0 ? this.speed : Math.abs(this.speed);
+  };
   Block.prototype.place = function () {
     this.state = this.STATES.STOPPED;
     var overlap =
