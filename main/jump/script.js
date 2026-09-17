@@ -321,7 +321,8 @@
     if (!startOverlay.classList.contains("hidden")) startGame();
   });
 
-  window.addEventListener("resize", setPixelRatio);
+document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+window.addEventListener("resize", setPixelRatio);
   setPixelRatio();
   highScoreEl.textContent = highScore;
 })();
