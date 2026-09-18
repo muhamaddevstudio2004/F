@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
-    <title>بلاکجاک</title>
+    <title>poker</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🂡</text></svg>" />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet" />
     <style>
@@ -416,10 +416,10 @@
     <div class="wrapper">
       <div id="levelScreen" class="level-screen">
         <div class="level-header">
-          <h1>بلاکجاک</h1>
+          <h1>پۆکەر</h1>
           <button type="button" id="helpBtnLevel" class="help-btn" aria-label="چۆنیەتی یاریکردن">؟</button>
         </div>
-        <p>ئاستی سەختی هەڵبژێرە</p>
+        <p>جۆری یاریکردن هەڵبژێرە</p>
         <div class="level-buttons">
           <button type="button" data-level="easy" class="level-btn">
             <span class="level-name">ئاسان</span>
@@ -647,7 +647,7 @@
     $("#actionPanel").classList.toggle("hidden", phase !== "playing");
     $("#hintBtn").classList.toggle("hidden", !cfg().hints || phase !== "playing");
     $("#hintText").classList.add("hidden");
-    $("#doubleBtn").disabled = !(phase === "playing" && state.player.length === 2 && state.chips >= state.bet);
+    $("#doubleBtn").disabled = !(phase === "playing" && state.chips >= state.bet);
   }
 
   function basicHint() {
@@ -685,7 +685,7 @@
     if (state.phase !== "playing") return;
     state.player.push(draw());
     renderHands({ animate: true });
-    $("#doubleBtn").disabled = true;
+    $("#doubleBtn").disabled = state.chips < state.bet;
     if (handValue(state.player) > 21) setTimeout(() => settle(false), 400);
   }
 
@@ -695,14 +695,17 @@
   }
 
   function doubleDown() {
-    if (state.phase !== "playing" || state.player.length !== 2 || state.chips < state.bet) return;
+    if (state.phase !== "playing" || state.chips < state.bet) return;
     state.chips -= state.bet;
     state.bet *= 2;
     updateChips(true);
     state.player.push(draw());
     renderHands({ animate: true });
-    if (handValue(state.player) > 21) setTimeout(() => settle(false), 400);
-    else setTimeout(playDealer, 300);
+    if (handValue(state.player) > 21) {
+      setTimeout(() => settle(false), 400);
+    } else {
+      $("#doubleBtn").disabled = state.chips < state.bet;
+    }
   }
 
   function playDealer() {
