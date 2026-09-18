@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>KonKan — خاڵدان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html, body{
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+  input, textarea{
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  :root{
+    --ivory:#faf6ef;
+    --ivory-2:#f3ede1;
+    --card:#ffffff;
+    --charcoal:#2b2620;
+    --charcoal-soft:#6b6255;
+    --copper:#a9673a;
+    --copper-deep:#8a5230;
+    --copper-tint:#f4e3d4;
+    --olive:#6f7a4f;
+    --olive-tint:#e9ede0;
+    --border:#e7ded0;
+    --shadow: 0 1px 2px rgba(43,38,32,.04), 0 8px 24px rgba(43,38,32,.06);
+    --shadow-lg: 0 4px 10px rgba(43,38,32,.06), 0 20px 40px rgba(43,38,32,.10);
+    --radius: 18px;
+    --radius-sm: 12px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--ivory);
+    color: var(--charcoal);
+    font-family: "Vazirmatn", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background:
+      radial-gradient(60% 40% at 15% 0%, rgba(169,103,58,.06), transparent 60%),
+      radial-gradient(50% 30% at 100% 100%, rgba(111,122,79,.06), transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+  button{font-family:inherit;}
+  input{font-family:inherit;}
+  h1,h2,h3,p{margin:0;}
+  button{border:none;background:none;cursor:pointer;color:inherit;}
+  button:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline: 2.5px solid var(--copper);
+    outline-offset: 2px;
+  }
+
+  .screen{
+    display:none;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: calc(20px + var(--safe-top)) 18px calc(28px + var(--safe-bottom));
+    position: relative;
+    z-index: 1;
+  }
+  .screen.active{display:block;}
+
+  /* ---------- Logo ---------- */
+  .logo-block{ text-align:center; margin: 28px 0 8px; }
+  .logo-mark{
+    display:inline-flex;
+    align-items:baseline;
+    gap: 2px;
+    font-weight: 800;
+    font-size: 40px;
+    letter-spacing: -0.02em;
+    direction: ltr;
+  }
+  .logo-mark span.k1{ color: var(--charcoal); }
+  .logo-mark span.k2{ color: var(--copper); }
+  .logo-sub{
+    margin-top: 6px;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--charcoal-soft);
+  }
+  .logo-desc{
+    margin-top: 10px;
+    font-size: 14.5px;
+    color: var(--charcoal-soft);
+    line-height: 1.6;
+  }
+
+  /* ---------- Setup form ---------- */
+  .card{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+  }
+  .field{ margin-bottom: 18px; }
+  .field label{
+    display:block;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--charcoal-soft);
+    margin-bottom: 8px;
+  }
+  .field input[type="text"], .field input[type="number"]{
+    width:100%;
+    padding: 13px 14px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    background: var(--ivory-2);
+    font-size: 16px;
+    color: var(--charcoal);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .field input::placeholder{ color: #b7ac99; }
+  .field input:focus{ border-color: var(--copper); background: var(--card); }
+
+  .round-options{
+    display:flex;
+    gap: 8px;
+  }
+  .round-opt{
+    flex:1;
+    padding: 12px 8px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    background: var(--ivory-2);
+    text-align:center;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--charcoal-soft);
+    transition: all .15s ease;
+  }
+  .round-opt.selected{
+    border-color: var(--copper);
+    background: var(--copper-tint);
+    color: var(--copper-deep);
+  }
+  .custom-rounds-input{ margin-top: 10px; display:none; }
+  .custom-rounds-input.show{ display:block; }
+
+  .error-text{
+    color: #b3402a;
+    font-size: 13px;
+    margin-top: 6px;
+    display:none;
+  }
+  .error-text.show{ display:block; }
+
+  .btn-primary{
+    width:100%;
+    padding: 15px;
+    border-radius: var(--radius-sm);
+    background: var(--copper);
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 6px 16px rgba(169,103,58,.28);
+    transition: transform .1s ease, box-shadow .15s ease, background .15s ease;
+    margin-top: 6px;
+  }
+  .btn-primary:active{ transform: scale(.98); }
+  .btn-primary:hover{ background: var(--copper-deep); }
+
+  .score-actions{
+    display:flex;
+    gap:10px;
+  }
+  .score-actions .btn-primary{ margin-top:0; }
+  .btn-share{
+    width: 52px;
+    flex-shrink:0;
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    color: var(--charcoal-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .btn-share:hover{ background: var(--ivory-2); color: var(--copper-deep); border-color: var(--copper); }
+  .btn-share svg{ width:20px; height:20px; }
+
+  /* ---------- Score screen header ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: 16px;
+  }
+  .icon-btn{
+    width: 42px; height:42px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--charcoal-soft);
+    transition: background .15s ease, color .15s ease;
+  }
+  .icon-btn:hover{ background: var(--ivory-2); color: var(--charcoal); }
+  .icon-btn svg{ width:20px; height:20px; }
+  .topbar-actions{ display:flex; gap:8px; }
+  .brand-mini{
+    font-weight: 800; font-size: 19px; direction: ltr;
+  }
+  .brand-mini span.k2{ color: var(--copper); }
+
+  .game-timer{
+    text-align:center;
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--copper-deep);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    margin: 2px 0 16px;
+  }
+
+  /* ---------- Scoreboard ---------- */
+  .scoreboard{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 16px;
+    margin-bottom: 18px;
+  }
+  .sb-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 10px 2px;
+  }
+  .sb-team{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+  }
+  .sb-dot{
+    width:9px;height:9px;border-radius:50%;
+    background: var(--border);
+    flex-shrink:0;
+  }
+  .sb-row.leading .sb-dot{ background: var(--copper); }
+  .sb-name{
+    font-weight: 700;
+    font-size: 16px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .sb-row.leading .sb-name{ color: var(--charcoal); }
+  .sb-score{
+    font-weight: 800;
+    font-size: 26px;
+    font-variant-numeric: tabular-nums;
+    color: var(--charcoal-soft);
+    transition: color .2s ease;
+  }
+  .sb-row.leading .sb-score{ color: var(--copper-deep); }
+  .sb-divider{
+    height:1px;
+    background: var(--border);
+    margin: 2px 0;
+  }
+  .sb-lead-text{
+    text-align:center;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--olive);
+    background: var(--olive-tint);
+    border-radius: 999px;
+    padding: 7px 10px;
+  }
+
+  .konkan-notice{
+    text-align:center;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--copper-deep);
+    background: var(--copper-tint);
+    border: 1px solid #e6c7a8;
+    border-radius: 14px;
+    padding: 11px 14px;
+    margin-bottom: 16px;
+  }
+
+  /* ---------- Round table ---------- */
+  .rounds-label{
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--charcoal-soft);
+    margin: 4px 4px 10px;
+  }
+  .round-header{
+    display:grid;
+    grid-template-columns: 44px 1fr 1fr;
+    padding: 0 2px 8px;
+  }
+  .round-header .rh-name{
+    text-align:center;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--charcoal-soft);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    padding: 0 4px;
+  }
+  .round-list{
+    display:flex;
+    flex-direction:column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .round-row{
+    display:grid;
+    grid-template-columns: 44px 1fr 1fr;
+    align-items:center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow:hidden;
+  }
+  .round-tag{
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--charcoal-soft);
+    text-align:center;
+    padding: 0 4px;
+  }
+  .round-cell{
+    padding: 15px 6px;
+    text-align:center;
+    font-size: 18px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--charcoal);
+    border-inline-start: 1px solid var(--border);
+    transition: background .12s ease;
+  }
+  .round-cell:active{ background: var(--copper-tint); }
+  .round-cell.empty{ color: #c3b9a8; font-weight:600; }
+  .round-cell.round-cell-disabled{
+    color:#d8d0c2;
+    background: var(--ivory-2);
+    cursor: default;
+    pointer-events: none;
+  }
+  .round-cell.round-cell-gharbat{
+    color: var(--olive);
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  /* ---------- Final result ---------- */
+  .final-result{
+    display:none;
+    background: linear-gradient(180deg, var(--copper-tint), var(--card) 60%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 22px 18px;
+    text-align:center;
+    margin-bottom: 20px;
+    animation: pop .35s ease;
+  }
+  .final-result.show{ display:block; }
+  @keyframes pop{
+    from{ opacity:0; transform: translateY(6px) scale(.98); }
+    to{ opacity:1; transform: translateY(0) scale(1); }
+  }
+  .final-trophy{ color: var(--copper); margin-bottom: 6px; }
+  .final-trophy svg{ width:34px; height:34px; }
+  .final-title{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--charcoal-soft);
+    margin-bottom: 12px;
+  }
+  .final-scores{
+    display:flex;
+    justify-content:center;
+    gap: 28px;
+    margin-bottom: 12px;
+  }
+  .final-team-name{ font-size: 14px; font-weight:600; color: var(--charcoal-soft); margin-bottom:4px;}
+  .final-team-score{ font-size: 30px; font-weight:800; color: var(--charcoal); }
+  .final-verdict{
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--copper-deep);
+  }
+
+  /* ---------- Overlay / Modal ---------- */
+  .overlay{
+    position: fixed; inset:0;
+    background: rgba(43,38,32,.42);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    z-index: 50;
+    padding: 0;
+  }
+  .overlay.show{ display:flex; }
+  @media (min-width: 520px){
+    .overlay{ align-items:center; }
+  }
+  .modal{
+    width:100%;
+    max-width: 460px;
+    background: var(--ivory);
+    border-radius: 22px 22px 0 0;
+    padding: 20px 18px calc(20px + var(--safe-bottom));
+    box-shadow: var(--shadow-lg);
+    transform: translateY(24px);
+    opacity:0;
+    transition: transform .22s ease, opacity .22s ease;
+    max-height: 88vh;
+    overflow-y:auto;
+  }
+  @media (min-width: 520px){
+    .modal{ border-radius: 22px; }
+  }
+  .overlay.show .modal{ transform: translateY(0); opacity:1; }
+  .modal-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom: 14px;
+  }
+  .modal-title{ font-size: 17px; font-weight: 800; }
+  .modal-close{
+    width:34px;height:34px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    color: var(--charcoal-soft);
+    background: var(--ivory-2);
+  }
+  .modal-close svg{ width:16px;height:16px; }
+
+  .score-input-group{ margin-bottom: 14px; }
+  .score-input-group label{
+    display:block; font-size:13.5px; font-weight:700; color: var(--charcoal-soft);
+    margin-bottom:8px;
+  }
+  .score-input-group input{
+    width:100%;
+    padding: 15px 14px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--charcoal);
+    text-align:center;
+    font-variant-numeric: tabular-nums;
+    transition: border-color .15s ease;
+  }
+  .score-input-group input.active-input{ border-color: var(--copper); }
+
+  .quick-scores{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 14px 0 18px;
+  }
+  .quick-btn{
+    padding: 10px 4px;
+    border-radius: 10px;
+    background: var(--ivory-2);
+    border: 1px solid var(--border);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--charcoal-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .quick-btn:active{ background: var(--copper-tint); color: var(--copper-deep); }
+
+  .modal-save{
+    width:100%;
+    padding: 15px;
+    border-radius: var(--radius-sm);
+    background: var(--copper);
+    color:#fff;
+    font-weight:700;
+    font-size:16px;
+  }
+  .modal-gharbat{
+    width:100%;
+    padding: 13px;
+    border-radius: var(--radius-sm);
+    background: var(--olive-tint);
+    border: 1px solid #d7dcc4;
+    color: var(--olive);
+    font-weight:700;
+    font-size:14.5px;
+    margin-bottom: 10px;
+  }
+
+  /* small confirm modal */
+  .confirm-modal{ text-align:center; }
+  .confirm-text{ font-size:15px; color:var(--charcoal-soft); margin: 4px 0 18px; line-height:1.6; }
+  .confirm-actions{ display:flex; gap:10px; }
+  .confirm-actions button{
+    flex:1;
+    padding: 13px;
+    border-radius: var(--radius-sm);
+    font-weight:700;
+    font-size:15px;
+  }
+  .confirm-cancel{ background: var(--ivory-2); border:1px solid var(--border); color: var(--charcoal-soft); }
+  .confirm-ok{ background: var(--copper); color:#fff; }
+
+  /* history */
+  .history-list{ display:flex; flex-direction:column; gap:10px; max-height:60vh; overflow-y:auto; }
+  .history-empty{ text-align:center; color: var(--charcoal-soft); font-size:14px; padding: 30px 0; }
+  .history-item{
+    background: var(--card);
+    border:1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .history-item-main{ min-width:0; }
+  .history-teams{ font-weight:700; font-size:15px; margin-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .history-score{ font-weight:800; font-size:15px; color: var(--copper-deep); }
+  .history-meta{ font-size:12.5px; color: var(--charcoal-soft); margin-top:3px; }
+  .history-del{
+    width:36px;height:36px;flex-shrink:0;
+    border-radius: 10px;
+    display:flex;align-items:center;justify-content:center;
+    color:#b3402a; background: #fbe9e4;
+  }
+  .history-del svg{ width:16px;height:16px; }
+
+  .toast{
+    position: fixed;
+    bottom: calc(24px + var(--safe-bottom));
+    left:50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--charcoal);
+    color: var(--ivory);
+    padding: 11px 18px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 100;
+    white-space:nowrap;
+  }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+  .visually-hidden{
+    position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ SETUP SCREEN ============ -->
+<section id="setupScreen" class="screen active">
+  <div class="logo-block">
+    <div class="logo-mark"><span class="k1">Kon</span><span class="k2">Kan</span></div>
+    <div class="logo-sub">خاڵنووس</div>
+    <p class="logo-desc">خاڵەکانی یاریت بە خێرایی تۆمار بکە</p>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label for="team1Input">ناوی گرووپی یەکەم</label>
+      <input type="text" id="team1Input" placeholder="بۆ نموونە: محمد" maxlength="20" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="team2Input">ناوی گرووپی دووەم</label>
+      <input type="text" id="team2Input" placeholder="بۆ نموونە: ئەحمد" maxlength="20" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label id="roundsLabel">ژمارەی تەڵقەکان</label>
+      <div class="round-options" role="group" aria-labelledby="roundsLabel">
+        <button type="button" class="round-opt selected" data-rounds="7">٧</button>
+        <button type="button" class="round-opt" data-rounds="9">٩</button>
+        <button type="button" class="round-opt" data-rounds="custom">دڵخواز</button>
+      </div>
+      <div class="custom-rounds-input" id="customRoundsWrap">
+        <input type="number" id="customRoundsInput" inputmode="numeric" min="1" max="30" placeholder="ژمارە بنووسە">
+      </div>
+    </div>
+
+    <p class="error-text" id="setupError">تکایە ناوی هەردوو گرووپ بنووسە</p>
+    <button class="btn-primary" id="startGameBtn">بابڕوا</button>
+  </div>
+</section>
+
+<!-- ============ SCORE SCREEN ============ -->
+<section id="scoreScreen" class="screen">
+  <div class="topbar">
+    <div class="brand-mini">Kon<span class="k2">Kan</span></div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="homeBtn" aria-label="گەڕانەوە بۆ سەرەتا" title="سەرەتا"></button>
+      <button class="icon-btn" id="soundBtn" aria-label="دەنگ" title="دەنگ"></button>
+      <button class="icon-btn" id="undoBtn" aria-label="گەڕاندنەوەی دواتۆمارکراو" title="گەڕاندنەوە"></button>
+      <button class="icon-btn" id="historyBtn" aria-label="مێژووی یارییەکان" title="مێژوو"></button>
+    </div>
+  </div>
+
+  <div class="game-timer" id="gameTimer">٠٠:٠٠</div>
+
+  <div class="scoreboard" id="scoreboard">
+    <div class="sb-row" id="sbRow1">
+      <div class="sb-team"><span class="sb-dot"></span><span class="sb-name" id="sbName1"></span></div>
+      <div class="sb-score" id="sbScore1">0</div>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-row" id="sbRow2">
+      <div class="sb-team"><span class="sb-dot"></span><span class="sb-name" id="sbName2"></span></div>
+      <div class="sb-score" id="sbScore2">0</div>
+    </div>
+    <div class="sb-lead-text" id="sbLeadText" style="display:none;"></div>
+  </div>
+
+  <div class="konkan-notice" id="konkanNotice" style="display:none;"></div>
+
+  <div id="finalResult" class="final-result">
+    <div class="final-trophy" id="trophyIcon"></div>
+    <div class="final-title">ئەنجامی یاری</div>
+    <div class="final-scores">
+      <div>
+        <div class="final-team-name" id="finalName1"></div>
+        <div class="final-team-score" id="finalScore1"></div>
+      </div>
+      <div>
+        <div class="final-team-name" id="finalName2"></div>
+        <div class="final-team-score" id="finalScore2"></div>
+      </div>
+    </div>
+    <div class="final-verdict" id="finalVerdict"></div>
+  </div>
+
+  <p class="rounds-label">خاڵەکانی هەر تەڵقەیەک</p>
+  <div class="round-header" id="roundHeader">
+    <div></div>
+    <div class="rh-name" id="rhName1"></div>
+    <div class="rh-name" id="rhName2"></div>
+  </div>
+  <div class="round-list" id="roundList"></div>
+
+  <div class="score-actions">
+    <button class="btn-primary" id="newGameBtn">یاری نوێ</button>
+    <button class="btn-share" id="shareBtn" aria-label="وێنەگرتن و هاوبەشکردن" title="وێنەگرتن و هاوبەشکردن"></button>
+  </div>
+</section>
+<canvas id="shareCanvas" style="display:none;"></canvas>
+
+<!-- ============ SCORE MODAL ============ -->
+<div class="overlay" id="scoreOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="scoreModalTitle">ت ١</div>
+      <button class="modal-close" id="closeScoreModal" aria-label="داخستن"></button>
+    </div>
+
+    <div class="score-input-group">
+      <label id="scoreLabel1"></label>
+      <input type="number" inputmode="numeric" id="scoreInput1" min="0" placeholder="٠">
+    </div>
+    <div class="score-input-group">
+      <label id="scoreLabel2"></label>
+      <input type="number" inputmode="numeric" id="scoreInput2" min="0" placeholder="٠">
+    </div>
+
+    <div class="quick-scores" id="quickScores"></div>
+
+    <button class="modal-gharbat" id="gharbatBtn" type="button">غەربەت کردن</button>
+    <button class="modal-save" id="saveScoreBtn">تۆمارکردن</button>
+  </div>
+</div>
+
+<!-- ============ NEW GAME CONFIRM MODAL ============ -->
+<div class="overlay" id="newGameOverlay">
+  <div class="modal confirm-modal">
+    <div class="modal-head" style="justify-content:center; margin-bottom:4px;">
+      <div class="modal-title">یاری نوێ؟</div>
+    </div>
+    <p class="confirm-text">هەموو خاڵەکانی ئێستا دەسڕدرێنەوە. ناوی گرووپەکان وەک خۆی دەمێنێتەوە.</p>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" id="cancelNewGame">پاشگەزبوونەوە</button>
+      <button class="confirm-ok" id="confirmNewGame">دەستپێبکە</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HISTORY MODAL ============ -->
+<div class="overlay" id="historyOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">مێژووی یارییەکان</div>
+      <button class="modal-close" id="closeHistoryModal" aria-label="داخستن"></button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Icons ---------------- */
+  var ICONS = {
+    history: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v5h5"/><path d="M12 7v5l3.5 2"/></svg>',
+    undo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h10a5 5 0 0 1 0 10h-2"/><path d="M4 10l4-4M4 10l4 4"/></svg>',
+    close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    trophy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 5H5a3 3 0 0 0 3 5"/><path d="M16 5h3a3 3 0 0 1-3 5"/><path d="M12 13v3"/><path d="M9 20h6"/><path d="M10 17h4v3h-4z"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6M14 11v6"/></svg>',
+    soundOn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M17 8a5 5 0 0 1 0 8"/><path d="M19.5 5.5a9 9 0 0 1 0 13"/></svg>',
+    soundOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M16 9l5 6M21 9l-5 6"/></svg>',
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg>',
+    share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M5 13v6a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-6"/></svg>'
+  };
+
+  var EASTERN_DIGITS = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
+  function toEastern(n){
+    return String(n).replace(/[0-9]/g, function(d){ return EASTERN_DIGITS[+d]; });
+  }
+
+  /* ---------------- Storage keys ---------------- */
+  var K_GAME = "konkan_current_game";
+  var K_HISTORY = "konkan_history";
+  var K_SOUND = "konkan_sound";
+
+  /* ---------------- State ---------------- */
+  var gameState = null;   // { team1Name, team2Name, rounds, roundsData:[{t1,t2}], sound }
+  var undoStack = [];
+  var activeRoundIndex = null;
+  var activeInputEl = null;
+
+  /* ---------------- Helpers ---------------- */
+  function $(id){ return document.getElementById(id); }
+  function showScreen(id){
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+    $(id).classList.add("active");
+  }
+  function showToast(msg){
+    var t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(showToast._tm);
+    showToast._tm = setTimeout(function(){ t.classList.remove("show"); }, 1600);
+  }
+
+  /* ---------------- Sound ---------------- */
+  var audioCtx = null;
+  function getAudioCtx(){
+    if(!audioCtx){
+      try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
+    }
+    return audioCtx;
+  }
+  function playTone(freq, dur, vol){
+    if(!gameState || !gameState.sound) return;
+    var ctx = getAudioCtx();
+    if(!ctx) return;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = freq;
+    gain.gain.value = vol || 0.06;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    var now = ctx.currentTime;
+    gain.gain.setValueAtTime(gain.gain.value, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    osc.start(now);
+    osc.stop(now + dur);
+  }
+  function soundClick(){ playTone(520, 0.07, 0.05); }
+  function soundConfirm(){ playTone(660, 0.08, 0.06); setTimeout(function(){ playTone(880,0.1,0.05); }, 70); }
+
+  /* ---------------- Persistence ---------------- */
+  function saveCurrentGame(){
+    try{ localStorage.setItem(K_GAME, JSON.stringify(gameState)); }catch(e){}
+  }
+  function loadCurrentGame(){
+    try{
+      var raw = localStorage.getItem(K_GAME);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  function clearCurrentGame(){
+    try{ localStorage.removeItem(K_GAME); }catch(e){}
+  }
+  function loadHistory(){
+    try{
+      var raw = localStorage.getItem(K_HISTORY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveGameHistory(entry){
+    var h = loadHistory();
+    h.unshift(entry);
+    if(h.length > 100) h = h.slice(0,100);
+    try{ localStorage.setItem(K_HISTORY, JSON.stringify(h)); }catch(e){}
+  }
+  function deleteHistoryGame(index){
+    var h = loadHistory();
+    h.splice(index,1);
+    try{ localStorage.setItem(K_HISTORY, JSON.stringify(h)); }catch(e){}
+  }
+
+  /* ---------------- Game logic ---------------- */
+  function createRounds(count){
+    var arr = [];
+    for(var i=0;i<count;i++){ arr.push({ t1:null, t2:null }); }
+    return arr;
+  }
+
+  function calculateTotals(){
+    var t1 = 0, t2 = 0;
+    gameState.roundsData.forEach(function(r){
+      if(r.t1 !== null && r.t1 !== undefined) t1 += r.t1;
+      if(r.t2 !== null && r.t2 !== undefined) t2 += r.t2;
+    });
+    return { t1: t1, t2: t2 };
+  }
+
+  function isGameComplete(){
+    var status = getRoundCheckStatus();
+    if(status && status.type === "lost") return true;
+    return gameState.roundsData.every(function(r){
+      return r.t1 !== null && r.t1 !== undefined && r.t2 !== null && r.t2 !== undefined;
+    });
+  }
+
+  // Checks the KonKan rule at the checkpoint round (the originally selected
+  // round count, i.e. one round before the extra bonus round).
+  function getRoundCheckStatus(){
+    var checkpointRound = gameState.rounds - 1;
+    if(checkpointRound < 1) return null;
+    var r = gameState.roundsData[checkpointRound - 1];
+    if(!r || r.t1 === null || r.t1 === undefined || r.t2 === null || r.t2 === undefined) return null;
+
+    var t1 = 0, t2 = 0;
+    for(var i=0; i<checkpointRound; i++){
+      var rr = gameState.roundsData[i];
+      if(rr.t1 !== null && rr.t1 !== undefined) t1 += rr.t1;
+      if(rr.t2 !== null && rr.t2 !== undefined) t2 += rr.t2;
+    }
+    var diff = Math.abs(t1-t2);
+    var worseTeam = t1 > t2 ? "team1" : (t2 > t1 ? "team2" : null);
+    if(!worseTeam) return null;
+
+    var maxVal = Math.max(t1,t2);
+    if(maxVal > 400){
+      return { type:"lost", team: worseTeam, checkpointRound: checkpointRound, totals:{ t1:t1, t2:t2 } };
+    }
+    if(diff > 200){
+      return { type:"mandatory", team: worseTeam, checkpointRound: checkpointRound };
+    }
+    return null;
+  }
+
+  function updateNotice(){
+    var el = $("konkanNotice");
+    var status = getRoundCheckStatus();
+    if(status && status.type === "mandatory"){
+      var teamName = status.team === "team1" ? gameState.team1Name : gameState.team2Name;
+      el.textContent = teamName + " کۆنکان ئیجبارە";
+      el.style.display = "block";
+    } else {
+      el.style.display = "none";
+    }
+  }
+
+  function startGame(team1, team2, selectedRoundsCount){
+    var actualRounds = selectedRoundsCount + 1; // one extra round is always added during play
+    gameState = {
+      team1Name: team1,
+      team2Name: team2,
+      rounds: actualRounds,
+      roundsData: createRounds(actualRounds),
+      sound: gameState ? gameState.sound : true,
+      historySaved: false,
+      startedAt: Date.now()
+    };
+    undoStack = [];
+    saveCurrentGame();
+    renderScoreScreen();
+    showScreen("scoreScreen");
+    requestWakeLock();
+  }
+
+  function startNewGame(){
+    gameState.roundsData = createRounds(gameState.rounds);
+    gameState.historySaved = false;
+    gameState.startedAt = Date.now();
+    undoStack = [];
+    saveCurrentGame();
+    renderScoreScreen();
+    showToast("یاری نوێ دەستیپێکرد");
+    requestWakeLock();
+  }
+
+  function finalizeIfComplete(){
+    if(gameState.historySaved) return;
+    if(isGameComplete()){
+      var totals = calculateTotals();
+      saveGameHistory({
+        team1Name: gameState.team1Name,
+        team2Name: gameState.team2Name,
+        total1: totals.t1,
+        total2: totals.t2,
+        rounds: gameState.rounds,
+        date: new Date().toISOString()
+      });
+      gameState.historySaved = true;
+      saveCurrentGame();
+    }
+  }
+
+  /* ---------------- Rendering ---------------- */
+  function updateScoreboard(){
+    var totals = calculateTotals();
+    $("sbName1").textContent = gameState.team1Name;
+    $("sbName2").textContent = gameState.team2Name;
+    $("sbScore1").textContent = toEastern(totals.t1);
+    $("sbScore2").textContent = toEastern(totals.t2);
+
+    var leadText = $("sbLeadText");
+
+    if(totals.t1 === 0 && totals.t2 === 0){
+      leadText.style.display = "none";
+    } else if(totals.t1 === totals.t2){
+      leadText.style.display = "block";
+      leadText.textContent = "یارییەکە یەکسانە";
+    } else {
+      var diffPlusOne = Math.abs(totals.t1 - totals.t2) + 1;
+      var worseName = totals.t1 > totals.t2 ? gameState.team1Name : gameState.team2Name;
+      leadText.style.display = "block";
+      leadText.textContent = worseName + " پێویستی بە " + toEastern(diffPlusOne) + " خاڵە";
+    }
+
+    $("sbRow1").classList.remove("leading");
+    $("sbRow2").classList.remove("leading");
+    if(totals.t1 !== totals.t2 && !(totals.t1===0 && totals.t2===0)){
+      if(totals.t1 < totals.t2) $("sbRow1").classList.add("leading");
+      else $("sbRow2").classList.add("leading");
+    }
+  }
+
+  function getSequentialLockIndex(){
+    for(var i=0;i<gameState.roundsData.length;i++){
+      var r = gameState.roundsData[i];
+      if(r.t1===null||r.t1===undefined||r.t2===null||r.t2===undefined){
+        return i;
+      }
+    }
+    return gameState.roundsData.length;
+  }
+
+  function renderRoundList(){
+    var list = $("roundList");
+    list.innerHTML = "";
+    var status = getRoundCheckStatus();
+    var lockAfter = (status && status.type === "lost") ? status.checkpointRound : null;
+    var seqLockIndex = getSequentialLockIndex();
+
+    gameState.roundsData.forEach(function(r, idx){
+      var row = document.createElement("div");
+      row.className = "round-row";
+      var isLocked = (lockAfter && (idx+1) > lockAfter) || (idx > seqLockIndex);
+      var isGharbat = r.gharbat === true;
+
+      var tag = document.createElement("div");
+      tag.className = "round-tag";
+      tag.textContent = "ت " + toEastern(idx+1);
+
+      var c1 = document.createElement("button");
+      c1.type = "button";
+      c1.className = "round-cell" + (r.t1===null||r.t1===undefined ? " empty" : "") + (isLocked ? " round-cell-disabled" : "") + (isGharbat ? " round-cell-gharbat" : "");
+      c1.textContent = isGharbat ? "غەربەت" : ((r.t1===null||r.t1===undefined) ? "—" : toEastern(r.t1));
+      c1.setAttribute("aria-label", gameState.team1Name + " ت" + toEastern(idx+1));
+      if(!isLocked) c1.addEventListener("click", function(){ openScoreModal(idx, "t1"); });
+
+      var c2 = document.createElement("button");
+      c2.type = "button";
+      c2.className = "round-cell" + (r.t2===null||r.t2===undefined ? " empty" : "") + (isLocked ? " round-cell-disabled" : "") + (isGharbat ? " round-cell-gharbat" : "");
+      c2.textContent = isGharbat ? "غەربەت" : ((r.t2===null||r.t2===undefined) ? "—" : toEastern(r.t2));
+      c2.setAttribute("aria-label", gameState.team2Name + " ت" + toEastern(idx+1));
+      if(!isLocked) c2.addEventListener("click", function(){ openScoreModal(idx, "t2"); });
+
+      row.appendChild(tag);
+      row.appendChild(c1);
+      row.appendChild(c2);
+      list.appendChild(row);
+    });
+  }
+
+  function showFinalResult(){
+    var fr = $("finalResult");
+    var status = getRoundCheckStatus();
+
+    if(status && status.type === "lost"){
+      var loserName = status.team === "team1" ? gameState.team1Name : gameState.team2Name;
+      fr.classList.add("show");
+      $("trophyIcon").innerHTML = ICONS.trophy;
+      $("finalName1").textContent = gameState.team1Name;
+      $("finalName2").textContent = gameState.team2Name;
+      $("finalScore1").textContent = toEastern(status.totals.t1) + " خاڵ";
+      $("finalScore2").textContent = toEastern(status.totals.t2) + " خاڵ";
+      $("finalVerdict").textContent = loserName + " دۆڕا — لە تەڵقەی " + toEastern(status.checkpointRound) + "دا";
+      return;
+    }
+
+    if(!isGameComplete()){
+      fr.classList.remove("show");
+      return;
+    }
+
+    var totals = calculateTotals();
+    fr.classList.add("show");
+    $("trophyIcon").innerHTML = ICONS.trophy;
+    $("finalName1").textContent = gameState.team1Name;
+    $("finalName2").textContent = gameState.team2Name;
+    $("finalScore1").textContent = toEastern(totals.t1) + " خاڵ";
+    $("finalScore2").textContent = toEastern(totals.t2) + " خاڵ";
+
+    var verdict;
+    if(totals.t1 === totals.t2){
+      verdict = "یارییەکە یەکسانە";
+    } else if(totals.t1 < totals.t2){
+      verdict = gameState.team1Name + " بە " + toEastern(totals.t2-totals.t1) + " خاڵ پێشە";
+    } else {
+      verdict = gameState.team2Name + " بە " + toEastern(totals.t1-totals.t2) + " خاڵ پێشە";
+    }
+    $("finalVerdict").textContent = verdict;
+  }
+
+  function renderScoreScreen(){
+    updateScoreboard();
+    updateNotice();
+    $("rhName1").textContent = gameState.team1Name;
+    $("rhName2").textContent = gameState.team2Name;
+    renderRoundList();
+    showFinalResult();
+    updateSoundIcon();
+    updateTimerDisplay();
+  }
+
+  function updateSoundIcon(){
+    $("soundBtn").innerHTML = gameState.sound ? ICONS.soundOn : ICONS.soundOff;
+  }
+
+  /* ---------------- Elapsed-time timer ---------------- */
+  function pad2(n){ return (n<10 ? "0" : "") + n; }
+
+  function updateTimerDisplay(){
+    var el = $("gameTimer");
+    if(!el) return;
+    if(!gameState || !gameState.startedAt){ el.textContent = toEastern("00:00"); return; }
+    var elapsedMs = Date.now() - gameState.startedAt;
+    if(elapsedMs < 0) elapsedMs = 0;
+    var totalSec = Math.floor(elapsedMs/1000);
+    var h = Math.floor(totalSec/3600);
+    var m = Math.floor((totalSec%3600)/60);
+    var s = totalSec%60;
+    var text = (h>0) ? (pad2(h)+":"+pad2(m)+":"+pad2(s)) : (pad2(m)+":"+pad2(s));
+    el.textContent = toEastern(text);
+  }
+
+  /* ---------------- Screen wake lock ---------------- */
+  var wakeLockRef = null;
+  function requestWakeLock(){
+    if(!("wakeLock" in navigator)) return;
+    navigator.wakeLock.request("screen").then(function(lock){
+      wakeLockRef = lock;
+      lock.addEventListener("release", function(){ wakeLockRef = null; });
+    }).catch(function(){ /* ignore - not critical */ });
+  }
+
+  /* ---------------- Share / export as image ---------------- */
+  function drawRoundedRect(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+
+  function buildScoreCanvas(){
+    var totals = calculateTotals();
+    var complete = isGameComplete();
+    var rows = gameState.roundsData.length;
+    var W = 720, pad = 20;
+    var headerH = 150, tableHeaderH = 34, rowH = 46;
+    var footerH = complete ? 70 : 36;
+    var H = headerH + tableHeaderH + rows*rowH + footerH + pad*2;
+
+    var canvas = $("shareCanvas");
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext("2d");
+    ctx.direction = "rtl";
+
+    ctx.fillStyle = "#faf6ef";
+    ctx.fillRect(0,0,W,H);
+
+    var cardX = pad, cardY = pad, cardW = W - pad*2;
+
+    ctx.fillStyle = "#ffffff";
+    drawRoundedRect(ctx, cardX, cardY, cardW, headerH-10, 18);
+    ctx.fill();
+    ctx.strokeStyle = "#e7ded0"; ctx.lineWidth = 1;
+    drawRoundedRect(ctx, cardX, cardY, cardW, headerH-10, 18);
+    ctx.stroke();
+
+    ctx.fillStyle = "#2b2620";
+    ctx.font = "800 26px Vazirmatn, 'Noto Sans Arabic', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("KonKan — خاڵدان", W/2, cardY+40);
+
+    var halfW = (cardW-20)/2;
+    var c1x = cardX + cardW - 10 - halfW/2;
+    var c2x = cardX + 10 + halfW/2;
+
+    ctx.font = "700 17px Vazirmatn, 'Noto Sans Arabic', sans-serif";
+    ctx.fillStyle = "#6b6255";
+    ctx.fillText(gameState.team1Name, c1x, cardY+75);
+    ctx.fillText(gameState.team2Name, c2x, cardY+75);
+
+    ctx.font = "800 34px Vazirmatn, 'Noto Sans Arabic', sans-serif";
+    ctx.fillStyle = (totals.t1 < totals.t2) ? "#8a5230" : "#2b2620";
+    ctx.fillText(toEastern(totals.t1), c1x, cardY+115);
+    ctx.fillStyle = (totals.t2 < totals.t1) ? "#8a5230" : "#2b2620";
+    ctx.fillText(toEastern(totals.t2), c2x, cardY+115);
+
+    ctx.strokeStyle = "#e7ded0";
+    ctx.beginPath();
+    ctx.moveTo(W/2, cardY+20);
+    ctx.lineTo(W/2, cardY+headerH-30);
+    ctx.stroke();
+
+    var tagColW = 60;
+    var teamColW = (cardW - tagColW)/2;
+    var tagColCenterX = cardX + cardW - tagColW/2;
+    var team1ColCenterX = cardX + cardW - tagColW - teamColW/2;
+    var team2ColCenterX = cardX + teamColW/2;
+
+    var tableTop = cardY + headerH + 10;
+
+    ctx.font = "700 13px Vazirmatn, sans-serif";
+    ctx.fillStyle = "#6b6255";
+    ctx.textAlign = "center";
+    ctx.fillText(gameState.team1Name, team1ColCenterX, tableTop+18);
+    ctx.fillText(gameState.team2Name, team2ColCenterX, tableTop+18);
+
+    var y = tableTop + tableHeaderH;
+    gameState.roundsData.forEach(function(r, idx){
+      if(idx % 2 === 1){
+        ctx.fillStyle = "#f3ede1";
+        ctx.fillRect(cardX, y, cardW, rowH);
+      }
+      ctx.fillStyle = "#6b6255";
+      ctx.font = "700 14px Vazirmatn, sans-serif";
+      ctx.fillText("ت " + toEastern(idx+1), tagColCenterX, y+rowH/2+5);
+
+      ctx.font = "700 18px Vazirmatn, sans-serif";
+      ctx.fillStyle = "#2b2620";
+      ctx.fillText((r.t1===null||r.t1===undefined) ? "—" : toEastern(r.t1), team1ColCenterX, y+rowH/2+6);
+      ctx.fillText((r.t2===null||r.t2===undefined) ? "—" : toEastern(r.t2), team2ColCenterX, y+rowH/2+6);
+
+      y += rowH;
+    });
+
+    if(complete){
+      var verdict;
+      if(totals.t1 === totals.t2){
+        verdict = "یارییەکە یەکسانە";
+      } else if(totals.t1 < totals.t2){
+        verdict = gameState.team1Name + " بە " + toEastern(totals.t2-totals.t1) + " خاڵ پێشە";
+      } else {
+        verdict = gameState.team2Name + " بە " + toEastern(totals.t1-totals.t2) + " خاڵ پێشە";
+      }
+      ctx.font = "800 17px Vazirmatn, sans-serif";
+      ctx.fillStyle = "#8a5230";
+      ctx.fillText(verdict, W/2, y+30);
+      y += footerH - 20;
+    }
+
+    ctx.font = "600 12px Vazirmatn, sans-serif";
+    ctx.fillStyle = "#b7ac99";
+    ctx.fillText(formatDate(new Date().toISOString()), W/2, y+20);
+
+    return canvas;
+  }
+
+  function exportScoreImage(){
+    function doDraw(){
+      var canvas = buildScoreCanvas();
+      canvas.toBlob(function(blob){
+        if(!blob){ showToast("هەڵەیەک ڕوویدا"); return; }
+        var fileName = "konkan-" + gameState.team1Name + "-" + gameState.team2Name + ".png";
+        var file = null;
+        try{ file = new File([blob], fileName, { type: "image/png" }); }catch(e){ file = null; }
+
+        if(navigator.share && file && navigator.canShare && navigator.canShare({ files:[file] })){
+          navigator.share({ files:[file], title:"KonKan", text: gameState.team1Name + " × " + gameState.team2Name }).catch(function(){});
+        } else {
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+          showToast("وێنەکە دابەزێنرا");
+        }
+      }, "image/png");
+    }
+
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(doDraw).catch(doDraw);
+    } else {
+      doDraw();
+    }
+  }
+
+  /* ---------------- Score modal ---------------- */
+  function buildQuickButtons(){
+    var wrap = $("quickScores");
+    wrap.innerHTML = "";
+    [0,5,10,15,20,25,50,100].forEach(function(val){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "quick-btn";
+      b.textContent = toEastern(val);
+      b.addEventListener("click", function(){
+        soundClick();
+        if(activeInputEl){ activeInputEl.value = val; }
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  function setActiveInput(el){
+    $("scoreInput1").classList.remove("active-input");
+    $("scoreInput2").classList.remove("active-input");
+    el.classList.add("active-input");
+    activeInputEl = el;
+  }
+
+  function openScoreModal(roundIndex, whichTapped){
+    activeRoundIndex = roundIndex;
+    var r = gameState.roundsData[roundIndex];
+    var isGharbat = r.gharbat === true;
+
+    $("scoreModalTitle").textContent = "ت " + toEastern(roundIndex+1);
+    $("scoreLabel1").textContent = gameState.team1Name;
+    $("scoreLabel2").textContent = gameState.team2Name;
+
+    $("scoreInput1").value = (isGharbat || r.t1===null || r.t1===undefined) ? "" : r.t1;
+    $("scoreInput2").value = (isGharbat || r.t2===null || r.t2===undefined) ? "" : r.t2;
+
+    $("scoreOverlay").classList.add("show");
+
+    var focusEl = whichTapped === "t2" ? $("scoreInput2") : $("scoreInput1");
+    setActiveInput(focusEl);
+    setTimeout(function(){ focusEl.focus(); focusEl.select(); }, 220);
+  }
+
+  function closeScoreModal(){
+    $("scoreOverlay").classList.remove("show");
+    activeRoundIndex = null;
+    activeInputEl = null;
+  }
+
+  function saveScore(){
+    if(activeRoundIndex === null) return;
+    soundConfirm();
+
+    undoStack.push(JSON.parse(JSON.stringify(gameState.roundsData)));
+    if(undoStack.length > 15) undoStack.shift();
+
+    var v1raw = $("scoreInput1").value;
+    var v2raw = $("scoreInput2").value;
+    var r = gameState.roundsData[activeRoundIndex];
+
+    r.t1 = v1raw === "" ? null : Math.max(0, parseInt(v1raw,10) || 0);
+    r.t2 = v2raw === "" ? null : Math.max(0, parseInt(v2raw,10) || 0);
+    r.gharbat = false;
+
+    saveCurrentGame();
+    closeScoreModal();
+    renderScoreScreen();
+    finalizeIfComplete();
+  }
+
+  function markGharbat(){
+    if(activeRoundIndex === null) return;
+    soundClick();
+
+    undoStack.push(JSON.parse(JSON.stringify(gameState.roundsData)));
+    if(undoStack.length > 15) undoStack.shift();
+
+    var r = gameState.roundsData[activeRoundIndex];
+    var alreadyGharbat = r.gharbat === true;
+    r.t1 = 0;
+    r.t2 = 0;
+    r.gharbat = true;
+
+    if(!alreadyGharbat){
+      gameState.roundsData.push({ t1:null, t2:null });
+      gameState.rounds += 1;
+    }
+
+    saveCurrentGame();
+    closeScoreModal();
+    renderScoreScreen();
+    finalizeIfComplete();
+    showToast("تەڵقەکە کرا بە غەربەت");
+  }
+
+  function undoLastChange(){
+    if(undoStack.length === 0){
+      showToast("هیچ گۆڕانکارییەک نییە بۆ گەڕاندنەوە");
+      return;
+    }
+    gameState.roundsData = undoStack.pop();
+    saveCurrentGame();
+    renderScoreScreen();
+    showToast("گەڕایەوە بۆ پێشتر");
+  }
+
+  /* ---------------- History ---------------- */
+  function formatDate(iso){
+    var d = new Date(iso);
+    var y = d.getFullYear();
+    var m = String(d.getMonth()+1).padStart(2,"0");
+    var day = String(d.getDate()).padStart(2,"0");
+    return toEastern(y) + "/" + toEastern(m) + "/" + toEastern(day);
+  }
+
+  function renderHistory(){
+    var list = $("historyList");
+    var h = loadHistory();
+    list.innerHTML = "";
+    if(h.length === 0){
+      list.innerHTML = '<div class="history-empty">هیچ یارییەک تۆمار نەکراوە</div>';
+      return;
+    }
+    h.forEach(function(item, idx){
+      var row = document.createElement("div");
+      row.className = "history-item";
+
+      var main = document.createElement("div");
+      main.className = "history-item-main";
+      main.innerHTML =
+        '<div class="history-teams">' + item.team1Name + ' × ' + item.team2Name + '</div>' +
+        '<div class="history-score">' + toEastern(item.total1) + ' — ' + toEastern(item.total2) + '</div>' +
+        '<div class="history-meta">' + toEastern(item.rounds) + ' تەڵقە · ' + formatDate(item.date) + '</div>';
+
+      var del = document.createElement("button");
+      del.className = "history-del";
+      del.innerHTML = ICONS.trash;
+      del.setAttribute("aria-label", "سڕینەوە");
+      del.addEventListener("click", function(){
+        deleteHistoryGame(idx);
+        renderHistory();
+        showToast("یارییەکە سڕدرایەوە");
+      });
+
+      row.appendChild(main);
+      row.appendChild(del);
+      list.appendChild(row);
+    });
+  }
+
+  /* ---------------- Setup screen wiring ---------------- */
+  var selectedRounds = 7;
+
+  function wireSetupScreen(){
+    document.querySelectorAll(".round-opt").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        document.querySelectorAll(".round-opt").forEach(function(b){ b.classList.remove("selected"); });
+        btn.classList.add("selected");
+        var val = btn.getAttribute("data-rounds");
+        if(val === "custom"){
+          $("customRoundsWrap").classList.add("show");
+          selectedRounds = "custom";
+        } else {
+          $("customRoundsWrap").classList.remove("show");
+          selectedRounds = parseInt(val,10);
+        }
+      });
+    });
+
+    $("startGameBtn").addEventListener("click", function(){
+      var t1 = $("team1Input").value.trim();
+      var t2 = $("team2Input").value.trim();
+      var err = $("setupError");
+
+      if(!t1 || !t2){
+        err.classList.add("show");
+        return;
+      }
+      err.classList.remove("show");
+
+      var rounds = selectedRounds;
+      if(rounds === "custom"){
+        rounds = parseInt($("customRoundsInput").value, 10);
+        if(!rounds || rounds < 1) rounds = 7;
+        if(rounds > 30) rounds = 30;
+      }
+
+      startGame(t1, t2, rounds);
+    });
+  }
+
+  /* ---------------- Score screen wiring ---------------- */
+  function wireScoreScreen(){
+    $("homeBtn").addEventListener("click", function(){
+      $("team1Input").value = gameState.team1Name;
+      $("team2Input").value = gameState.team2Name;
+      var displayedRounds = gameState.rounds - 1;
+      document.querySelectorAll(".round-opt").forEach(function(b){ b.classList.remove("selected"); });
+      var matchBtn = document.querySelector('.round-opt[data-rounds="' + displayedRounds + '"]');
+      if(matchBtn){
+        matchBtn.classList.add("selected");
+        $("customRoundsWrap").classList.remove("show");
+        selectedRounds = displayedRounds;
+      } else {
+        document.querySelector('.round-opt[data-rounds="custom"]').classList.add("selected");
+        $("customRoundsWrap").classList.add("show");
+        $("customRoundsInput").value = displayedRounds;
+        selectedRounds = "custom";
+      }
+      $("setupError").classList.remove("show");
+      showScreen("setupScreen");
+    });
+
+    $("historyBtn").addEventListener("click", function(){
+      renderHistory();
+      $("historyOverlay").classList.add("show");
+    });
+    $("closeHistoryModal").addEventListener("click", function(){
+      $("historyOverlay").classList.remove("show");
+    });
+
+    $("undoBtn").addEventListener("click", undoLastChange);
+
+    $("soundBtn").addEventListener("click", function(){
+      gameState.sound = !gameState.sound;
+      try{ localStorage.setItem(K_SOUND, gameState.sound ? "1" : "0"); }catch(e){}
+      updateSoundIcon();
+      saveCurrentGame();
+      if(gameState.sound) soundClick();
+    });
+
+    $("newGameBtn").addEventListener("click", function(){
+      $("newGameOverlay").classList.add("show");
+    });
+    $("cancelNewGame").addEventListener("click", function(){
+      $("newGameOverlay").classList.remove("show");
+    });
+    $("confirmNewGame").addEventListener("click", function(){
+      $("newGameOverlay").classList.remove("show");
+      startNewGame();
+    });
+
+    $("shareBtn").addEventListener("click", function(){
+      soundClick();
+      exportScoreImage();
+    });
+  }
+
+  function wireScoreModal(){
+    $("closeScoreModal").addEventListener("click", closeScoreModal);
+    $("scoreOverlay").addEventListener("click", function(e){
+      if(e.target === $("scoreOverlay")) closeScoreModal();
+    });
+    $("scoreInput1").addEventListener("focus", function(){ setActiveInput($("scoreInput1")); });
+    $("scoreInput2").addEventListener("focus", function(){ setActiveInput($("scoreInput2")); });
+    $("saveScoreBtn").addEventListener("click", saveScore);
+    $("gharbatBtn").addEventListener("click", markGharbat);
+
+    [$("scoreInput1"), $("scoreInput2")].forEach(function(inp){
+      inp.addEventListener("keydown", function(e){
+        if(e.key === "-" || e.key === "e") e.preventDefault();
+        if(e.key === "Enter") saveScore();
+      });
+    });
+  }
+
+  function wireIcons(){
+    $("historyBtn").innerHTML = ICONS.history;
+    $("undoBtn").innerHTML = ICONS.undo;
+    $("closeScoreModal").innerHTML = ICONS.close;
+    $("closeHistoryModal").innerHTML = ICONS.close;
+    $("homeBtn").innerHTML = ICONS.home;
+    $("shareBtn").innerHTML = ICONS.share;
+  }
+
+  /* ---------------- Init ---------------- */
+  function initializeApp(){
+    wireSetupScreen();
+    wireScoreScreen();
+    wireScoreModal();
+    wireIcons();
+    buildQuickButtons();
+    preventPinchAndDoubleTapZoom();
+
+    var savedSound = null;
+    try{ savedSound = localStorage.getItem(K_SOUND); }catch(e){}
+
+    var restored = loadCurrentGame();
+    if(restored && restored.team1Name && restored.team2Name && Array.isArray(restored.roundsData)){
+      gameState = restored;
+      if(gameState.historySaved === undefined) gameState.historySaved = false;
+      if(!gameState.startedAt) gameState.startedAt = Date.now();
+      if(savedSound !== null) gameState.sound = savedSound === "1";
+      renderScoreScreen();
+      showScreen("scoreScreen");
+      requestWakeLock();
+    } else {
+      gameState = { sound: savedSound === null ? true : savedSound === "1" };
+      showScreen("setupScreen");
+    }
+
+    setInterval(updateTimerDisplay, 1000);
+
+    document.addEventListener("visibilitychange", function(){
+      if(document.visibilityState === "visible" && gameState && gameState.startedAt){
+        requestWakeLock();
+      }
+    });
+  }
+
+  /* ---------------- Prevent pinch/double-tap zoom (feel native) ---------------- */
+  function preventPinchAndDoubleTapZoom(){
+    document.addEventListener("touchmove", function(e){
+      if(e.touches && e.touches.length > 1) e.preventDefault();
+    }, { passive:false });
+
+    var lastTouchEnd = 0;
+    document.addEventListener("touchend", function(e){
+      var now = Date.now();
+      if(now - lastTouchEnd <= 300) e.preventDefault();
+      lastTouchEnd = now;
+    }, { passive:false });
+
+    document.addEventListener("gesturestart", function(e){ e.preventDefault(); });
+  }
+
+  document.addEventListener("DOMContentLoaded", initializeApp);
+})();
+</script>
+</body>
+</html>
